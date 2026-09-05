@@ -119,11 +119,22 @@
   .cat-医药 { background: #ffe4e6; color: #be123c; }
   .cat-教育 { background: #f1f5f9; color: #334155; }
   .cat-物流 { background: #f5f3ff; color: #5b21b6; }
+  .cat-央企国企 { background: #ecfdf5; color: #047857; }
   td.cat-cell { text-align: center; white-space: nowrap; color: var(--muted); font-size: 12px; }
   td.roles { max-width: 300px; }
   td.note { max-width: 260px; color: var(--muted); font-size: 12.5px; }
   td.links a { color: var(--blue-fg); text-decoration: none; word-break: break-all; display: block; font-size: 12px; }
   td.links a:hover { text-decoration: underline; }
+
+  .dirbox {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin: 10px 2px 2px; padding: 8px 10px; background: #f8fafc;
+    border: 1px solid var(--line); border-radius: 12px;
+  }
+  .dirbox label { font-size: 13px; font-weight: 700; color: var(--navy-2); white-space: nowrap; }
+  .dirbox input#dirQ { flex: 1 1 260px; min-width: 200px; }
+  .dirbox .dir-hint { flex-basis: 100%; font-size: 11.5px; color: var(--muted); }
+  .dirbox button { white-space: nowrap; }
 
   select.status {
     font-family: inherit; font-size: 12.5px; font-weight: 600;
@@ -168,13 +179,32 @@
 <body>
 <div class="page">
   <header class="hero">
-    <h1>2027届秋招信息汇总（产品 / AI产品 / 运营方向）</h1>
-    <p>数据截至 2026-09-05 ｜ 收录 178 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 支持职业方向筛选；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+    <h1>2027届秋招信息汇总（含国央企 · 支持自定义岗位方向）</h1>
+    <p>数据截至 2026-09-05 ｜ 收录 203 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 产品 / AI产品 / 运营 / 职能财务等岗位均可筛选；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
   </header>
 
   <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
   <div class="stats" id="scaleChips" role="group" aria-label="按公司分类筛选"></div>
   <div class="stats" id="dirChips" role="group" aria-label="按职业方向筛选"></div>
+
+  <div class="dirbox">
+    <label for="dirQ">我的求职方向</label>
+    <input id="dirQ" list="dirSug" placeholder="例如：财务 会计｜人力 行政｜法务｜产品 运营｜营销 品牌…" aria-label="自定义岗位方向">
+    <datalist id="dirSug">
+      <option value="财务"></option><option value="会计"></option><option value="审计"></option>
+      <option value="人力资源"></option><option value="行政"></option><option value="法务"></option>
+      <option value="合规"></option><option value="党务"></option><option value="党建"></option>
+      <option value="战略"></option><option value="投资"></option><option value="市场营销"></option>
+      <option value="品牌"></option><option value="产品经理"></option><option value="产品运营"></option>
+      <option value="运营"></option><option value="数据分析"></option><option value="商业分析"></option>
+      <option value="供应链"></option><option value="采购"></option><option value="物流"></option>
+      <option value="客户服务"></option><option value="销售"></option><option value="商务"></option>
+      <option value="设计"></option><option value="技术"></option><option value="算法"></option>
+      <option value="管培"></option>
+    </datalist>
+    <button class="btn" id="clearDir" type="button">清除</button>
+    <span class="dir-hint">输入你想投的岗位 / 职能关键词即可反向筛出开放相关岗位的公司；多个词用空格或逗号分隔（需同时满足），例如“财务 人力”会筛出同时有财务和人力方向岗位的公司（如中国移动、中国太平、华润万象商业等）。</span>
+  </div>
 
   <div class="controls">
     <div class="search">
@@ -203,7 +233,7 @@
           <th>公司</th>
           <th>公司分类</th>
           <th>开启秋招时间</th>
-          <th>相关岗位（产品/AI产品/运营方向）</th>
+          <th>相关岗位方向（可自定义筛选财务/人力等）</th>
           <th>备注</th>
           <th>投递入口</th>
           <th>信息来源</th>
@@ -401,13 +431,38 @@ const DATA = [
   { company: "网易雷火", date: "2026-08-24", roles: "游戏策划（数值/战斗/关卡/文案等）、产品经理、用户增长产品策划、游戏/用户运营、品牌营销、项目管理等", note: "网易游戏雷火2027届秋季校园招聘8月24日发布公告；面向2027届，与网易互娱独立网申、可同时投递", portal: "https://leihuo.163.com/campus/", source: "http://job.hust.edu.cn/zpinfo1/2407465.htm" },
   { company: "网易云音乐", date: "2026-08-24", roles: "产品（商业化产品/中后台产品）、产品运营、广告行业运营、内容拓展、音乐推广、技术/AI等", note: "「乐有引力」2027届校招8月24日启动、网申招满即止，base杭州/北京/广州；在网易校招官网选择音乐事业部投递", portal: "https://campus.163.com", source: "https://campus.niuqizp.com/job-vkr5a5Zat.html" },
   { company: "网易有道", date: "2026-08-31", roles: "研发类、算法类（AI/大模型方向）、市场类、教育类为主，产品/运营岗以官网为准", note: "网易旗下智能学习公司，2027秋季校招网申8月31日开放、招满即止（面向2026.9-2027.8毕业）；在网易校招官网选择网易有道投递", portal: "https://campus.163.com", source: "https://campus.niuqizp.com/schedule-7lwyNNL5t.html" },
+  { company: "中国移动", date: "2026-09-04", roles: "技术类（含AI产品经理、大数据/云计算等）、市场类（市场运营、政企客户经理、营销策划）、综合类（财务管理、法律合规、人力资源管理、综合管理）", note: "2027校园招聘公告9月4日发布，9月初起网申、10月24日全国统一在线笔试；55+引才单位、覆盖全国", portal: "https://job.10086.cn", source: "https://www.offcn.com/gqzp/2026/0904/254410.html" },
+  { company: "中国电信", date: "2026-08-24", roles: "市场、销售与服务、产品、企业信息化、研发、产数及综合支撑（财务审计、人力资源、行政文秘、法律）九大类岗位", note: "2027年度校园招聘8月24日启动，携下属分子公司与专业机构统一招聘", portal: "https://job.chinatelecom.com.cn", source: "https://www.91wllm.cn/job/view/id/2385160" },
+  { company: "中国联通", date: "2026-08-25", roles: "技术类（AI研发、数据分析、产品经理等）、市场业务类（产品运营、政企客户经理、营销策划）、综合职能类（财务管理、会计、人力、法务等以各单位为准）", note: "「新苗计划」2027秋招8月25日启动，另有「闪耀新苗」专项面向重点院校硕博", portal: "https://zglt.zhaopin.com", source: "http://www.offcn.com/gqzp/2026/0826/253695.html" },
+  { company: "中核集团（中国核工业集团）", date: "2026-09-02", roles: "核科学技术类、工程建筑类、机械控制类、电力电气类、财务会计类、经济管理类、人文社科类等", note: "中国核电等成员单位2027届校招9月2日启动（财务经营类含会计/审计/人力/法务），集团9月起多校专场", portal: "https://cnnc.zhiye.com/campus", source: "https://job.lzu.edu.cn/html/74/article/2026/91744.html" },
+  { company: "中国人民保险集团", date: "2026-08-01", roles: "综合类（财务管理、会计、人力等）、理赔/精算/市场销售、技术类（以各分公司岗位为准）", note: "2027届校招网申已开放（投递期较长至2027年4月）；综合类财务岗等8月起陆续发布", portal: "https://picc.zhiye.com", source: "https://www.xmrc.com.cn/Recruit/RecruitInfo?Id=155e4463d8844ee4995912a8b09541c0" },
+  { company: "国家能源集团", date: "2026-09-02", roles: "生产、科研、管理岗（专业覆盖电气/机械/能源/计算机/法学/经济学等；管理及财务职能岗以官网为准）", note: "2027年度直招（9/2-9/19）+统招（9/2-10/7）启动，10月25日统一笔试；80余家子分公司、每人限投1岗", portal: "https://zhaopin.chnenergy.com.cn", source: "https://news.qq.com/rain/a/20260904A02CSG00" },
+  { company: "中国太平保险集团", date: "2026-09-04", roles: "市场营销类、经营规划类、运营支持类、风险合规类、信息科技类、财务管理类、人力资源类、党务行政类", note: "2027校园招聘简章9月4日发布（441人），内地总部及港/澳子公司同步开放", portal: "https://cntaiping.zhiye.com", source: "http://fjrclh.fzu.edu.cn/cmss/zpxx/62199" },
+  { company: "国家开发投资集团（国投）", date: "2026-09-03", roles: "集团管培生+100余家子企业岗位（覆盖能源、交通、电子信息、产业金融、医疗健康、人工智能等；职能/财务岗以官网为准）", note: "2027年度应届毕业生招聘公告9月初发布，集团管培与子企业并行", portal: "https://sdic.iguopin.com", source: "https://scc.pku.edu.cn/frontpage/pku/html/recruitmentinfoForm.html?positionDetailId=d3ab90b151a94088ac1dbf78a0af38a0" },
+  { company: "招商局集团", date: "2026-09-01", roles: "各单位岗位自9月上旬陆续发布（综合金融、交通物流、城市园区开发等业务；职能/财务岗以官网为准）", note: "2027届校园招聘简章已发布，9月上旬起各招聘单位陆续开放岗位并启动网申", portal: "https://cmhk.zhiye.com", source: "https://career.sysu.edu.cn/campus/view/id/996762" },
+  { company: "中国邮政集团", date: "2026-09-01", roles: "邮政业务/寄递物流/电商等板块及财务、人力等职能岗位（以各单位岗位为准）", note: "2027年度联合校园招聘公告9月初发布，简历接收至10月31日（邮储银行另设通道，本表不收录银行）", portal: "https://chinapost2027.zhaopin.com", source: "https://job.bupt.edu.cn/frontpage/bupt/html/recruitmentFairForm.html?id=deca391e3bcd45ac9f3e4ce7624d319f" },
+  { company: "中国华电集团（浙江公司等）", date: "2026-09-04", roles: "电力生产运行/检修维护/工程建设等为主（电气、能动、水利、土木等专业；职能管理岗以各单位公告为准）", note: "浙江公司等2027校园招聘公告9月4日发布（9月下旬宣讲）；集团级网申入口已启用", portal: "https://hd2027.iguopin.com", source: "http://job.hust.edu.cn/zpinfo1/2411999.htm" },
+  { company: "中国大唐集团（科研总院等）", date: "2026-09-01", roles: "电力试验研究、能源技术研发、工程检测等技术岗为主（职能/管理岗位以各院公告为准）", note: "大唐科研总院2027年度校招公告9月初发布，西北/华北/华东等研究院分区域招聘", portal: "https://zhaopin.china-cdt.com", source: "https://xsjy.whu.edu.cn/frontpage/whu/html/recruitmentFairForm.html?id=274c50272af74c21a6c9ef279e8341ec" },
+  { company: "华润万象商业（华润置地旗下）", date: "2026-09-02", roles: "招商运营岗、营运岗、推广岗、客户关系岗、写字楼招商运营、商业物业岗、人力资源岗、财务会计岗", note: "华润万象商业2027届秋季校招已启动（百匠新人/万象生，300人），流程含AI面试", portal: "https://app.mokahr.com/campus-recruitment/crland/168540?locale=zh-CN", source: "https://career.nankai.edu.cn/correcruit/content/id/117603.html" },
+  { company: "中国建筑（中建八局西南等）", date: "2026-08-24", roles: "施工/技术/安全/商务等工程类 + 职能管理类（会计学、财务管理、人力资源管理、行政管理、法学等）", note: "中建八局西南公司2027届「新砼人」校招8月下旬发布；中建集团统一校招平台可查更多局/公司", portal: "https://cscec.zhiye.com", source: "https://jy.xmu.edu.cn/campus/view/id/1002019" },
+  { company: "中交集团", date: "2026-09-02", roles: "土木/交通/铁道/港口/电气/测绘/计算机/人工智能等专业岗位（子企业职能与财务岗以官网为准）", note: "2027届全球校园招聘9月初正式启动（全交通/全城市/全水域/全绿色/全数字）", portal: "https://zhaopin.ccccltd.cn", source: "https://www.sohu.com/a/1071287298_121124005" },
+  { company: "中国能建", date: "2026-09-02", roles: "能源电力设计、工程建设、数字化/新能源等岗位（管理/职能类岗位以各企业官网为准）", note: "2027届全球校园招聘9月初启动，简历投递2026年9月-2027年6月", portal: "https://ceec.iguopin.com", source: "https://jyzd.ucass.edu.cn/frontpage/ucass/html/recruitmentinfoForm.html?positionDetailId=b6c72b2e5e4f42069f12fda091a70618" },
+  { company: "中国电建（各院陆续）", date: "2026-08-27", roles: "能源电力设计、工程管理、数字化等岗位（西北院/湖北工程等；职能岗以各单位为准）", note: "西北院2027届校招公告8月27日发布，湖北工程等9月初陆续启动；各院独立发布岗位", portal: "https://zhaopin.powerchina.cn", source: "https://job.xjtu.edu.cn/frontpage/xjtu/html/recruitmentinfoForm.html?positionDetailId=c8b0a321bf1f4a2ab678fa7701c79622" },
+  { company: "保利发展控股", date: "2026-08-19", roles: "投资拓展、计划运营、建筑规划、土建成本/工程、客户服务、会计岗、人力资源岗、党群人力等", note: "保利海南公司等2027届校招8月下旬启动；集团校招平台开放可查全国岗位", portal: "https://polycareer.zhiye.com/campus", source: "http://job.hust.edu.cn/zpinfo1/2407385.htm" },
+  { company: "中国船舶集团（七〇三所等）", date: "2026-09-04", roles: "研发设计类：透平机械、热能/电气/机械、AI+数字化仿真、软件开发等（以院所岗位为准）", note: "中船七〇三所等2027届校招9月4日启动，更多成员单位陆续开放", portal: "https://cssc.zhiye.com/campus", source: "https://www.chaojijianli.com/xiaozhao/cssc-703-2027-campus-recruitment-14149-f9e7f9/" },
+  { company: "中国宝武（宝钢湛江等）", date: "2026-09-01", roles: "钢铁生产/设备点检/工艺技术/研发等工程技术岗为主（职能管理岗以具体单位为准）", note: "宝钢湛江钢铁等2027届校招9月启动，报名期2026年9月-2027年7月", portal: "https://www.baosteel.com", source: "https://job.neuq.edu.cn/teachin/view/id/149110" },
+  { company: "中国一汽", date: "2026-09-01", roles: "研发、制造、营销、职能等方向（2027全球校招，可投多个子企业、每企业限1岗）", note: "2027全球校园招聘9月初启动，面向2026/2027届；含视频简历环节", portal: "https://faw-zhaopin.hotjob.cn/mobile/home", source: "http://job.hust.edu.cn/zpinfo1/2410787.htm" },
+  { company: "长安汽车", date: "2026-08-31", roles: "智能网联/新能源三电/整车动力/数字化技术/造型设计/品牌与市场营销/运营管理/职能管理类等", note: "2027全球校招8月31日网申开启；流程：网申-AI测评-英语测评-面试", portal: "https://changan.zhiye.com", source: "https://career.bit.edu.cn/frontpage/bit/html/recruitmentFairForm.html?id=d512ae154e624f66bb8ba1c1deba7936" },
+  { company: "上汽集团（大乘用车等）", date: "2026-09-02", roles: "研发/制造/国内营销/海外营销/运营管理/上汽华为合作项目等方向", note: "上汽大乘用车2027届全球校招9月2日启动；集团招聘平台可查整车/零部件等板块", portal: "https://saic-recruit.saicmotor.com", source: "https://www.chaojijianli.com/xiaozhao/saic-passenger-vehicle-2027-campus-recruitment-14023-b56c85/" },
+  { company: "中国中车（唐山等子公司）", date: "2026-09-01", roles: "机械、电气、软件、智能制造等技术岗为主（唐山/大连/四方所等，职能岗以各单位为准）", note: "中车唐山等子公司2027届校招9月启动并陆续宣讲", portal: "https://crrc-ts.hotjob.cn", source: "https://jxdxsjy.jx.edu.cn/nchu/campus/view/id/985195" },
+  { company: "东方电气集团", date: "2026-09-02", roles: "能源装备研发、工程技术、数字化等为主（职能/管理岗以校招官网为准）", note: "2027届校园招聘9月启动，9月中旬起各校宣讲；经校招官网或「东方电气微招聘」公众号投递", portal: "https://www.dongfang.com/zxns/gdrc.htm", source: "https://career.hit.edu.cn/zhxy-xszyfzpt/zpxx/zczphxq?id=Mzg5NzY0NzUxN2M0NDJmMmJmMTdmNDZhNjZmYzY5YTE=" },
 ];
 
 const STATUSES = ["已投递", "笔试", "AI面试", "面试", "流程结束"];
 const STAGE_CLASS = { "已投递": "st1", "笔试": "st2", "AI面试": "st3", "面试": "st4", "流程结束": "st5" };
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
-const PAGE_REVISION = "20260905-a";
+const PAGE_REVISION = "20260905-b";
 
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
 const DIRS = [
@@ -533,13 +588,38 @@ const CAT = {
   "网易雷火": "大厂",
   "网易云音乐": "大厂",
   "网易有道": "大厂",
+  "中国移动": "央企国企",
+  "中国电信": "央企国企",
+  "中国联通": "央企国企",
+  "中核集团（中国核工业集团）": "央企国企",
+  "中国人民保险集团": "央企国企",
+  "国家能源集团": "央企国企",
+  "中国太平保险集团": "央企国企",
+  "国家开发投资集团（国投）": "央企国企",
+  "招商局集团": "央企国企",
+  "中国邮政集团": "央企国企",
+  "中国华电集团（浙江公司等）": "央企国企",
+  "中国大唐集团（科研总院等）": "央企国企",
+  "华润万象商业（华润置地旗下）": "央企国企",
+  "中国建筑（中建八局西南等）": "央企国企",
+  "中交集团": "央企国企",
+  "中国能建": "央企国企",
+  "中国电建（各院陆续）": "央企国企",
+  "保利发展控股": "央企国企",
+  "中国船舶集团（七〇三所等）": "央企国企",
+  "中国宝武（宝钢湛江等）": "央企国企",
+  "中国一汽": "央企国企",
+  "长安汽车": "央企国企",
+  "上汽集团（大乘用车等）": "央企国企",
+  "中国中车（唐山等子公司）": "央企国企",
+  "东方电气集团": "央企国企",
 };
-const SCALE_ORDER = ["大厂", "中厂", "AI中厂", "小厂", "快消", "餐饮茶饮", "服装服饰", "房地产", "金融", "汽车", "能源", "家电", "医药", "教育", "物流"];
+const SCALE_ORDER = ["大厂", "中厂", "AI中厂", "小厂", "快消", "餐饮茶饮", "服装服饰", "房地产", "金融", "央企国企", "汽车", "能源", "家电", "医药", "教育", "物流"];
 
 let progress = {};
 loadProgress();
 
-let state = { q: "", stage: "全部", scale: "全部", dirs: [], sort: "date-asc" };
+let state = { q: "", dirTerms: [], stage: "全部", scale: "全部", dirs: [], sort: "date-asc" };
 
 function countByStage() {
   const c = { "全部": DATA.length, "未投递": 0, "已投递": 0, "笔试": 0, "AI面试": 0, "面试": 0, "流程结束": 0 };
@@ -635,6 +715,10 @@ function matches(d) {
   }
   if (state.scale !== "全部" && CAT[d.company] !== state.scale) return false;
   if (state.dirs.length && !matchesDirs(d)) return false;
+  if (state.dirTerms.length) {
+    const text = dirText(d);
+    if (!state.dirTerms.every((t) => text.includes(t))) return false;
+  }
   if (!state.q) return true;
   const q = state.q.toLowerCase();
   return (d.company + d.roles + d.note + d.source + d.portal).toLowerCase().includes(q);
@@ -758,6 +842,21 @@ document.getElementById("tbody").addEventListener("click", (e) => {
 document.getElementById("q").addEventListener("input", (e) => {
   state.q = e.target.value.trim();
   render();
+});
+
+function parseDirTerms(raw) {
+  return String(raw).split(/[\s,，、;；]+/).map((s) => s.trim().toLowerCase()).filter(Boolean);
+}
+const dirQ = document.getElementById("dirQ");
+dirQ.addEventListener("input", (e) => {
+  state.dirTerms = parseDirTerms(e.target.value);
+  render();
+});
+document.getElementById("clearDir").addEventListener("click", () => {
+  dirQ.value = "";
+  state.dirTerms = [];
+  render();
+  dirQ.focus();
 });
 
 document.getElementById("sort").addEventListener("change", (e) => {
