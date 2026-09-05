@@ -125,6 +125,8 @@
   td.note { max-width: 260px; color: var(--muted); font-size: 12.5px; }
   td.links a { color: var(--blue-fg); text-decoration: none; word-break: break-all; display: block; font-size: 12px; }
   td.links a:hover { text-decoration: underline; }
+  td.links .way-text { color: var(--navy-2); word-break: break-all; display: block; font-size: 12px; }
+  td.links .way-tag { display: inline-block; font-size: 10.5px; font-weight: 600; color: #6d28d9; background: #ede9fe; border-radius: 999px; padding: 1px 7px; margin-bottom: 3px; }
 
   .dirbox {
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
@@ -180,7 +182,7 @@
 <div class="page">
   <header class="hero">
     <h1>2027届秋招信息汇总（含国央企 · 支持自定义岗位方向）</h1>
-    <p>数据截至 2026-09-05 ｜ 收录 203 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 产品 / AI产品 / 运营 / 职能财务等岗位均可筛选；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+    <p>数据截至 2026-09-05 ｜ 收录 204 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 产品 / AI产品 / 运营 / 职能财务等岗位均可筛选；无官网入口的公司已标注公众号/邮箱等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
   </header>
 
   <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
@@ -235,7 +237,7 @@
           <th>开启秋招时间</th>
           <th>相关岗位方向（可自定义筛选财务/人力等）</th>
           <th>备注</th>
-          <th>投递入口</th>
+          <th>投递入口 / 投递方式</th>
           <th>信息来源</th>
           <th>投递进度（自动记录日期）</th>
         </tr>
@@ -245,7 +247,7 @@
   </div>
 
   <footer>
-    <span>提示：选择投递状态会自动记上当天日期（如 2026-09-05）；点进度条上的日期可把该环节更新为今天；清空请在下拉框选“未填写”。进度只保存在本机浏览器，不会上传到任何服务器，可随时导出 CSV / 备份 JSON。</span>
+    <span>提示：选择投递状态会自动记上当天日期（如 2026-09-05）；点进度条上的日期可把该环节更新为今天；清空请在下拉框选“未填写”。没有校招官网入口的公司会直接标注公众号/邮箱等投递方式。进度只保存在本机浏览器，不会上传到任何服务器，可随时导出 CSV / 备份 JSON。</span>
     <span><a href="#" id="backup" role="button">备份进度</a> ｜ <a href="#" id="restore" role="button">恢复进度</a></span>
     <input type="file" id="restoreFile" accept=".json" hidden>
   </footer>
@@ -456,13 +458,14 @@ const DATA = [
   { company: "上汽集团（大乘用车等）", date: "2026-09-02", roles: "研发/制造/国内营销/海外营销/运营管理/上汽华为合作项目等方向", note: "上汽大乘用车2027届全球校招9月2日启动；集团招聘平台可查整车/零部件等板块", portal: "https://saic-recruit.saicmotor.com", source: "https://www.chaojijianli.com/xiaozhao/saic-passenger-vehicle-2027-campus-recruitment-14023-b56c85/" },
   { company: "中国中车（唐山等子公司）", date: "2026-09-01", roles: "机械、电气、软件、智能制造等技术岗为主（唐山/大连/四方所等，职能岗以各单位为准）", note: "中车唐山等子公司2027届校招9月启动并陆续宣讲", portal: "https://crrc-ts.hotjob.cn", source: "https://jxdxsjy.jx.edu.cn/nchu/campus/view/id/985195" },
   { company: "东方电气集团", date: "2026-09-02", roles: "能源装备研发、工程技术、数字化等为主（职能/管理岗以校招官网为准）", note: "2027届校园招聘9月启动，9月中旬起各校宣讲；经校招官网或「东方电气微招聘」公众号投递", portal: "https://www.dongfang.com/zxns/gdrc.htm", source: "https://career.hit.edu.cn/zhxy-xszyfzpt/zpxx/zczphxq?id=Mzg5NzY0NzUxN2M0NDJmMmJmMTdmNDZhNjZmYzY5YTE=" },
+  { company: "中国铁建港航局", date: "2026-09-05", roles: "工程技术类（土木/水利/测绘）、施工管理类（工程造价/工程管理/安全工程）、人文综管类（职能/党建等，部分岗位要求党员）", note: "2027届全球校园招聘9月上旬启动、9月7日起多校宣讲；无独立网申站，简历投递邮箱 ghjsgsgbb@163.com，更多信息关注公众号「中国铁建港航局」", portal: "公众号：中国铁建港航局（简历邮箱 ghjsgsgbb@163.com）", source: "https://cqjtu.cqbys.com/teachin/view/id/132915" },
 ];
 
 const STATUSES = ["已投递", "笔试", "AI面试", "面试", "流程结束"];
 const STAGE_CLASS = { "已投递": "st1", "笔试": "st2", "AI面试": "st3", "面试": "st4", "流程结束": "st5" };
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
-const PAGE_REVISION = "20260905-b";
+const PAGE_REVISION = "20260905-c";
 
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
 const DIRS = [
@@ -613,6 +616,7 @@ const CAT = {
   "上汽集团（大乘用车等）": "央企国企",
   "中国中车（唐山等子公司）": "央企国企",
   "东方电气集团": "央企国企",
+  "中国铁建港航局": "央企国企",
 };
 const SCALE_ORDER = ["大厂", "中厂", "AI中厂", "小厂", "快消", "餐饮茶饮", "服装服饰", "房地产", "金融", "央企国企", "汽车", "能源", "家电", "医药", "教育", "物流"];
 
@@ -721,7 +725,7 @@ function matches(d) {
   }
   if (!state.q) return true;
   const q = state.q.toLowerCase();
-  return (d.company + d.roles + d.note + d.source + d.portal).toLowerCase().includes(q);
+  return (d.company + d.roles + d.note + String(d.source || "") + String(d.portal || "")).toLowerCase().includes(q);
 }
 
 function tlHtml(company, rec) {
@@ -770,7 +774,7 @@ function render() {
         '<td class="date">' + d.date + "</td>" +
         '<td class="roles">' + esc(d.roles) + "</td>" +
         '<td class="note">' + esc(d.note) + "</td>" +
-        '<td class="links"><a href="' + escAttr(d.portal) + '" target="_blank" rel="noopener">' + esc(d.portal) + "</a></td>" +
+        '<td class="links">' + portalHtml(d) + "</td>" +
         '<td class="links"><a href="' + escAttr(d.source) + '" target="_blank" rel="noopener">来源</a></td>' +
         '<td class="stage-cell"><select class="status ' + cls + '" data-company="' + escAttr(d.company) + '" aria-label="' + escAttr(d.company) + ' 投递进度">' +
           '<option value="">未填写</option>' +
@@ -789,6 +793,18 @@ function esc(s) {
 }
 function escAttr(s) {
   return esc(s).replace(/'/g, "&#39;");
+}
+function portalHtml(d) {
+  const v = String(d.portal || "").trim();
+  if (!v) return '<span class="way-text">见备注/来源页</span>';
+  if (/^https?:\/\//i.test(v)) {
+    return '<a href="' + escAttr(v) + '" target="_blank" rel="noopener">' + esc(v) + "</a>";
+  }
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(v)) {
+    return '<a href="mailto:' + escAttr(v) + '">' + esc(v) + "</a>";
+  }
+  const tag = v.includes("邮箱") ? "邮箱" : v.includes("公众号") ? "公众号" : v.includes("宣讲") ? "宣讲/现场" : "投递方式";
+  return '<span class="way-tag">' + esc(tag) + '</span><span class="way-text">' + esc(v) + "</span>";
 }
 
 function setStageRecord(company, value) {
@@ -865,7 +881,7 @@ document.getElementById("sort").addEventListener("change", (e) => {
 });
 
 document.getElementById("export").addEventListener("click", () => {
-  const head = ["序号", "公司", "公司分类", "开启秋招时间", "相关岗位（产品/AI产品/运营方向）", "备注", "投递入口", "信息来源", "投递进度", "已投递日期", "笔试日期", "AI面试日期", "面试日期", "流程结束日期", "最近变更"];
+  const head = ["序号", "公司", "公司分类", "开启秋招时间", "相关岗位方向（产品/运营/财务/人力等）", "备注", "投递入口/投递方式", "信息来源", "投递进度", "已投递日期", "笔试日期", "AI面试日期", "面试日期", "流程结束日期", "最近变更"];
   const lines = DATA.map((d, i) => [
     i + 1, d.company, CAT[d.company], d.date, d.roles, d.note, d.portal, d.source,
     (normRec(d.company).stage || "未填写"),
