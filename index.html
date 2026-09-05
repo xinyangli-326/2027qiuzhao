@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027届秋招信息汇总（产品/AI产品/运营）</title>
+<style>
+  :root {
+    --navy: #1f3864;
+    --navy-2: #2f5290;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --blue-bg: #dbeafe; --blue-fg: #1d4ed8;
+    --amber-bg: #fef3c7; --amber-fg: #b45309;
+    --purple-bg: #f3e8ff; --purple-fg: #7e22ce;
+    --green-bg: #dcfce7; --green-fg: #15803d;
+    --gray-bg: #f3f4f6; --gray-fg: #6b7280;
+    --rose-bg: #fee2e2; --rose-fg: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .page { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  header.hero {
+    background: linear-gradient(120deg, var(--navy), var(--navy-2));
+    color: #fff;
+    border-radius: 12px;
+    padding: 22px 24px 18px;
+  }
+  header.hero h1 { margin: 0 0 6px; font-size: 22px; letter-spacing: .5px; }
+  header.hero p { margin: 0; font-size: 13px; opacity: .85; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+  .chip {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    transition: all .15s ease;
+  }
+  .chip b { color: var(--text); font-weight: 600; }
+  .chip:hover { border-color: var(--navy-2); }
+  .chip.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip.active b { color: #fff; }
+  .chip.dot::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+  .chip.dot.s1::before { background: var(--blue-fg); }
+  .chip.dot.s2::before { background: var(--amber-fg); }
+  .chip.dot.s3::before { background: var(--purple-fg); }
+  .chip.dot.s4::before { background: var(--green-fg); }
+  .chip.dot.s5::before { background: var(--rose-fg); }
+  .chip.dot.s0::before { background: #cbd5e1; }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    margin: 14px 0 10px;
+  }
+  .search { flex: 1 1 240px; display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; }
+  .search svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+  .search input { border: 0; outline: 0; padding: 9px 0; font-size: 14px; width: 100%; background: transparent; color: var(--text); font-family: inherit; }
+  .sortbox { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  .sortbox select, .btn {
+    font-family: inherit; font-size: 13px; color: var(--text);
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--navy-2); }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .btn.primary:hover { background: var(--navy-2); }
+
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: auto;
+    max-height: 72vh;
+    box-shadow: 0 1px 3px rgba(16,24,40,.06);
+  }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; font-size: 13px; }
+  thead th {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--navy); color: #fff;
+    text-align: left; padding: 10px 12px; white-space: nowrap;
+    font-weight: 600; letter-spacing: .3px;
+  }
+  thead th.sortable { cursor: pointer; }
+  thead th.sortable:hover { background: var(--navy-2); }
+  thead th .arrow { font-size: 11px; opacity: .75; margin-left: 3px; }
+  tbody td { padding: 10px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+  tbody tr:nth-child(even) { background: #f9fafb; }
+  tbody tr:hover { background: #eef2f8; }
+  td.num, th.num { text-align: center; white-space: nowrap; }
+  td.date { white-space: nowrap; color: var(--muted); }
+  td.company { font-weight: 600; white-space: nowrap; }
+  td.company .cat-badge { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; vertical-align: 1px; }
+  .cat-大厂 { background: #e0e7ff; color: #3730a3; }
+  .cat-中厂 { background: #e0f2fe; color: #075985; }
+  .cat-AI中厂 { background: #fae8ff; color: #86198f; }
+  .cat-小厂 { background: #fef3c7; color: #92400e; }
+  .cat-快消 { background: #fce7f3; color: #9d174d; }
+  .cat-餐饮茶饮 { background: #ccfbf1; color: #0f766e; }
+  .cat-服装服饰 { background: #ecfccb; color: #3f6212; }
+  .cat-房地产 { background: #d1fae5; color: #065f46; }
+  .cat-金融 { background: #ffedd5; color: #c2410c; }
+  .cat-汽车 { background: #dbeafe; color: #1e40af; }
+  .cat-能源 { background: #fef9c3; color: #a16207; }
+  .cat-家电 { background: #ede9fe; color: #6d28d9; }
+  .cat-医药 { background: #ffe4e6; color: #be123c; }
+  .cat-教育 { background: #f1f5f9; color: #334155; }
+  .cat-物流 { background: #f5f3ff; color: #5b21b6; }
+  td.cat-cell { text-align: center; white-space: nowrap; color: var(--muted); font-size: 12px; }
+  td.roles { max-width: 300px; }
+  td.note { max-width: 260px; color: var(--muted); font-size: 12.5px; }
+  td.links a { color: var(--blue-fg); text-decoration: none; word-break: break-all; display: block; font-size: 12px; }
+  td.links a:hover { text-decoration: underline; }
+
+  select.status {
+    font-family: inherit; font-size: 12.5px; font-weight: 600;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 8px; cursor: pointer; width: 106px; outline: 0;
+    background: var(--gray-bg); color: var(--gray-fg);
+    appearance: auto;
+  }
+  select.status.st1 { background: var(--blue-bg); color: var(--blue-fg); border-color: #bfdbfe; }
+  select.status.st2 { background: var(--amber-bg); color: var(--amber-fg); border-color: #fde68a; }
+  select.status.st3 { background: var(--purple-bg); color: var(--purple-fg); border-color: #e9d5ff; }
+  select.status.st4 { background: var(--green-bg); color: var(--green-fg); border-color: #bbf7d0; }
+  select.status.st5 { background: var(--rose-bg); color: var(--rose-fg); border-color: #fecaca; }
+
+  .empty { text-align: center; padding: 40px 16px; color: var(--muted); }
+  footer { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  footer a { color: var(--navy-2); }
+
+  .chips-label { font-size: 12.5px; color: var(--muted); align-self: center; font-weight: 600; margin-right: 2px; white-space: nowrap; }
+  .update-tip { margin: 8px 2px 0; font-size: 12.5px; color: var(--muted); min-height: 0; }
+  .update-tip.ok { color: #15803d; }
+  .update-tip.warn { color: #b45309; }
+  .stage-cell { min-width: 196px; }
+  .stage-cell select.status { width: 100%; }
+  .tl-row { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; margin-top: 6px; }
+  .tl-row button.tl {
+    font-family: inherit; font-size: 11.5px; color: var(--blue-fg);
+    background: var(--blue-bg); border: 1px solid #bfdbfe; border-radius: 999px;
+    padding: 2px 8px; cursor: pointer; white-space: nowrap;
+  }
+  .tl-row button.tl:hover { background: #bfdbfe; }
+  .tl-row .tl-arrow { color: #cbd5e1; font-style: normal; }
+  .tl-empty { color: var(--muted); font-size: 11.5px; }
+
+  @media (max-width: 640px) {
+    header.hero h1 { font-size: 18px; }
+    .controls { align-items: stretch; }
+    .sortbox { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>2027届秋招信息汇总（产品 / AI产品 / 运营方向）</h1>
+    <p>数据截至 2026-09-05 ｜ 收录 178 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 支持职业方向筛选；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+  </header>
+
+  <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
+  <div class="stats" id="scaleChips" role="group" aria-label="按公司分类筛选"></div>
+  <div class="stats" id="dirChips" role="group" aria-label="按职业方向筛选"></div>
+
+  <div class="controls">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="搜索公司、岗位、备注…" aria-label="搜索">
+    </div>
+    <div class="sortbox">
+      <label for="sort">排序</label>
+      <select id="sort" aria-label="排序方式">
+        <option value="date-asc">开启时间 ↑</option>
+        <option value="date-desc">开启时间 ↓</option>
+        <option value="company-asc">公司名 A→Z</option>
+        <option value="stage">按投递进度</option>
+      </select>
+    </div>
+    <button class="btn primary" id="export" type="button">导出 CSV</button>
+    <button class="btn" id="checkUpdate" type="button">检查更新</button>
+  </div>
+  <div id="updateTip" class="update-tip" role="status"></div>
+
+  <div class="table-wrap">
+    <table aria-label="2027届秋招公司信息与投递进度">
+      <thead>
+        <tr>
+          <th class="num">#</th>
+          <th>公司</th>
+          <th>公司分类</th>
+          <th>开启秋招时间</th>
+          <th>相关岗位（产品/AI产品/运营方向）</th>
+          <th>备注</th>
+          <th>投递入口</th>
+          <th>信息来源</th>
+          <th>投递进度（自动记录日期）</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <span>提示：选择投递状态会自动记上当天日期（如 2026-09-05）；点进度条上的日期可把该环节更新为今天；清空请在下拉框选“未填写”。进度只保存在本机浏览器，不会上传到任何服务器，可随时导出 CSV / 备份 JSON。</span>
+    <span><a href="#" id="backup" role="button">备份进度</a> ｜ <a href="#" id="restore" role="button">恢复进度</a></span>
+    <input type="file" id="restoreFile" accept=".json" hidden>
+  </footer>
+</div>
+
+<script>
+const DATA = [
+  { company: "知乎", date: "2026-05-14", roles: "产品岗、运营岗（产品运营类）", note: "2027届校招5月中旬启动（含暑期实习），产品运营类不限专业", portal: "https://app.mokahr.com/campus_apply/zhihu/68321", source: "https://myjob.dlmu.edu.cn/campus/view/id/867984" },
+  { company: "DeepSeek", date: "2026-06-01", roles: "产品、算法、研发、数据工程师等", note: "2026年6月发布大规模招聘（七大类岗位），具体开放日期以官方为准", portal: "https://www.deepseek.com", source: "https://finance.eastmoney.com/a/202608063834113831.html" },
+  { company: "360", date: "2026-06-17", roles: "产品类、运营类、营销类", note: "2027校园招聘6月17日发布", portal: "https://campus.360.cn", source: "https://m.yingjiesheng.com/job-008-001-842.html" },
+  { company: "大疆", date: "2026-06-25", roles: "软件产品、产品运营、市场", note: "2027届“拓疆者”校招，6月25日开启；7月底线上答辩", portal: "https://we.dji.com/zh-CN/campus", source: "https://view.inews.qq.com/k/20260629A064VY00" },
+  { company: "拼多多", date: "2026-07-06", roles: "产品管培生、商品运营管培生、运营管培生、合规运营管培生", note: "提前批7月6日-8月23日；7月23日秋招正式启动", portal: "https://careers.pinduoduo.com", source: "https://www.jfdaily.com.cn/sgh/detail?id=4024381" },
+  { company: "智谱AI", date: "2026-07-07", roles: "AI产品经理、产品、运营", note: "LTDP智领计划及27届实习生计划先行（4月起），正式校招以官网为准", portal: "https://zhipuai.cn", source: "https://www.wondercv.com/xiaozhao/zhipu-ai-beijing-2027-intern-5235-17e095/" },
+  { company: "百度", date: "2026-07-09", roles: "产品经理、AI产品经理、商业产品经理、用户产品经理、产品运营", note: "校招岗位全年开放（7月9日-次年6月），支持多次投递", portal: "https://talent.baidu.com", source: "http://job.neu.edu.cn/campus/view/id/562366" },
+  { company: "莉莉丝游戏", date: "2026-07-15", roles: "产品、游戏平台运营、市场/发行、项目管理", note: "提前批7月15日-8月7日；正式批8月1日-11月30日", portal: "https://lilithgames.jobs.feishu.cn/s/b84uFgu7Ahc", source: "https://cug.91wllm.cn/en/campus/view/id/1000649" },
+  { company: "商汤科技", date: "2026-07-20", roles: "产品（智算平台产品经理等）、算法、工程", note: "「无限原力」顶尖人才计划7月20日启动，以技术/算法为主，含少量产品岗", portal: "http://hr.sensetime.com/top-talent/", source: "https://job.lzu.edu.cn/html/22/article/2026/90270.html" },
+  { company: "网易游戏（互娱）", date: "2026-07-21", roles: "PM、产品、运营、策划、市场", note: "7月21日起网申，多批次笔试，越早投递越快锁定Offer", portal: "https://game.campus.163.com", source: "http://job.hust.edu.cn/zpinfo1/2407074.htm" },
+  { company: "MiniMax", date: "2026-07-30", roles: "产品经理、运营（商业运营）、增长、内容", note: "2027届秋招7月底启动，网申截止9月28日", portal: "https://vrfi1sk8a0.jobs.feishu.cn/379481", source: "https://career.smbu.edu.cn/detail/online?id=3536096" },
+  { company: "字节跳动", date: "2026-08-03", roles: "产品、运营、AI产品", note: "八大类岗位；8月13日抖音AI产品人才专项启动（产品、策略运营方向）", portal: "https://jobs.bytedance.com/campus", source: "https://m.thepaper.cn/newsDetail_forward_33715445" },
+  { company: "京东", date: "2026-08-03", roles: "产品方向、运营方向、市场与商务方向", note: "首次在校招流程引入AI面试", portal: "https://campus.jd.com", source: "https://www.163.com/dy/article/L3EB25470556I485.html" },
+  { company: "哔哩哔哩", date: "2026-08-03", roles: "产品运营类（产品、产品运营）、内容类", note: "面向2026年9月-2027年8月毕业生，含“B-UP”顶尖技术人才项目", portal: "https://jobs.bilibili.com/campus", source: "https://www.163.com/dy/article/L3FF32BB05568W0A.html" },
+  { company: "米哈游", date: "2026-08-03", roles: "产品策划类、运营类、市场商务类", note: "面向2026.9-2027.8毕业生；每人仅可投递1个职位；AI基模方向开放", portal: "https://campus.mihoyo.com", source: "https://news.qq.com/rain/a/20260804A0EJ5T00" },
+  { company: "科大讯飞", date: "2026-08-04", roles: "产品经理（AI安全方向）、产品运营、PMO、营销类", note: "研究算法、AI研发、产品、营销等多职类", portal: "https://campus.iflytek.com", source: "https://scdc.jnu.edu.cn/campus/view/id/1036052" },
+  { company: "阿里巴巴", date: "2026-08-05", roles: "AI产品运营、AI应用产品经理、海外用户运营、产品体验设计师", note: "网申/内推8月5日开始；AI相关岗位占比约八成", portal: "https://talent.alibaba.com/campus", source: "https://finance.sina.com.cn/jjxw/2026-08-06/doc-inimkfvf4599604.shtml" },
+  { company: "联想", date: "2026-08-05", roles: "产品与项目、市场与销售、设计", note: "六大方向", portal: "https://talent.lenovo.com.cn", source: "https://jy.hnust.edu.cn/detail/online?id=3536809" },
+  { company: "作业帮", date: "2026-08-10", roles: "AI产品经理、平台产品经理、产品经理（直播/海外/硬件/供给）、运营类", note: "面向2027届，8月10日全面启动", portal: "https://app.mokahr.com/campus-recruitment/zuoyebang/144908", source: "http://job.hust.edu.cn/zpinfo1/2407227.htm" },
+  { company: "OPPO", date: "2026-08-10", roles: "AI产品、互联网产品、互联网产品运营、用户研究", note: "11大类岗位；O-Star顶尖人才计划7月下旬先行", portal: "https://careers.oppo.com/campus", source: "http://m.offcn.com/gqzp/2026/0720/249014.html" },
+  { company: "小米", date: "2026-08-10", roles: "产品类等17+职类", note: "网申8月10日-12月31日", portal: "https://hr.xiaomi.com/campus", source: "https://hbut.91wllm.cn/campus/view/id/1001426" },
+  { company: "vivo", date: "2026-08-10", roles: "产品运营类、市场类、营销类、设计类", note: "7大类岗位；面向2026年8月-2027年7月毕业", portal: "https://hr.vivo.com/campus", source: "https://xsjy.whu.edu.cn/frontpage/whu/html/recruitmentinfoForm.html?positionDetailId=d6d3641dc47542e0be14901cd3bb9219&" },
+  { company: "得物", date: "2026-08-10", roles: "产品类、运营类、用户研究类", note: "面向2026.9-2027.8毕业生", portal: "https://campus.dewu.com", source: "https://job.zzu.edu.cn/campus/view/id/1018722" },
+  { company: "去哪儿旅行", date: "2026-08-10", roles: "产品经理、产品运营、策略运营、数据分析", note: "面向2026.9-2027.8毕业生", portal: "https://campus.qunar.com", source: "https://jy.hnust.edu.cn/detail/online?id=3537754" },
+  { company: "腾讯", date: "2026-08-11", roles: "产品、运营、市场、设计、技术（含大量AI岗位）", note: "面向2026年1月-2027年12月毕业生；魔方工作室含AI产品经理岗", portal: "https://join.qq.com", source: "https://news.qq.com/rain/a/20260812A03OR000" },
+  { company: "快手", date: "2026-08-12", roles: "产品、运营、市场、战略分析等11类岗位", note: "200+岗位；所有岗位开放“AI应用经验”上传入口", portal: "https://campus.kuaishou.cn", source: "https://www.163.com/dy/article/L45FOSVU0514D3UH.html" },
+  { company: "滴滴", date: "2026-08-12", roles: "产品、运营、商业分析等", note: "每人共3次主动投递机会，每次可投1个职位", portal: "https://campus.didiglobal.com", source: "https://job.lzu.edu.cn/html/74/article/2026/90858.html" },
+  { company: "完美世界", date: "2026-08-12", roles: "产品、运营、游戏策划、发行", note: "网申8月12日-12月31日", portal: "https://app.mokahr.com/campus-recruitment/pwrd/172467", source: "https://www.nowcoder.com/enterprise/160" },
+  { company: "货拉拉", date: "2026-08-12", roles: "AI技术产品运营、策略运营、项目管理、GMT管培", note: "含实习留用；GMT全球拓展管培生7月25日先行", portal: "https://join.huolala.cn", source: "http://cq.bendibao.com/job/2026818/166942.shtm" },
+  { company: "叠纸游戏", date: "2026-08-12", roles: "产品策划类、市场运营类", note: "网申即日起-10月31日", portal: "https://career.papegames.com/campus/position/list", source: "https://career.cuhk.edu.cn/job/view/id/468980" },
+  { company: "华为", date: "2026-08-15", roles: "以研发、销售、财经、供应链为主（产品运营类较少）", note: "供应链类含运营岗位；产品/AI产品岗需在官网按方向筛选", portal: "https://career.huawei.com", source: "https://m.nj.bendibao.com/job/182565.shtm" },
+  { company: "搜狐集团", date: "2026-08-16", roles: "产品类、运营类、算法类、研发类", note: "8月中旬启动；搜狐畅游另含产品经理/AI产品经理、游戏运营岗", portal: "https://campus.sohu.com", source: "https://job.ustb.edu.cn/frontpage/ustb/html/recruitmentinfoForm.html?positionDetailId=d7a8682221284ae8afabfe14d182d327&" },
+  { company: "美团", date: "2026-08-17", roles: "产品、运营、商业分析等10大类", note: "100余种岗位，新增十余种AI原生岗位", portal: "https://campus.meituan.com", source: "https://news.qq.com/rain/a/20260817A0CEZC00" },
+  { company: "唯品会", date: "2026-08-17", roles: "商务、运营、人工智能、营销、数据分析", note: "面向2026.7-2027.6毕业生", portal: "https://job.vip.com", source: "https://www.toutiao.com/article/7674996019439944230/" },
+  { company: "微博（新浪集团）", date: "2026-08-17", roles: "产品管培生、运营管培生、商业管培生、娱乐运营", note: "网申开放至9月18日；含微博文娱人才培养计划", portal: "https://career.sina.com.cn", source: "https://career.buaa.edu.cn/frontpage/buaa/html/recruitmentinfoForm.html?positionDetailId=09febb3a2fc044c9b0f6802cc3e440b1&" },
+  { company: "蚂蚁集团", date: "2026-08-19", roles: "产品、运营、数据、风险管理、技术", note: "面向2026年11月-2027年10月毕业生", portal: "https://talent.antgroup.com/campus/home", source: "https://ccnu.91wllm.cn/campus/view/id/1001565" },
+  { company: "网易", date: "2026-08-20", roles: "产品、运营、市场、企业服务等七大类", note: "面向2026年9月-2027年8月毕业生", portal: "https://campus.163.com", source: "https://www.sohu.com/a/1065437754_115060" },
+  { company: "小红书", date: "2026-08-21", roles: "产品、运营（以实习转正为主）", note: "27届实习5-7月面试、8-10月转正评估；8月下旬校招批次以技术类为主", portal: "https://job.xiaohongshu.com", source: "https://campus.niuqizp.com/schedule-7wwlN5tCL.html" },
+  { company: "腾讯音乐", date: "2026-08-26", roles: "产品策划/产品运营、内容运营、用户运营、市场运营", note: "技术大咖计划（研发方向）7月17日先行；8月26日2027校招全球启动", portal: "https://join.tencentmusic.com/campus", source: "https://www.sohu.com/a/1067990401_121124309" },
+  { company: "携程", date: "2026-08-26", roles: "产品类、研发类、设计类、综合类", note: "面向2026年9月-2027年8月毕业生", portal: "https://campus.ctrip.com", source: "https://www.toutiao.com/article/7678286504934015542/" },
+  { company: "月之暗面（Kimi）", date: "2026-04-03", roles: "产品、算法、工程", note: "「穿越计划」顶尖人才校招4月3日发布，面向2027届首批16人；产品/运营以官网岗位为准", portal: "https://moonshotai.cn", source: "https://www.36kr.com/newsflashes/3750554834403849" },
+  { company: "宇树科技", date: "2026-05-12", roles: "市场策划、销售、技术支持、AI算法、机械等", note: "2027届校招5月中旬启动，以算法/工程为主，含市场策划等非技术岗", portal: "https://unitree.zhiye.com", source: "https://www.sohu.com/a/1024829637_115865" },
+  { company: "小马智行", date: "2026-05-29", roles: "以算法/工程为主（产品运营岗以官网为准）", note: "2027校园招聘官网已开放、网申即日起；面向2026.9-2027.8毕业生", portal: "https://campus.pony.ai", source: "https://campus.pony.ai/guideline" },
+  { company: "禾赛科技", date: "2026-06-16", roles: "产品工程师、空间智能、雷达研发、智能制造", note: "27届秋招提前批6月16日启动，投递截至8月31日；以研发为主", portal: "https://www.hesaitech.com", source: "https://view.inews.qq.com/k/20260629A064VY00" },
+  { company: "元戎启行", date: "2026-07-10", roles: "产品经理、项目经理、用户增长运营、商业分析师", note: "2027秋季校园招聘7月10日启动，面向2027年1-12月毕业", portal: "https://www.deeproute.ai", source: "https://haue.goworkla.cn/module/position_brief_detail/id-113160/" },
+  { company: "智元机器人", date: "2026-07-15", roles: "产品/策划/项目类、市场/运营类、算法类", note: "7大类100+岗位，面向2027届", portal: "https://agibot.zhiye.com", source: "https://career.smbu.edu.cn/detail/online?id=3533588" },
+  { company: "阶跃星辰", date: "2026-07-19", roles: "产品（语音大模型产品经理等）、算法", note: "StepStar顶尖人才计划7月19日启动，面向2026.9-2027.8毕业生", portal: "https://www.stepfun.com", source: "https://jyw.mnnu.edu.cn/campus/view/id/697592" },
+  { company: "鹰角网络", date: "2026-07-20", roles: "产品策划、发行市场类", note: "提前批7月20日启动（网申至7月31日）；正式批8月13日", portal: "https://career.hypergryph.com", source: "https://career.smbu.edu.cn/detail/online?id=3533923" },
+  { company: "影石Insta360", date: "2026-07-22", roles: "产品经理、产品运营、业务、技术", note: "5大方向；影石X计划同步启动，网申截至10月31日", portal: "https://www.insta360.com/cn/jobs", source: "http://career.csu.edu.cn/campus/view/id/588315" },
+  { company: "韶音科技", date: "2026-07-26", roles: "产品经理（战略方向）、用户研究、电商运营、产品营销管培生", note: "27届提前批7月26日启动，100+岗位；正式批以官网为准", portal: "https://www.shokz.com.cn", source: "https://ccnu.91wllm.cn/campus/view/id/1000848" },
+  { company: "地平线", date: "2026-08-10", roles: "产品、算法、工程、芯片（产品岗以官网为准）", note: "网申8月10日-10月30日；智能驾驶AI芯片公司", portal: "https://www.horizon.cc", source: "https://campus.niuqizp.com/job-vy85zMaMt.html" },
+  { company: "安克创新", date: "2026-08-18", roles: "产品经理（产品与体验类）、跨境运营、品牌营销", note: "8月18日正式启动简历投递，面向2026.9-2027.12毕业生", portal: "https://career.anker.com.cn/universities/recruitment/", source: "https://career.buaa.edu.cn/frontpage/buaa/html/recruitmentinfoForm.html?positionDetailId=5c55683bc8484830bb69dc7d2cdd39a3&" },
+  { company: "万兴科技", date: "2026-08-18", roles: "产品、用户运营、GEO运营、市场策划", note: "2027届全球校招8月18日启动，AI研发岗年薪最高100万", portal: "https://wondersharecampus.zhiye.com", source: "https://news.qq.com/rain/a/20260819A0AN4Z00" },
+  { company: "面壁智能", date: "2026-08-24", roles: "端侧大模型、具身智能等（以算法为主）", note: "「前进四」顶尖人才计划8月24日发布，面向2027年及以后毕业硕博，全年申请", portal: "https://modelbest.cn", source: "https://www.bjnews.com.cn/detail/1787745309129311.html" },
+  { company: "名创优品", date: "2026-08-24", roles: "商品运营创优生、海外、营销、渠道发展", note: "黑马工程8月24日启动，面向2026-2027届", portal: "https://www.miniso.com", source: "https://campus.niuqizp.com/schedule-7YUkN5CLL.html" },
+  { company: "库洛游戏", date: "2026-08-25", roles: "产品运营、数据运营、境内品牌营销、游戏策划", note: "2027届秋招8月下旬启动（《鸣潮》开发方）", portal: "https://www.kurogame.com", source: "http://job.hust.edu.cn/zpinfo1/2407501.htm" },
+  { company: "蓝月亮", date: "2026-06-18", roles: "市场营销岗、内容运营岗（含培训生/实习生方向）", note: "2027届校招6月18日启动，面向2026-2028届；网申以“蓝月亮校园招聘”公众号/官方二维码为准", portal: "https://www.bluemoon.com.cn", source: "https://m.yingjiesheng.com/job-008-003-566.html" },
+  { company: "可口可乐饮料", date: "2026-07-13", roles: "供应链计划/仓储物流管理培训生为主（产品市场岗少）", note: "2027校园招聘7月13日启动（可口可乐饮料上海）；产品/市场类岗位需在官网按职能筛选", portal: "https://www.coca-colacompany.com", source: "https://cug.91wllm.cn/campus/view/id/1000712" },
+  { company: "农夫山泉", date: "2026-07-16", roles: "行销校招生（营销/销售方向）", note: "养生堂·农夫山泉·万泰生物联招；「堂堂新生」计划流程含AI面试，网申7月16日开启", portal: "https://jobs.yst.com.cn/campus", source: "https://career.smbu.edu.cn/detail/online?id=3520590" },
+  { company: "元气森林", date: "2026-07-28", roles: "品牌经理、数字营销、内容（创新体系）；销售培训生", note: "创新体系简历投递7月28日起、8月7日线上笔试；销售培训生另设项目；面向2026.12-2027.7毕业", portal: "https://www.yuanqisenlin.com", source: "https://job.lzu.edu.cn/html/74/article/2026/90592.html" },
+  { company: "伊利", date: "2026-08-12", roles: "销售培训生、市场营销、电商运营（各事业部陆续开放）", note: "液态奶等事业部8月中旬起陆续开放；流程含AI面试、网测", portal: "https://www.hotjob.cn/wt/yili/mobweb/recruit/eleySchool", source: "https://www.hljbys.org.cn/campus/view/id/68964/mark/gsxy" },
+  { company: "蜜雪冰城", date: "2026-08-13", roles: "大咖国际提前批以研发/质量/工艺/财务/采购为主（运营岗少）", note: "8月13日“蜜雪冰城招聘”官宣大咖国际事业群27届提前批，工作地河南/海南/安徽/广西；运营/品牌岗位关注后续批次", portal: "https://m.yingjiesheng.com/job-008-028-289.html", source: "https://www.toutiao.com/article/7673800714291839523/" },
+  { company: "卫龙", date: "2026-08-26", roles: "市场营销、电商运营、数字化管培、海外业务、销售管培", note: "200+岗位，流程含在线测评/AI面试，网申截止10月25日；投递走“卫龙美味招聘”公众号", portal: "https://www.chaojijianli.com/xiaozhao/weilong-2027-campus-recruitment-13320-966031/", source: "https://www.chaojijianli.com/xiaozhao/weilong-2027-campus-recruitment-13320-966031/" },
+  { company: "蒙牛", date: "2026-08-28", roles: "管培生（未来星等：销售/市场/电商/供应链方向）", note: "8月28日起网申、招满即止；2027「星动力」/管培生多项目并行", portal: "https://mengniu.zhiye.com/custom/xiaoyuan", source: "https://m.zz.bendibao.com/job/154525.shtm" },
+  { company: "联合利华（UFLP）", date: "2026-08-31", roles: "UFLP管理培训生（市场、客户发展、研发、供应链、财务等）", note: "网申8月31日-10月12日，9月3日起在线测评；中国区入口以“联合利华招聘”公众号指引为准", portal: "https://careers.unilever.com", source: "https://career.rady.ucsd.edu/jobs/unilever-unilever-2027-uflp-management-trainee-program/" },
+  { company: "欧莱雅", date: "2026-08-31", roles: "SeedZ管理培训生（市场与数字营销、电商、供应链、财务、研发等）", note: "网申8月31日-10月8日；9月7日宣讲会；具体岗位以官网为准", portal: "https://careers.loreal.com", source: "https://xsjy.whu.edu.cn/frontpage/whu/html/recruitmentFairForm.html?id=11cb705351c34636922f4ba6fc9efe96&" },
+  { company: "雅诗兰黛", date: "2026-08-31", roles: "管培生（品牌市场部、电商部、零售部）", note: "2027管培生招聘8月31日启动；申请走官方校招页/公众号", portal: "https://campus.51job.com/elccampus/project.html", source: "https://www.sohu.com/a/1071525359_121124309" },
+  { company: "宝洁", date: "2026-09-01", roles: "全职管理岗（品牌管理/市场、客户生意发展、供应链、财务、人力资源、研发等）", note: "网申9月1日-9月26/28日；无群面、两轮单面；入口见“宝洁招聘”公众号", portal: "https://www.pg.com.cn/", source: "https://career.cic.tsinghua.edu.cn/xsglxt/f/jyxt/anony/showZwxx?zpxxid=561473968&type=2" },
+  { company: "雀巢", date: "2026-09-03", roles: "管培生（市场营销、销售、跨境电商、供应链、研发、财务、人力资源等）", note: "9月3日官宣启动，每人限投2个岗位，投递截止11月30日", portal: "https://app.mokahr.com/campus-recruitment/nestlegcr", source: "https://job.zzu.edu.cn/campus/view/id/1019110" },
+  { company: "金佰利", date: "2026-09-04", roles: "销售管理培训生-电商（上海）；培训生项目含市场/客户业务部", note: "面向2025.8-2027.7国内毕业生，滚动开放（电商培训生岗位9月4日发布）", portal: "https://www.kimberly-clark.com.cn/join-us/trainee-program/", source: "https://m.yingjiesheng.com/job-008-057-552.html" },
+  { company: "玛氏", date: "2026-09-05", roles: "管培生（销售和市场、创研供应、数智化技术、支持职能）", note: "时隔两年重启校招；网申9月5日启动，销售和市场/支持职能9月30日截止、其余10月14日截止，AI视频面试10月中下旬；入口以“玛氏校园在线”公众号为准", portal: "https://careers.mars.com/cn/zh", source: "https://career.gdufs.edu.cn/web/Index/job-detail?id=1556" },
+  { company: "高露洁", date: "2026-09-07", roles: "市场培训生、电商培训生、客户发展部培训生等", note: "网申9月7日-10月8日，流程含AI单面；面向2025-2027届", portal: "https://www.colgate.com.cn", source: "https://job.zzu.edu.cn/campus/view/id/1018977" },
+  { company: "Babycare", date: "2026-07-31", roles: "产品经理、品类策划、To B/To C渠道运营、跨境电商运营、市场营销（少年派管培生计划）", note: "2027届校招7月31日网申启动，产品研发/销售运营/市场营销/供应链物流/职能五大方向；9月21日起宣讲", portal: "https://babycare.zhiye.com", source: "https://www.wondercv.com/xiaozhao/babycare-2027-campus-recruitment-12077-ba3c07/" },
+  { company: "全棉时代（Purcotton）", date: "2026-08-27", roles: "电商运营、商品运营、内容策划、市场营销等九大类", note: "2027届校招8月下旬启动，网申至10月26日；宣讲面试9月15日/10月30日，base深圳为主", portal: "http://purcotton.zhiye.com", source: "https://campus.niuqizp.com/job-vwk5aNLMZ.html" },
+  { company: "恒安集团", date: "2026-08-27", roles: "营销管培生、市场管培生（厦门）、电商管培生（厦门）、供应链管培生等", note: "2027届秋季校园招聘8月下旬启动；心相印/七度空间/安儿乐等品牌母公司", portal: "https://hengan1.zhiye.com", source: "https://www.hljbys.org.cn/campus/view/id/69144/mark/nefu" },
+  { company: "认养一头牛", date: "2026-09-03", roles: "品牌市场产品管培生、电商业务运营管培生、新零售销售管培生、供应链管培生、设计管培生", note: "管培生岗位9月初在高校就业平台更新，流程含网申/测评；投递走公众号“认养一头牛驿站”或官网", portal: "https://www.ryytn.com", source: "https://job.wzu.edu.cn/job/view/id/786357" },
+  { company: "昆仑万维", date: "2026-07-16", roles: "AI产品经理、CEO管培生（AI方向）、算法、运营", note: "CEO管培生（AI方向）7月16日先行；AI产品经理等岗位8月26日上线", portal: "https://jobs.kunlun.com", source: "https://www.nowcoder.com/jobs/detail/453820" },
+  { company: "银河通用机器人", date: "2026-07-26", roles: "具身大模型算法、机器人工程为主（产品/运营以官网为准）", note: "具身领航者人才计划7月26日启动，面向2026.9-2027.12毕业", portal: "https://app.mokahr.com/campus-recruitment/yinhetongyong/165930", source: "https://career.gdut.edu.cn/campus/view/id/1020743" },
+  { company: "用友", date: "2026-08-01", roles: "产品经理（B端：人力/协同/财务/供应链/采购）、研发、营销", note: "2027届校招网申8月1日开启（官宣9月初），企业级AI方向", portal: "http://career.yonyou.com", source: "https://career.sysu.edu.cn/campus/view/id/996782" },
+  { company: "世纪华通", date: "2026-08-10", roles: "游戏策划（系统/战斗/叙事）、AI专项、综合管理（发行运营以官网为准）", note: "27届校招8月10日启动；盛趣游戏/点点互动母公司", portal: "https://www.sjhuatong.com", source: "https://campus.niuqizp.com/job-vYl5aL5NZ.html" },
+  { company: "深蓝互动", date: "2026-08-10", roles: "产品PM、发行运营类（日本市场等）、游戏策划", note: "2027秋季校招8月10日启动（《重返未来：1999》研发商），面向2026.9-2027.8毕业", portal: "https://campus.bluepoch.com", source: "https://cug.91wllm.cn/en/campus/view/id/1001232" },
+  { company: "恒生电子", date: "2026-08-13", roles: "AI应用开发等研发为主，另含需求分析/金融业务研究（产品运营岗少）", note: "网申/内推8月13日-10月23日，9月23日笔试", portal: "https://campus.hundsun.com", source: "https://lzpu.bysjy.com.cn/detail/online?id=3539440" },
+  { company: "顺丰集团（顺丰科技）", date: "2026-08-16", roles: "产品经理、数据产品经理（科技提前批）；集团运营储备等", note: "顺丰科技27届提前批8月16日开启，集团正式批简章9月初发布", portal: "https://campus.sf-express.com/#/homePage", source: "https://jdjyw.jlu.edu.cn/portal/recruit/details?id=dd2c9de3d20e401e864a28b96ba06d16" },
+  { company: "BOSS直聘", date: "2026-08-17", roles: "产品经理、算法、开发、数据分析师", note: "27届校招简章8月17日发布，产品类岗位20人+；毕业2026.11-2027.10", portal: "https://www.zhipin.com", source: "https://job.lzu.edu.cn/html/22/article/2026/90986.html" },
+  { company: "紫龙游戏", date: "2026-08-17", roles: "游戏系统策划、战斗策划（AI Native）、文案策划等（产品运营岗以官网为准）", note: "简历投递8月1日-11月30日，上研中心27届秋招8月17日官宣", portal: "https://app.mokahr.com/su/glmiqb", source: "https://scdc.jnu.edu.cn/campus/view/id/1036199" },
+  { company: "平安人寿（中国平安）", date: "2026-08-19", roles: "产品类（产品策略/设计）、科技类（产品运营/AI）、运营类", note: "NEW STAR管培生计划8月19日启动，六大类岗位全国招聘", portal: "https://campus.pingan.com/life", source: "https://job.snnu.edu.cn/detail/job?id=2689620&online_id=3540662" },
+  { company: "优必选", date: "2026-08-19", roles: "运动控制/具身算法等研发为主（产品/运营岗少）", note: "27届校招线上网申8月19日起，优核U-Core计划", portal: "https://www.ubtech.com", source: "https://scc.cau.edu.cn/frontpage/cau/html/recruitmentinfoForm.html?positionDetailId=cd004468aa2348aaa699c8d181b4d1c0&" },
+  { company: "途游游戏", date: "2026-08-20", roles: "产品、游戏策划、发行运营、市场（500+offer）", note: "27届全球校招8月20日起网申、滚动招聘；AI面试9月4日起", portal: "https://app.mokahr.com/su/aludtp", source: "https://www.chaojijianli.com/xiaozhao/tuyoo-games-2027-global-campus-recruitment-12945-30d35a/" },
+  { company: "东方财富", date: "2026-08-21", roles: "产品类、市场类、业务运营类（含AI互联网产品管培方向）", note: "27届秋招岗位8月下旬起发布，EASTstar等专项", portal: "https://zhaopin.eastmoney.com", source: "https://scc.pku.edu.cn/frontpage/pku/html/recruitmentinfoForm.html?positionDetailId=96226775ecd645718beb18047abf3586&" },
+  { company: "三七互娱", date: "2026-08-21", roles: "游戏运营、海外游戏运营、游戏策划、市场推广、AI产品经理（HR方向）", note: "27届秋季校招简章8月21日发布，2次投递机会，流程含AI面试", portal: "https://zhaopin.37.com", source: "https://scdc.jnu.edu.cn/campus/view/id/1036253" },
+  { company: "哈啰", date: "2026-08-22", roles: "产品经理、线上运营、运营管培生、商业分析、AI全栈工程师", note: "2027届英才校招8月22日-9月19日网申，每人最多3个职位", portal: "https://hellobike.zhiye.com/campus/jobs", source: "https://campus.niuqizp.com/schedule-7YmUN5Zna.html" },
+  { company: "好未来（学而思）", date: "2026-08-24", roles: "产品经理、电商运营、内容运营、学科/产品教研、直播运投、海外社媒运营", note: "27届全球校招8月24日官宣，200+岗位、8大类型", portal: "https://recruit.100tal.com/s/v2/dmdwSTdK", source: "https://jy.zisu.edu.cn/campus/view/id/1133508" },
+  { company: "诗悦网络", date: "2026-08-24", roles: "产品运营类、游戏策划类、市场营销类", note: "27届校招网申8月24日起、招满即止，base广州", portal: "https://campus.shiyue.com", source: "https://campus.niuqizp.com/job-vmy5a5Zzz.html" },
+  { company: "贝壳找房", date: "2026-08-25", roles: "产品类、运营类、业务类、研发/算法（ADC校园招聘）", note: "ADC项目8月25日全面启动，面向2026.9-2027.8毕业", portal: "https://campus.ke.com/campus", source: "https://job.lzu.edu.cn/html/22/article/2026/91268.html" },
+  { company: "中兴通讯", date: "2026-08-27", roles: "研发、营销、供应链、运营支撑（产品运营类较少）；AI岗位丰富", note: "27届校招8月底启动，含蓝剑顶尖人才计划", portal: "https://job.zte.com.cn", source: "https://job.bit.edu.cn/frontpage/bit/html/recruitmentinfoForm.html?positionDetailId=0cd99c82a2d54388baf9285ee9e2758b&" },
+  { company: "心动（TapTap）", date: "2026-08-28", roles: "产品运营、开发者运营-AI方向、KA商业化运营、AI产品工程师、游戏运营/策划", note: "心动×TapTap 27届校招8月28日开启，含TapTap平台运营岗位", portal: "https://xd-legacy.jobs.feishu.cn/117745/position/list", source: "https://blog.gaodingoffer.cn/ee37d65209354741b0984acfb2a80db1/" },
+  { company: "58同城", date: "2026-09-01", roles: "产品类（AI产品经理等）、算法、开发", note: "58A计划（5月起转正实习）先行，秋招9月1日-11月1日", portal: "https://app.mokahr.com/m/campus-recruitment/58/150953", source: "https://campus.niuqizp.com/schedule-7sYkNt5Na.html" },
+  { company: "虎牙", date: "2026-09-01", roles: "产品经理、产品运营、内容运营、赛事运营、游戏策划", note: "27届秋招9月1日官宣，投递至10月31日，含AI短视频编导新岗位", portal: "https://hr.huya.com", source: "https://career.sysu.edu.cn/campus/view/id/996730" },
+  { company: "海康威视", date: "2026-09-01", roles: "综合类含产品管理；营销/技术支持；AI与大模型算法为主", note: "2027校园招聘9月初开放，产品岗需在官网按方向筛选", portal: "https://campushr.hikvision.com", source: "https://career.gdut.edu.cn/campus/view/id/1020925" },
+  { company: "百川智能", date: "2026-09-02", roles: "AI产品经理、算法/研发（源点顶尖人才计划）", note: "源点计划9月2日启动，面向2025-2027届，AI产品经理专业不限", portal: "https://careers.baichuan-inc.com/origin-program", source: "https://career.buaa.edu.cn/frontpage/buaa/html/recruitmentinfoForm.html?positionDetailId=6aecfbd59c394be48b32cd9b6e706e56&" },
+  { company: "途虎养车", date: "2026-09-03", roles: "产品类（多方向）、产运类、运营类、市场类、商业分析", note: "27届校招9月3日网申开放，base上海/武汉", portal: "https://app.mokahr.com/m/campus_apply/tuhu/28398", source: "https://cug.91wllm.cn/en/campus/view/id/1002825" },
+  { company: "老乡鸡", date: "2026-08-30", roles: "职能管培生（AI增长/品牌体验/门店增长方向）、营运管培生、供应链管培生", note: "2027届校招简章8月底发布，AI增长等职能方向base合肥/上海/广州/海外，流程含HR初面-群面-结构化面试", portal: "https://lxjchina1.zhiye.com/campus", source: "https://ahnuwj.ahbys.com/job2.html?jid=11494&cid=5526" },
+  { company: "安踏集团", date: "2026-08-16", roles: "管培生：商品/电商/零售运营/品牌市场/供应链/IT等；FILA零售管培同步", note: "2027届校招8月16日启动（管培500+名额），流程含AI面试；base晋江/厦门/上海等，含安踏/FILA等品牌", portal: "https://app.mokahr.com/su/zbvftx", source: "http://job.hust.edu.cn/zpinfo1/2407314.htm" },
+  { company: "迪桑特（中国）", date: "2026-08-22", roles: "品牌端岗位（上海总部）、零售管理岗（全国21城）", note: "2027届全球校招8月下旬启动、网申至11月30日；安踏集团旗下高端运动品牌、独立招聘", portal: "https://m.yingjiesheng.com/job-008-033-229.html", source: "https://whsu.91wllm.cn/campus/view/id/1001798" },
+  { company: "优衣库（迅销中国）", date: "2026-08-23", roles: "经营管理培训生UMC（零售运营→区域管理/总部职能，全国招募150人）", note: "2027 UMC面向2026.1-2027.6毕业生，税前月薪11.2K-14.8K，2027年7月入职", portal: "https://bsurl.cn/v2/caavYCr2", source: "https://career.sysu.edu.cn/campus/view/id/996528" },
+  { company: "特步集团", date: "2026-08-27", roles: "X-POWER管培：品牌/商品/电商运营/零售/供应链/职能等七大类；品牌星光100", note: "2027届全球校招8月27日启动、网申至10月31日，每人限投2个岗位；base厦门总部/北京/上海等", portal: "https://app.mokahr.com/campus-recruitment/xtep", source: "https://career.cuhk.edu.cn/en/job/view/id/469110" },
+  { company: "森马服饰", date: "2026-09-01", roles: "AI产品运营、AI工程师、商品企划/商品运营、线上/店铺/直播运营、品牌传播、市场推广", note: "2027届校招9月1日网申开放、招满即止，含AI产品运营岗；base上海/杭州/嘉兴（森马/巴拉巴拉）", portal: "https://app.mokahr.com/campus_apply/semir/36189", source: "https://tiku.deizao.cn/news/4264" },
+  { company: "波司登", date: "2026-09-01", roles: "储备生/管培：抖音商城运营（杭州）、零售运营（雪中飞）、财务管理（常熟）等", note: "27届储备生岗位9月1日起分批上线（前程无忧发布），抖音商城运营方向适合运营投递；总部常熟/上海", portal: "https://m.yingjiesheng.com/job-008-048-854.html", source: "https://m.yingjiesheng.com/job-008-048-854.html" },
+  { company: "迪卡侬", date: "2026-09-02", roles: "线上运营主管（电商）、品牌中心、供应链计划、生产供应链、运动部门经理/全渠道运动主管", note: "2027秋季校招9月2日-9月30日网申，全产业链岗位覆盖全国60+城市；面向2027届为主（含26届往届）", portal: "https://recruitment.decathlon.com.cn/p/campus.html", source: "https://campus.niuqizp.com/schedule-7smmNNnCN.html" },
+  { company: "SHEIN（希音）", date: "2026-09-02", roles: "全球运营类：管培生、商家运营、平台运营、平台治理、KOL营销；商品平台类：买手/服装设计等", note: "2027届秋季校招9月2日起各校平台陆续发布，base广州为主；投递走官方mokahr链接或公众号“SHEIN招聘”", portal: "https://app.mokahr.com/su/vuquts", source: "https://hue.91wllm.cn/campus/view/id/1002729" },
+  { company: "阿迪达斯（adidas）", date: "2026-09-03", roles: "2027管理培训生（往届项目含销售、市场、电商、商品、供应链、职能等方向，具体以网申页为准）", note: "2027管培生招聘9月3日网申开启、9月30日截止（CUHK就业平台）；中国区多城市，投递入口见“阿迪达斯招聘”公众号推文", portal: "https://mp.weixin.qq.com/s/ZxQDr2b-QJMvzliGSAkEiA", source: "https://career.cuhk.edu.cn/job/view/id/469215" },
+  { company: "斯凯奇中国", date: "2026-06-29", roles: "2027届销售培训生：线上=电商运营储备（平台运营/商品运营，广州/东莞）；线下=零售门店储备店长（北上广深）", note: "27届销售培训生6月29日发布，月薪5-7K×13薪；面向2027届本科，线上方向为电商运营向，适合运营投递", portal: "https://m.yingjiesheng.com/job-008-008-780.html", source: "https://m.yingjiesheng.com/job-008-008-778.html" },
+  { company: "雅戈尔", date: "2026-07-31", roles: "2027秋招管培（分批上线）：服装采购/采购员、外贸业务员等（供应链与外贸向为主）", note: "27届秋招岗位7月底起在学校就业平台分批发布（月薪8-10K、base宁波）；网申以官方“雅戈尔招聘”渠道为准", portal: "https://jyb.zstu.edu.cn/job/view/id/474344", source: "https://jy.xmu.edu.cn/job/view/id/2397464/from_type/4/from_id/" },
+  { company: "爱慕股份", date: "2026-08-03", roles: "营销运营类：零售管理、电商运营、直播运营、商品管理、数据分析；产品研发类：产品企划、服装设计、材料开发等", note: "爱慕集团2027年校园招聘简章8月上旬发布（岗位分批上线，零售管理管培月薪5-9K），北京总部为主、全国门店岗；投递邮箱career@aimer.com.cn", portal: "https://m.yingjiesheng.com/job-008-023-096.html", source: "https://m.yingjiesheng.com/xuanjianghui/xjh_6272148" },
+  { company: "申洲集团", date: "2026-08-08", roles: "市场开发类（优衣库/耐克/阿迪等品牌业务开发）、国际业务、供应链、IT数字化、高潜管培生等", note: "申洲集团2027届秋季校招8月8日官宣启动（全球大型针织服装制造商之一、宁波总部），面向27届本硕博；关注公众号“申洲招聘”", portal: "https://career.shenzhouintl.com/campus/jobs", source: "https://haue.goworkla.cn/module/position_brief_detail/id-113401/nid-6488" },
+  { company: "Inditex（ZARA等）", date: "2026-08-20", roles: "2027门店管理培训生计划：门店运营、门店陈列、顾客体验等管培方向", note: "2027 Inditex校园招聘门店管理培训生计划8月20日发布（月薪8-9K），覆盖北上广深/杭州/南京/成都等，秋季宣讲会已排期", portal: "https://wecruit.hotjob.cn/SU66a30e351eb8050c72d5a5d5/mc/index", source: "https://job.xpu.edu.cn/detail/job?id=2592835&career_id=694407" },
+  { company: "九牧王", date: "2026-08-25", roles: "2027届：商品运营、电商商品、零售管理、零售支持、零售运营管培", note: "九牧王2027届校招8月下旬启动（国家24365平台8月25日更新岗位）；商品/电商商品base泉州晋江，零售岗多城市，月薪7-8.5K", portal: "https://joeone.zhiye.com/campus", source: "https://xsjyzd.jmu.edu.cn/teachin/view/id/174342" },
+  { company: "江南布衣", date: "2026-09-02", roles: "定向培训生：商品企划、陈列、培训、服装设计（LESS等）、工艺师", note: "9月初校招通道更新（学校就业平台9月2日发布岗位，27届秋季以官网为准）；投递走公众号“江南布衣招聘”-校园招聘-校招通道，base杭州", portal: "https://app.mokahr.com/campus_apply/jnby/94912", source: "https://app.mokahr.com/campus_apply/jnby/94912" },
+  { company: "链家", date: "2026-05-29", roles: "顾问型房产经纪人、链家「领航家」管培（校招简章岗位分批上线）", note: "上海/北京链家2027届秋招宣讲招聘5月底起陆续发布，面向2025-2027届本科、专业不限；城市公司独立招聘", portal: "https://m.yingjiesheng.com/xuanjianghui/xjh_6265857", source: "https://m.yingjiesheng.com/xuanjianghui/xjh_6265857" },
+  { company: "苏泊尔", date: "2026-06-11", roles: "储备技术/储备干部：业务岗（物流/采购/计划/仓管）、管理岗（生产/综合/人力资源）", note: "浙江苏泊尔2027届校招简章6月发布，以制造/供应链/综合储备为主、总部产品运营岗较少，具体以官网为准", portal: "https://ztu.jysd.com/campus/view/id/716448", source: "https://jy.huuc.edu.cn/module/position_brief_detail/id-112840/nid-2270" },
+  { company: "方太集团", date: "2026-06-20", roles: "提前批以研发（机器人/大模型算法）、智能制造、营销特战队为主", note: "方太集团2027届校招提前批6月下旬启动、正式批7月起分批，总部宁波；营销特战队适合市场方向，运营岗以官网为准", portal: "https://fotile.zhiye.com/campus", source: "https://career.zjnu.edu.cn/campus/view/id/871705" },
+  { company: "小鹏汽车", date: "2026-07-08", roles: "商品企划、营销服、海外业务、数据智能、职能等16大方向300+岗位", note: "小鹏集团2027届「探索者计划」全球校招7月8日启动，面向2026.9-2027.8毕业生；产品/运营岗按官网方向筛选", portal: "https://campus.xiaopeng.com", source: "https://scc.cau.edu.cn/frontpage/cau/html/recruitmentinfoForm.html?positionDetailId=775c3028de4c4049b987c1ce87be19ae&" },
+  { company: "文远知行", date: "2026-07-19", roles: "以算法/研发为主（产品/运营岗以官网为准）", note: "文远知行2027届校招7月中旬启动（校方7/16-7/21发布），面向2027届；L4自动驾驶公司", portal: "https://job.xidian.edu.cn/campus/view/id/756547", source: "https://job.xidian.edu.cn/campus/view/id/756547" },
+  { company: "4399游戏", date: "2026-07-31", roles: "游戏产品运营、游戏策划管培、AI创新人才储备、发行市场/运营类", note: "4399游戏2027届秋季校招7月31日网申开启（校方8/2起陆续发布），面向2026.9-2027.8毕业生；策划/市场运营类年薪25-45w+", portal: "https://career.gdut.edu.cn/campus/view/id/1020753", source: "https://www.cqbys.com/campus/view/id/732280" },
+  { company: "瑞幸咖啡", date: "2026-08-04", roles: "储备店长（新零售门店运营管理方向）", note: "瑞幸27届储备店长校招8月发布，面向2027届大专及以上、不限专业经验，全国按城市招聘；培养门店运营管理人才", portal: "https://lzpu.bysjy.com.cn/detail/online?id=3360087", source: "https://uta.ahbys.com/job2.html?jid=13271&cid=31282" },
+  { company: "新东方", date: "2026-08-05", roles: "「π计划」高端教师管培为主，另设运营/职能类岗位", note: "新东方2027「π计划」秋季校招8月5日启动，面向2027届（毕业2027.1-2027.12），覆盖50余城；运营/职能随全球联合校招开放", portal: "https://zhaopin.xdf.cn", source: "https://cug.91wllm.cn/en/campus/view/id/1001111" },
+  { company: "扬子江药业", date: "2026-08-07", roles: "学术专员/医药代表（27届校招）、人力资源等职能储备（非医药专业亦可投）", note: "扬子江药业2027届秋招8月上旬起岗位分批上线，另需AI、播音主持、运动训练等非医药专业人才；总部泰州", portal: "https://fg.ncss.cn/student/jobs/Aa377Y6wb3DvsoGYnxzHec/detail.html", source: "https://m.yingjiesheng.com/job-008-031-603.html" },
+  { company: "高途", date: "2026-08-07", roles: "运营、职能、主播、顾问二讲老师、主讲等八大职类（5000+岗位）", note: "高途2027全球校招网申8月7日开启、8月中旬官宣，覆盖北京/郑州/武汉/成都等24城", portal: "http://cug.91wllm.cn/campus/view/id/1000819", source: "https://www.bjnews.com.cn/detail/1787300730129846.html" },
+  { company: "深信服", date: "2026-08-07", roles: "市场类（客户经理/售前产品经理）、客服/安全运营类、研发/AI类（X-Star）", note: "深信服2027届秋季校招8月7日启动、市场菁英计划8/27发布；售前产品经理/客户经理15-20K，投递hr.sangfor.com", portal: "https://hr.sangfor.com", source: "https://job.lzu.edu.cn/html/74/article/2026/90687.html" },
+  { company: "龙湖集团", date: "2026-08-08", roles: "仕官生：营销/运营/数字科技等综合方向（具体岗位以官网为准）", note: "龙湖集团2027届仕官生校招8月8日简历投递开启，宣讲9-10月、面试9月中旬-10月下旬；面向27届本硕博", portal: "https://longfor.zhaopin.com/", source: "https://cug.91wllm.cn/campus/view/id/1001178" },
+  { company: "阳光电源", date: "2026-08-10", roles: "产品与研发、信息技术、技术营销、制造、质量、供应链、职能类", note: "阳光电源2027届全球校招8月10日正式批启动，面向2026.8-2027.7毕业生，base合肥/上海/深圳等", portal: "https://cug.91wllm.cn/campus/view/id/1001224", source: "https://job.lzu.edu.cn/html/74/article/2026/91094.html" },
+  { company: "云天励飞", date: "2026-08-10", roles: "芯片/算法/软件研发为主（AI芯片公司，产品运营岗以官网为准）", note: "云天励飞2027届校招8月10日-9月20日网申，面向27届本硕博，base深圳/南京/成都/西安/上海", portal: "https://intellif.zhiye.com/Campus", source: "https://www.wondercv.com/xiaozhao/intellifusion-2027-campus-recruitment-12653-531aaa/" },
+  { company: "金蝶", date: "2026-08-11", roles: "产品、研发、实施顾问、销售、职能等27届校招岗位（苍穹/星空等产品线）", note: "金蝶2027届校招岗位8月中旬起分批上线（mokahr校招页），面向2026.10-2027.9毕业生；ERP产品/实施/销售方向适合投递", portal: "https://app.mokahr.com/campus-recruitment/kingdeehr/166565", source: "https://app.mokahr.com/campus-recruitment/kingdeehr/166565" },
+  { company: "吉利控股", date: "2026-08-13", roles: "营销、运营、产品、职能、研发等5000+岗位（吉利/领克/极氪等）", note: "吉利控股2027届全球校招8月13日启动，网申8/13-10/31，流程含在线测评/AI面试；每人3次投递机会", portal: "https://campus.geely.com", source: "https://cug.91wllm.cn/campus/view/id/1001345" },
+  { company: "度小满", date: "2026-08-17", roles: "产品经理（含AI应用方向）、算法、风控、专业类", note: "度小满2027届校园招聘8月17日起网申，面向2026.9-2027.8毕业生，base北京/上海；百度系金融科技公司（非银行）", portal: "https://www.wondercv.com/xiaozhao/duxiaoman-2027-campus-recruitment-12579-2f41c5/", source: "http://job.bit.edu.cn/frontpage/bit/html/recruitmentinfoForm.html?positionDetailId=9ad144d67f084f2a8e879bfb8ede38b4&" },
+  { company: "宁德时代", date: "2026-08-18", roles: "研发/计算机与AI、市场、供应链与运营、质量管理、职能类", note: "宁德时代2027届全球校招8月18日启动，面向2026.7-2027.12毕业；另设2027博士专项", portal: "https://catl.zhiye.com", source: "http://career.csu.edu.cn/job/view/id/1189851" },
+  { company: "万达", date: "2026-08-19", roles: "2027届管培生：招商、营运、市场、工程、人力、采购、财务；另设「万新生」专项", note: "珠海万达商管2027届管培生8月19日起在就业平台发布（7-12K、全国多地），面向27届本科、专业不限；投递走「万达招聘」官方渠道", portal: "https://m.yingjiesheng.com/job-008-052-240.html", source: "http://jobs.gzu.edu.cn/detail/job?id=3227119&career_id=694411" },
+  { company: "理想汽车", date: "2026-08-20", roles: "产品、运营、市场、技术等（含智能驾驶/用户体验相关方向，以官网职位为准）", note: "理想汽车2027届校园招聘8月20日正式启动，网申即日起、笔试8月下旬起，面向2026.9-2027.8毕业生", portal: "https://www.lixiang.com/employ/campus.html", source: "https://career.buaa.edu.cn/frontpage/buaa/html/recruitmentinfoForm.html?positionDetailId=4a7dbf001dd04d48a47e3391b83ee7f5&" },
+  { company: "零跑", date: "2026-08-22", roles: "算法/软件/硬件等研发先行；全序列含设计、营销、供应链、IT、职能类", note: "零跑汽车2027届校招8月22日研发批启动、9月1日全面启动（300+岗位/1500+offer），每人3次投递机会", portal: "https://leapmotor.zhiye.com/campus", source: "https://job.lzu.edu.cn/html/74/article/2026/91138.html" },
+  { company: "比亚迪", date: "2026-08-23", roles: "以研发/工程为主，含市场营销、供应链、职能等方向（产品/运营岗以官网为准）", note: "比亚迪2027届秋季校招简章8月23日发布（8/19起分批），面向27届全球本硕博；投递走job.byd.com或「比亚迪招聘」公众号", portal: "https://job.byd.com", source: "https://cug.91wllm.cn/campus/view/id/1001669" },
+  { company: "科沃斯", date: "2026-08-23", roles: "电商运营（国内/海外平台）、全球销售（KA/区域/渠道）、研发类等", note: "科沃斯机器人2027届校招8月23日启动（国家24365平台发布），电商运营base苏州，含添可等子品牌", portal: "https://employment.jiangsu.smartedu.cn/recruitment/jobDetails?zpgwid=1000000000733077&dwid=691294", source: "https://cumt.ncss.cn/student/jobs/TqPtTrueXVffzukBXW4PxW/detail.html" },
+  { company: "齐鲁制药", date: "2026-08-24", roles: "研发、生产技术、质量、营销/学术推广、职能等", note: "齐鲁制药2027届校招8月24日起各校发布，流程网申-筛选-在线测评-邀约面试-录用", portal: "https://qilu-pharma.zhiye.com/campus", source: "https://jobsdufe.sdbys.com/campus/view/id/754067" },
+  { company: "三星（中国）", date: "2026-08-24", roles: "市场/运营类、职能类、研发、技术工程师（北京/天津/西安/苏州/东莞）", note: "中国三星2027届校招8月24日正式启动，网申8月-10月中旬、笔试10月下旬；研发+市场/运营四类岗位", portal: "https://campus.niuqizp.com/schedule-7Y8sN5anz.html", source: "https://www.techritual.com/2026/08/24/575886/" },
+  { company: "粉笔", date: "2026-08-24", roles: "综合运营、教务、课程顾问、公考讲师（分校岗位；总部产品/运营以官网为准）", note: "粉笔2027校园招聘简章8月24日起发布（各地分校综合运营岗8/25更新），公考培训行业", portal: "https://ahnuwj.ahbys.com/job2.html?jid=12743&cid=25536", source: "https://ahnuwj.ahbys.com/job2.html?jid=12743&cid=25536" },
+  { company: "海尔智家", date: "2026-08-25", roles: "研发/软件/AI算法、海外市场、市场营销、职能、设计、智慧物流等多方向", note: "海尔智家2027届全球校招8月25日启动（未来合伙人），含智领计划/LTDTP等人才项目", portal: "https://maker.haier.net/smart_home", source: "https://jy.xmu.edu.cn/campus/view/id/1002042" },
+  { company: "中通快递", date: "2026-08-25", roles: "「ZTO STAR」蓝天计划（顶尖人才专项）+青鸟项目（区域专项）：产品/运营/职能等", note: "中通快递2027届校招8月25日启动，流程网申-在线测评-无领导-专业面-offer；面向2026.10-2027.9毕业生，base上海", portal: "https://hr.zto.com/campus", source: "https://job.xjtu.edu.cn/frontpage/xjtu/html/recruitmentFairForm.html?id=01b1af729e3c49e3b3207dd28903f9c5&" },
+  { company: "满帮集团", date: "2026-08-25", roles: "产品类、运营类、经营分析类、职能类、业务类（算法/工程另设，含智加科技）", note: "满帮集团2027届校招8月25日启动，面向2026.10-2027.9毕业生；在线笔试+三轮线上面试", portal: "https://campus.fulltruckalliance.com", source: "https://career.buct.edu.cn/Zhaopin/xiaozhao.html?type=1&id=3fac2b66-1202-ee33-2b17-012c4f8f38e7" },
+  { company: "极兔速递", date: "2026-08-25", roles: "集团/中国区管培生（人力、运力、后端开发等方向；含新加坡27届管培通道）", note: "极兔速递27届管培通道8月下旬起开放（官方飞书校招页），各职能管培岗位分批上线", portal: "https://jtexpress.jobs.feishu.cn", source: "https://www.zhaopin.com/jobdetail/CCL1249659910J40871686711.htm" },
+  { company: "传音控股", date: "2026-08-25", roles: "产品类、运营类、市场营销类、设计、供应链、综合职能、研发/算法（雏鹰计划）", note: "传音控股2027届全球校招8月下旬启动（雏鹰计划；8/31起各校集中发布），面向2026.8-2027.7毕业生；TAIG-AI顶尖人才计划同步", portal: "https://jy.scu.edu.cn/index/index/employdetail.html?data=MDAwMDAwMDAwMJG6n3_Ed6imi4qQtLh5eZuKubayyGHRp7ugzc-GnZ2skMx9ZMN4gtKLipCwxKF0lZC5sq-0gqJv", source: "https://job.nwpu.edu.cn/frontpage/nwpu/html/recruitmentFairForm.html?id=5e56d9b58e374576bd89c80a7a5d9f2e&" },
+  { company: "蔚来", date: "2026-08-26", roles: "产品/运营、市场、职能、技术等（含用户运营/数字产品方向，以官网为准）", note: "蔚来2027届秋季校招8月26日起发布（网申8/27-10/26），另有Super Sparks技术专项/AGI超星计划", portal: "https://campus.nio.com", source: "https://campus.niuqizp.com/job-vrr5aNLMa.html" },
+  { company: "大华股份", date: "2026-08-26", roles: "海外市场营销管培生、产品类（AI产品等以官网为准）、研发/算法等10类岗位", note: "大华股份2027届校招8月26日正式启动，海外营销中心校招9/3-10/1；投递走job.dahuatech.com或公众号", portal: "https://job.dahuatech.com", source: "https://www.chaojijianli.com/xiaozhao/dahua-2027-campus-recruitment-13449-03b1cd/" },
+  { company: "九阳股份", date: "2026-08-27", roles: "产品管理岗、品牌营销管培生、渠道营销、销售经理、媒介专员等营销类", note: "九阳股份2027届秋季校招8月27日起分批上线（品牌营销管培8/28发布、总简章9/1），base杭州", portal: "https://m.yingjiesheng.com/job-008-041-966.html", source: "http://hbcnc.ahbys.com/job2.html?jid=18269&cid=9742" },
+  { company: "得力集团", date: "2026-08-27", roles: "产品企划管培生（国内）、产品管培生、大客户营销、研发技术管培等", note: "得力集团2027届校招8月27日起发布（宣讲会9-10月），产品管培/营销管培base宁波", portal: "https://jyzx.zuel.edu.cn/home/career/preachmore?id=6504", source: "https://jy.scu.edu.cn/index/index/employdetail.html?data=MDAwMDAwMDAwMJG6n3_Ed6imi4qQtLh5eZqKlLauyGHRp7ugzc-GnZ2skMx9ZMN4gtKLipCwxKF0lZC5sq-0gqJv" },
+  { company: "美的集团", date: "2026-08-31", roles: "国内营销、海外营销、供应链物流、管理类等八大职类", note: "美的集团2027届校招8月31日官宣启动（8/26起各校发布），面向海内外27届；管理/营销类适合投递", portal: "https://careers.midea.com/", source: "https://career.sysu.edu.cn/campus/view/id/996738" },
+  { company: "康师傅", date: "2026-08-31", roles: "销售/市场类储备（业务代表、品牌/渠道等，岗位分批上线）", note: "康师傅2027届校招8月31日官宣启动（9/3起各校转发），网申至10月底；销售/市场/电商向岗位适合投递", portal: "https://wecruit.hotjob.cn/SU691abf70e3842960d1989b29/pb/school.html", source: "https://career.cuhk.edu.cn/job/view/id/469212" },
+  { company: "奥克斯", date: "2026-08-31", roles: "国内外营销、职能制造、技术研发（营销140人、职能制造100人等，共400人）", note: "奥克斯集团2027届秋季招聘8月31日发布（8/27宣讲会先行），网申即日起-10/31，base宁波等", portal: "https://jxdxsjy.jx.edu.cn/nchu/campus/view/id/985179", source: "https://job.xjtu.edu.cn/frontpage/xjtu/html/recruitmentFairForm.html?id=84273adc254f42c8ba76eba6bca5c1f9&" },
+  { company: "迈瑞医疗", date: "2026-09-01", roles: "27届全球校招：营销/用服、供应链、职能等综合类（研发/算法另设）", note: "迈瑞医疗2027届校招9月1日正式启动，流程网申-综合测评-专业面试-综合面试-offer", portal: "https://career.csu.edu.cn/campus/view/id/589111", source: "https://job.xjtu.edu.cn/frontpage/xjtu/html/recruitmentFairForm.html?id=4c5f5fd652444a72b93a728703fbb9e1&" },
+  { company: "泰康之家", date: "2026-09-01", roles: "养老社区运营类：文娱活动师、生活管家、社工、运动指导师、护士等；另有校招管培储备", note: "泰康之家2027年全球校园招聘9月1日发布（泰康保险集团旗下医养社区），面向27届本科及以上、全国多城；关注「泰康之家招聘」公众号", portal: "https://career.csu.edu.cn/campus/view/id/589138", source: "https://career.bnu.edu.cn/frontpage/bnu/html/recruitmentFairForm.html?id=d5c9a16d03b248e5b325728eb657ca79&" },
+  { company: "洽洽食品", date: "2026-09-01", roles: "营销类管培、市场/运营、销售类、供应链及职能中后台管培", note: "洽洽食品2027届校招9月1日启动（网申即日起至2027/6/30），base合肥及全国/海外", portal: "https://campus.niuqizp.com/schedule-7swYNNatN.html", source: "https://campus.niuqizp.com/schedule-7rmUNt55a.html" },
+  { company: "赛力斯", date: "2026-09-01", roles: "集团27届秋招双通道（正式校招岗+实习留用）：营销/供应链/职能等（具体以官网为准）", note: "赛力斯集团2027届秋季校招9月初启动（9/1-9/3校方发布宣讲/简章）；投递走「赛力斯集团微招聘」公众号", portal: "https://swu.cqbys.com/campus/view/id/733887", source: "http://career.bit.edu.cn/frontpage/bit/html/recruitmentFairForm.html?id=37b6288d8e97411cb0ca279cdac1f163&" },
+  { company: "爱尔眼科", date: "2026-09-01", roles: "眼科/视光医生为主，部分区域含视光运营/职能岗（以各医院招聘为准）", note: "爱尔眼科27年校招9月1日-9月29日排期，覆盖全国多省市", portal: "https://jobs.niuqizp.com/schedule-7rrmNNzML.html", source: "https://m.yingjiesheng.com/xuanjianghui/xjh_6067690" },
+  { company: "晨光文具（科力普）", date: "2026-09-02", roles: "大客户销售岗、产品经理/主管（B2B办公采购平台，base上海等）", note: "上海晨光科力普2027届校招9月2日启动（晨光文具旗下B2B办公子公司），产品经理岗适合投递", portal: "https://m.yingjiesheng.com/job-008-053-703.html", source: "http://job.bjtu.edu.cn/frontpage/bjtu/html/recruitmentinfoForm.html?positionDetailId=ec06531ad7bb46a59a0dd826304c0a94&" },
+  { company: "云鲸智能", date: "2026-09-02", roles: "产品营销、品牌营销、国内GTM、抖音直播/店铺运营、天猫/京东电商运营、私域渠道运营、新零售营销管培", note: "云鲸智能2027届校招9月2日全面启动（扫地机器人头部企业，深圳/杭州），营销运营岗丰富", portal: "https://careers.narwal.com/campus/jobs", source: "https://deizao.net/m/index/gonggaoxq/nwid/22373" },
+  { company: "海天味业", date: "2026-09-03", roles: "全球营销、设计研发、制造技术、生产运控等（27届）", note: "海天味业2027全球校招9月3日正式启动，线上测评/AI面试9月上旬起、线下面试9月下旬；base佛山等", portal: "https://food.nwsuaf.edu.cn/zhdt/jyxx/d3f3be3662f3441d921f1f2b6e3a2772.htm", source: "https://career.cuhk.edu.cn/job/view/id/469253" },
+  { company: "广联达", date: "2026-09-03", roles: "2027 TOT产研序列：产品需求、AI算法、开发/测试等（另含产品销售工程师）", note: "广联达2027届TOT产研全球校招9月3日启动（campus.glodon.com），面向2026.9-2027.8毕业生", portal: "https://campus.glodon.com", source: "https://campus.niuqizp.com/schedule-7lmyNtLLL.html" },
+  { company: "药明康德", date: "2026-09-15", roles: "化学/生物/分析等研发类为主；职能与运营支持类以官网为准", note: "药明康德2027校园招聘网申9月15日-12月31日（每人3次投递机会），9月下旬起线上面试；产品/运营岗较少", portal: "https://wuxiapptec.zhiye.com/campus/jobs", source: "https://jy.xmu.edu.cn/job/view/id/2398800" },
+  { company: "搜狐畅游", date: "2026-07-27", roles: "游戏策划（系统/数值/文案/关卡）、游戏运营、产品经理、AI产品经理、市场发行、项目管理等", note: "搜狐旗下游戏公司，2027秋招提前批7月27日-8月10日、正式批8月11日开启全量岗位；策划/产品/运营方向适合投递", portal: "https://campus.changyou.com", source: "https://job.lzu.edu.cn/html/74/article/2026/90452.html" },
+  { company: "盛趣游戏", date: "2026-08-03", roles: "游戏策划（系统/战斗/文案/关卡）、游戏用户研究、制作人培训生、项目管理、综合管理（运营岗以官网为准）", note: "世纪华通旗下游戏公司，2027秋招8月3日全平台网申开启（内推至11月30日），base上海总部", portal: "https://app.mokahr.com/campus-recruitment/shengqu/96336", source: "https://campus.niuqizp.com/job-vYy5aL5z5.html" },
+  { company: "灵犀互娱", date: "2026-08-05", roles: "AI产品经理、产品经理、产品运营、AI搜索运营、游戏运营、游戏营销、游戏策划、项目管理等", note: "阿里巴巴旗下游戏公司，2027届秋招8月5日启动，面向海内外27届毕业生，base广州/上海/北京", portal: "https://talent.lingxigames.com/campus/home", source: "https://lzpu.bysjy.com.cn/detail/online?id=3538742" },
+  { company: "淘天集团", date: "2026-08-05", roles: "AI应用产品经理、AIGC产品经理、用户/行业运营、市场营销、数据产品等", note: "阿里巴巴旗下核心电商公司（淘宝/天猫/闲鱼等），2027届校招8月5日正式启动、网申预计12月截止；技术类占比高，产品/运营方向适合投递", portal: "https://talent.taotian.com/campus/home", source: "https://m.sh.bendibao.com/job/308216.html" },
+  { company: "阿里云", date: "2026-08-05", roles: "产品类（AI产品/云计算产品等）、运营类、设计类、数据类、销售类（另含研发/算法/安全类）", note: "阿里巴巴旗下云计算公司，2027届应届生招聘8月5日随阿里集团启动（面向2026.11-2027.10毕业）；投递在阿里巴巴校招官网选择阿里云", portal: "https://talent.alibaba.com/campus", source: "https://lzpu.bysjy.com.cn/detail/online?id=3538795" },
+  { company: "菜鸟集团", date: "2026-08-05", roles: "产品、运营、物流运营/供应链、市场、算法、研发等", note: "阿里巴巴旗下智慧物流公司，2027届应届生招聘8月5日启动（面向2026.11-2027.10毕业的27届）；投递在阿里巴巴校招官网选择菜鸟", portal: "https://talent.alibaba.com/campus", source: "https://campus.niuqizp.com/job-vsm5aNZzn.html" },
+  { company: "阿里健康", date: "2026-08-05", roles: "产品、运营（天猫健康/医药电商平台）、市场营销、商务拓展等（岗位以官网为准）", note: "阿里巴巴旗下数字医疗公司（香港上市），2027届应届生招聘8月5日随阿里集团启动；careers.alihealth.cn有独立校招页", portal: "https://careers.alihealth.cn/campus/home", source: "https://www.163.com/dy/article/L3VPM80U0512B07B.html" },
+  { company: "FILA（斐乐）", date: "2026-08-09", roles: "「斐凡生」管培：零售运营/店铺经营、商品、陈列、培训、直播运营等方向", note: "安踏集团旗下FILA品牌27届校招提前批8月9日启动（362个offer、覆盖26类岗位方向）；适合零售运营/市场方向", portal: "https://app.mokahr.com/su/uIZHU", source: "https://www.chaojijianli.com/xiaozhao/autumn-recruit-fila-early-batch-12370-b827f2/" },
+  { company: "京东物流（新锐之星）", date: "2026-08-17", roles: "新锐之星培养项目：物流储备/基层管理、运营、销售、客服、品控、业务支持等方向", note: "京东2027新锐之星校招8月17日启动，面向27届专科/本科/硕士；在京东校招官网选择新锐之星项目投递", portal: "https://campus.jd.com", source: "https://www.163.com/dy/article/L4IDFDLV0534P59R.html" },
+  { company: "网易雷火", date: "2026-08-24", roles: "游戏策划（数值/战斗/关卡/文案等）、产品经理、用户增长产品策划、游戏/用户运营、品牌营销、项目管理等", note: "网易游戏雷火2027届秋季校园招聘8月24日发布公告；面向2027届，与网易互娱独立网申、可同时投递", portal: "https://leihuo.163.com/campus/", source: "http://job.hust.edu.cn/zpinfo1/2407465.htm" },
+  { company: "网易云音乐", date: "2026-08-24", roles: "产品（商业化产品/中后台产品）、产品运营、广告行业运营、内容拓展、音乐推广、技术/AI等", note: "「乐有引力」2027届校招8月24日启动、网申招满即止，base杭州/北京/广州；在网易校招官网选择音乐事业部投递", portal: "https://campus.163.com", source: "https://campus.niuqizp.com/job-vkr5a5Zat.html" },
+  { company: "网易有道", date: "2026-08-31", roles: "研发类、算法类（AI/大模型方向）、市场类、教育类为主，产品/运营岗以官网为准", note: "网易旗下智能学习公司，2027秋季校招网申8月31日开放、招满即止（面向2026.9-2027.8毕业）；在网易校招官网选择网易有道投递", portal: "https://campus.163.com", source: "https://campus.niuqizp.com/schedule-7lwyNNL5t.html" },
+];
+
+const STATUSES = ["已投递", "笔试", "AI面试", "面试", "流程结束"];
+const STAGE_CLASS = { "已投递": "st1", "笔试": "st2", "AI面试": "st3", "面试": "st4", "流程结束": "st5" };
+const LEGACY_KEY = "qiuzhao2027_progress_v1";
+const STORAGE_KEY = "qiuzhao2027_progress_v2";
+const PAGE_REVISION = "20260905-a";
+
+// 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
+const DIRS = [
+  ["AI产品", ["AI产品", "AIGC产品", "AI应用产品", "AI技术产品", "人工智能产品", "大模型产品"]],
+  ["产品经理", ["产品经理", "PM", "产品岗", "产品类", "产品方向", "产品策划", "中后台产品", "商业化产品"]],
+  ["产品运营", ["产品运营"]],
+  ["运营", ["运营", "用户增长", "内容运营", "用户运营", "活动运营"]],
+  ["市场/品牌", ["市场", "营销", "品牌", "公关", "广告"]],
+  ["销售/商务", ["销售", "商务", "BD", "拓展"]],
+  ["游戏策划", ["游戏策划", "虚拟世界", "游戏方向", "制作人", "游戏行业"]],
+  ["电商/零售", ["电商", "零售", "门店", "新零售", "直播", "天猫", "京东自营"]],
+  ["数据/分析", ["数据分析", "商业分析", "经营分析", "策略", "数据产品", "用户研究"]],
+  ["供应链/物流", ["供应链", "物流", "仓储", "采购", "配送"]],
+  ["管培/综合", ["管培", "管理培训生", "综合管理", "项目管理", "职能"]],
+  ["研发/技术", ["研发", "算法", "开发", "技术", "工程"]],
+];
+
+function todayStr() {
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+
+// 把任意格式的进度记录归一化为 {stage, dates, updatedAt}
+function coerceRec(v) {
+  if (!v) return null;
+  if (typeof v === "string") {
+    if (!STATUSES.includes(v)) return null;
+    return { stage: v, dates: { [v]: todayStr() }, updatedAt: todayStr() };
+  }
+  if (typeof v !== "object") return null;
+  const dates = {};
+  if (v.dates && typeof v.dates === "object") {
+    STATUSES.forEach((st) => { if (typeof v.dates[st] === "string" && v.dates[st]) dates[st] = v.dates[st]; });
+  }
+  return {
+    stage: STATUSES.includes(v.stage) ? v.stage : "",
+    dates,
+    updatedAt: typeof v.updatedAt === "string" ? v.updatedAt : "",
+  };
+}
+
+function normRec(company) {
+  const rec = coerceRec(progress[company]);
+  return rec || { stage: "", dates: {}, updatedAt: "" };
+}
+
+function stageOf(company) {
+  return normRec(company).stage;
+}
+
+function saveProgress() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+function loadProgress() {
+  let parsed = {};
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try { parsed = JSON.parse(raw); } catch (e) { parsed = {}; }
+  } else {
+    // 迁移旧版（仅存当前状态的字符串）到带日期的结构
+    try {
+      const old = JSON.parse(localStorage.getItem(LEGACY_KEY) || "{}");
+      for (const c of Object.keys(old)) {
+        const rec = coerceRec(old[c]);
+        if (rec && rec.stage) parsed[c] = rec;
+      }
+    } catch (e) { parsed = {}; }
+  }
+  progress = parsed;
+}
+const CAT = {
+  "字节跳动": "大厂", "腾讯": "大厂", "阿里巴巴": "大厂", "百度": "大厂", "美团": "大厂", "京东": "大厂",
+  "网易": "大厂", "网易游戏（互娱）": "大厂", "快手": "大厂", "华为": "大厂", "小米": "大厂", "拼多多": "大厂",
+  "蚂蚁集团": "大厂", "携程": "大厂", "哔哩哔哩": "大厂", "滴滴": "大厂", "OPPO": "大厂", "vivo": "大厂",
+  "联想": "大厂", "科大讯飞": "大厂", "大疆": "大厂",
+  "得物": "中厂", "小红书": "中厂", "唯品会": "中厂", "米哈游": "中厂", "360": "中厂", "知乎": "中厂",
+  "微博（新浪集团）": "中厂", "搜狐集团": "中厂", "完美世界": "中厂", "作业帮": "中厂", "货拉拉": "中厂",
+  "去哪儿旅行": "中厂", "叠纸游戏": "中厂", "莉莉丝游戏": "中厂", "腾讯音乐": "中厂", "禾赛科技": "中厂",
+  "影石Insta360": "中厂", "安克创新": "中厂", "万兴科技": "中厂", "名创优品": "中厂", "韶音科技": "中厂",
+  "鹰角网络": "中厂", "库洛游戏": "中厂", "小马智行": "中厂",
+  "智谱AI": "AI中厂", "MiniMax": "AI中厂", "DeepSeek": "AI中厂", "商汤科技": "AI中厂", "月之暗面（Kimi）": "AI中厂",
+  "阶跃星辰": "AI中厂", "地平线": "AI中厂",
+  "宇树科技": "小厂", "智元机器人": "小厂", "面壁智能": "小厂", "元戎启行": "小厂",
+  "蓝月亮": "快消", "可口可乐饮料": "快消", "农夫山泉": "快消", "元气森林": "快消", "伊利": "快消",
+  "卫龙": "快消", "蒙牛": "快消", "联合利华（UFLP）": "快消", "欧莱雅": "快消",
+  "雅诗兰黛": "快消", "宝洁": "快消", "雀巢": "快消", "金佰利": "快消", "玛氏": "快消", "高露洁": "快消",
+  "Babycare": "快消", "全棉时代（Purcotton）": "快消", "恒安集团": "快消", "认养一头牛": "快消",
+  "平安人寿（中国平安）": "大厂", "顺丰集团（顺丰科技）": "大厂", "贝壳找房": "大厂", "中兴通讯": "大厂",
+  "海康威视": "大厂", "用友": "大厂", "恒生电子": "大厂",
+  "东方财富": "中厂", "世纪华通": "中厂", "BOSS直聘": "中厂", "哈啰": "中厂", "三七互娱": "中厂",
+  "好未来（学而思）": "中厂", "心动（TapTap）": "中厂", "58同城": "中厂", "虎牙": "中厂", "途虎养车": "中厂",
+  "昆仑万维": "中厂", "诗悦网络": "中厂", "途游游戏": "中厂", "紫龙游戏": "中厂",
+  "百川智能": "AI中厂", "优必选": "AI中厂",
+  "银河通用机器人": "小厂", "深蓝互动": "小厂",
+  "蜜雪冰城": "餐饮茶饮", "老乡鸡": "餐饮茶饮",
+  "安踏集团": "服装服饰", "迪桑特（中国）": "服装服饰", "优衣库（迅销中国）": "服装服饰", "特步集团": "服装服饰",
+  "森马服饰": "服装服饰", "波司登": "服装服饰", "迪卡侬": "服装服饰", "SHEIN（希音）": "服装服饰", "阿迪达斯（adidas）": "服装服饰",
+  "斯凯奇中国": "服装服饰", "雅戈尔": "服装服饰", "爱慕股份": "服装服饰", "申洲集团": "服装服饰", "Inditex（ZARA等）": "服装服饰", "九牧王": "服装服饰", "江南布衣": "服装服饰",
+  "龙湖集团": "房地产", "链家": "房地产", "万达": "房地产",
+  "度小满": "金融", "泰康之家": "金融",
+  "小鹏汽车": "汽车", "理想汽车": "汽车", "比亚迪": "汽车", "吉利控股": "汽车", "蔚来": "汽车", "零跑": "汽车", "赛力斯": "汽车",
+  "宁德时代": "能源", "阳光电源": "能源",
+  "美的集团": "家电", "海尔智家": "家电", "科沃斯": "家电", "九阳股份": "家电", "苏泊尔": "家电", "方太集团": "家电", "奥克斯": "家电", "云鲸智能": "家电",
+  "迈瑞医疗": "医药", "药明康德": "医药", "齐鲁制药": "医药", "扬子江药业": "医药", "爱尔眼科": "医药",
+  "新东方": "教育", "高途": "教育", "粉笔": "教育",
+  "中通快递": "物流", "满帮集团": "物流", "极兔速递": "物流",
+  "瑞幸咖啡": "餐饮茶饮",
+  "康师傅": "快消", "海天味业": "快消", "洽洽食品": "快消", "晨光文具（科力普）": "快消", "得力集团": "快消",
+  "三星（中国）": "大厂", "传音控股": "大厂", "大华股份": "大厂", "金蝶": "大厂",
+  "文远知行": "AI中厂", "云天励飞": "AI中厂",
+  "4399游戏": "中厂", "深信服": "中厂", "广联达": "中厂",
+  "搜狐畅游": "中厂",
+  "盛趣游戏": "中厂",
+  "灵犀互娱": "中厂",
+  "淘天集团": "大厂",
+  "阿里云": "大厂",
+  "菜鸟集团": "物流",
+  "阿里健康": "医药",
+  "FILA（斐乐）": "服装服饰",
+  "京东物流（新锐之星）": "物流",
+  "网易雷火": "大厂",
+  "网易云音乐": "大厂",
+  "网易有道": "大厂",
+};
+const SCALE_ORDER = ["大厂", "中厂", "AI中厂", "小厂", "快消", "餐饮茶饮", "服装服饰", "房地产", "金融", "汽车", "能源", "家电", "医药", "教育", "物流"];
+
+let progress = {};
+loadProgress();
+
+let state = { q: "", stage: "全部", scale: "全部", dirs: [], sort: "date-asc" };
+
+function countByStage() {
+  const c = { "全部": DATA.length, "未投递": 0, "已投递": 0, "笔试": 0, "AI面试": 0, "面试": 0, "流程结束": 0 };
+  DATA.forEach((d) => {
+    const s = stageOf(d.company);
+    if (!s) c["未投递"]++;
+    else if (c[s] !== undefined) c[s]++;
+  });
+  return c;
+}
+
+function renderStats() {
+  const c = countByStage();
+  const chips = [
+    ["全部", c["全部"], "all", ""],
+    ["未投递", c["未投递"], "s0", "dot s0"],
+    ["已投递", c["已投递"], "s1", "dot s1"],
+    ["笔试", c["笔试"], "s2", "dot s2"],
+    ["AI面试", c["AI面试"], "s3", "dot s3"],
+    ["面试", c["面试"], "s4", "dot s4"],
+    ["流程结束", c["流程结束"], "s5", "dot s5"],
+  ];
+  const stats = document.getElementById("stats");
+  stats.innerHTML = "";
+  chips.forEach(([label, n, key, cls]) => {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "chip " + cls + (state.stage === label ? " active" : "");
+    el.setAttribute("aria-pressed", state.stage === label ? "true" : "false");
+    el.innerHTML = label + " <b>" + n + "</b>";
+    el.addEventListener("click", () => { state.stage = label; render(); });
+    stats.appendChild(el);
+  });
+}
+
+function renderScaleChips() {
+  const c = { "全部": DATA.length };
+  SCALE_ORDER.forEach((s) => { c[s] = DATA.filter((d) => CAT[d.company] === s).length; });
+  const chips = [["全部", c["全部"], "all"], ...SCALE_ORDER.map((s) => [s, c[s], s])];
+  const box = document.getElementById("scaleChips");
+  box.innerHTML = "";
+  chips.forEach(([label, n, key]) => {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "chip" + (state.scale === label ? " active" : "");
+    el.setAttribute("aria-pressed", state.scale === label ? "true" : "false");
+    el.innerHTML = label + " <b>" + n + "</b>";
+    el.addEventListener("click", () => { state.scale = label; render(); });
+    box.appendChild(el);
+  });
+}
+
+function dirText(d) {
+  return (d.company + " " + d.roles + " " + d.note + " " + (CAT[d.company] || "")).toLowerCase();
+}
+function matchDir(d, words) {
+  const text = dirText(d);
+  return words.some((w) => text.includes(w.toLowerCase()));
+}
+function matchesDirs(d) {
+  return state.dirs.every((i) => matchDir(d, DIRS[i][1]));
+}
+
+function renderDirChips() {
+  const box = document.getElementById("dirChips");
+  box.innerHTML = '<span class="chips-label">职业方向：</span>';
+  const mk = (label, n, key, active) => {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "chip" + (active ? " active" : "");
+    el.setAttribute("aria-pressed", active ? "true" : "false");
+    el.innerHTML = label + " <b>" + n + "</b>";
+    el.addEventListener("click", () => {
+      if (key === "all") state.dirs = [];
+      else {
+        state.dirs = state.dirs.includes(key) ? state.dirs.filter((x) => x !== key) : [...state.dirs, key];
+      }
+      render();
+    });
+    box.appendChild(el);
+  };
+  mk("全部", DATA.length, "all", state.dirs.length === 0);
+  DIRS.forEach(([label, words], i) => {
+    mk(label, DATA.filter((d) => matchDir(d, words)).length, i, state.dirs.includes(i));
+  });
+}
+
+function matches(d) {
+  const st = stageOf(d.company);
+  if (state.stage !== "全部") {
+    if (state.stage === "未投递") { if (st) return false; }
+    else if (st !== state.stage) return false;
+  }
+  if (state.scale !== "全部" && CAT[d.company] !== state.scale) return false;
+  if (state.dirs.length && !matchesDirs(d)) return false;
+  if (!state.q) return true;
+  const q = state.q.toLowerCase();
+  return (d.company + d.roles + d.note + d.source + d.portal).toLowerCase().includes(q);
+}
+
+function tlHtml(company, rec) {
+  const reached = STATUSES.filter((st) => rec.dates[st]);
+  if (!reached.length) return '<span class="tl-empty">尚未记录</span>';
+  return '<div class="tl-row">' +
+    reached.map((st, i) =>
+      (i ? '<i class="tl-arrow">→</i>' : "") +
+      '<button type="button" class="tl" data-stage="' + escAttr(st) + '" data-company="' + escAttr(company) + '" title="点击把「' + esc(st) + '」更新为今天">' + esc(st) + " " + esc(rec.dates[st]) + "</button>"
+    ).join("") +
+  "</div>";
+}
+
+function render() {
+  let list = DATA.filter(matches);
+  const [key, dir] = state.sort.split("-");
+  list.sort((a, b) => {
+    let r = 0;
+    if (key === "date") r = a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    else if (key === "company") r = a.company.localeCompare(b.company, "zh");
+    else if (key === "stage") {
+      const av = stageOf(a.company) ? STATUSES.indexOf(stageOf(a.company)) + 1 : 0;
+      const bv = stageOf(b.company) ? STATUSES.indexOf(stageOf(b.company)) + 1 : 0;
+      r = av - bv;
+    }
+    return dir === "desc" ? -r : r;
+  });
+  if (key === "date" && state.sort === "date-desc") { /* handled */ }
+
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+  if (!list.length) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td colspan="9" class="empty">没有符合条件的公司，换个关键词试试</td>';
+    tbody.appendChild(tr);
+  } else {
+    list.forEach((d, i) => {
+      const rec = normRec(d.company);
+      const s = rec.stage;
+      const cls = STAGE_CLASS[s] || "st0";
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td class="num">' + (i + 1) + "</td>" +
+        '<td class="company">' + esc(d.company) + ' <span class="cat-badge cat-' + CAT[d.company] + '">' + CAT[d.company] + "</span></td>" +
+        '<td class="cat-cell">' + CAT[d.company] + "</td>" +
+        '<td class="date">' + d.date + "</td>" +
+        '<td class="roles">' + esc(d.roles) + "</td>" +
+        '<td class="note">' + esc(d.note) + "</td>" +
+        '<td class="links"><a href="' + escAttr(d.portal) + '" target="_blank" rel="noopener">' + esc(d.portal) + "</a></td>" +
+        '<td class="links"><a href="' + escAttr(d.source) + '" target="_blank" rel="noopener">来源</a></td>' +
+        '<td class="stage-cell"><select class="status ' + cls + '" data-company="' + escAttr(d.company) + '" aria-label="' + escAttr(d.company) + ' 投递进度">' +
+          '<option value="">未填写</option>' +
+          STATUSES.map((st) => '<option value="' + st + '"' + (st === s ? " selected" : "") + ">" + st + "</option>").join("") +
+        "</select>" + tlHtml(d.company, rec) + "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+  renderStats();
+  renderScaleChips();
+  renderDirChips();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function escAttr(s) {
+  return esc(s).replace(/'/g, "&#39;");
+}
+
+function setStageRecord(company, value) {
+  const rec = normRec(company);
+  rec.stage = value;
+  rec.dates[value] = todayStr();
+  rec.updatedAt = todayStr();
+  progress[company] = rec;
+  saveProgress();
+  render();
+}
+
+document.getElementById("tbody").addEventListener("change", (e) => {
+  const sel = e.target.closest("select.status");
+  if (!sel) return;
+  const company = sel.dataset.company;
+  const value = sel.value;
+  const rec = normRec(company);
+  const hasRecord = rec.stage || STATUSES.some((st) => rec.dates[st]);
+  if (!value) {
+    if (hasRecord && !confirm("确定清空「" + company + "」的投递进度和日期记录吗？")) {
+      sel.value = rec.stage;
+      return;
+    }
+    delete progress[company];
+    saveProgress();
+    render();
+    return;
+  }
+  setStageRecord(company, value);
+});
+
+document.getElementById("tbody").addEventListener("click", (e) => {
+  const btn = e.target.closest("button.tl");
+  if (!btn) return;
+  const company = btn.dataset.company;
+  const st = btn.dataset.stage;
+  if (!company || !st || !STATUSES.includes(st)) return;
+  const rec = normRec(company);
+  const curIdx = rec.stage ? STATUSES.indexOf(rec.stage) : -1;
+  const nextIdx = STATUSES.indexOf(st);
+  // 点历史环节只更新该环节日期，不回退当前进度
+  rec.stage = nextIdx >= curIdx ? st : rec.stage;
+  rec.dates[st] = todayStr();
+  rec.updatedAt = todayStr();
+  progress[company] = rec;
+  saveProgress();
+  render();
+});
+
+document.getElementById("q").addEventListener("input", (e) => {
+  state.q = e.target.value.trim();
+  render();
+});
+
+document.getElementById("sort").addEventListener("change", (e) => {
+  state.sort = e.target.value;
+  render();
+});
+
+document.getElementById("export").addEventListener("click", () => {
+  const head = ["序号", "公司", "公司分类", "开启秋招时间", "相关岗位（产品/AI产品/运营方向）", "备注", "投递入口", "信息来源", "投递进度", "已投递日期", "笔试日期", "AI面试日期", "面试日期", "流程结束日期", "最近变更"];
+  const lines = DATA.map((d, i) => [
+    i + 1, d.company, CAT[d.company], d.date, d.roles, d.note, d.portal, d.source,
+    (normRec(d.company).stage || "未填写"),
+    ...STATUSES.map((st) => normRec(d.company).dates[st] || ""),
+    normRec(d.company).updatedAt || "",
+  ]);
+  const csv = [head, ...lines]
+    .map((row) => row.map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(","))
+    .join("\r\n");
+  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "2027届秋招投递进度.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById("backup").addEventListener("click", (e) => {
+  e.preventDefault();
+  const blob = new Blob([JSON.stringify(progress, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "qiuzhao-progress.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById("restore").addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("restoreFile").click();
+});
+document.getElementById("restoreFile").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      DATA.forEach((d) => {
+        const rec = coerceRec(data[d.company]);
+        if (rec && (rec.stage || STATUSES.some((st) => rec.dates[st]))) progress[d.company] = rec;
+      });
+      saveProgress();
+      render();
+      alert("进度已恢复");
+    } catch (err) {
+      alert("文件格式不正确，请选择备份的 JSON 文件");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+const updateTip = document.getElementById("updateTip");
+let tipTimer = null;
+function showTip(msg, cls) {
+  clearTimeout(tipTimer);
+  updateTip.textContent = msg;
+  updateTip.className = "update-tip " + (cls || "");
+  if (cls) tipTimer = setTimeout(() => { updateTip.textContent = ""; updateTip.className = "update-tip"; }, 8000);
+}
+
+async function checkUpdate(manual) {
+  try {
+    const res = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("bad status");
+    const meta = await res.json();
+    if (meta.rev && meta.rev !== PAGE_REVISION) {
+      showTip("检测到新版数据（" + meta.rev + "，更新于 " + (meta.updated || "") + "）：请刷新页面获取最新公司列表。", "warn");
+    } else if (manual) {
+      showTip("已是最新版本：" + (meta.updated || "") + "，收录 " + (meta.count || DATA.length) + " 家。", "ok");
+    }
+  } catch (e) {
+    if (manual) showTip("无法联网检查（本地文件模式或网络异常），直接刷新页面即可。", "");
+  }
+}
+document.getElementById("checkUpdate").addEventListener("click", () => checkUpdate(true));
+
+render();
+setTimeout(() => checkUpdate(false), 1500);
+</script>
+</body>
+</html>
