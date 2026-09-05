@@ -109,6 +109,7 @@
   .cat-AI中厂 { background: #fae8ff; color: #86198f; }
   .cat-小厂 { background: #fef3c7; color: #92400e; }
   .cat-快消 { background: #fce7f3; color: #9d174d; }
+  .cat-化妆品 { background: #fdf2f8; color: #be185d; }
   .cat-餐饮茶饮 { background: #ccfbf1; color: #0f766e; }
   .cat-服装服饰 { background: #ecfccb; color: #3f6212; }
   .cat-房地产 { background: #d1fae5; color: #065f46; }
@@ -183,7 +184,7 @@
 <div class="page">
   <header class="hero">
     <h1>2027届秋招信息汇总（含国央企 · 支持自定义岗位方向）</h1>
-    <p>数据截至 2026-09-05 ｜ 收录 257 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+    <p>数据截至 2026-09-05 ｜ 收录 272 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 化妆品 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
   </header>
 
   <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
@@ -446,7 +447,7 @@ const DATA = [
   { company: "中国邮政集团", date: "2026-09-01", roles: "邮政业务/寄递物流/电商等板块及财务、人力等职能岗位（以各单位岗位为准）", note: "2027年度联合校园招聘公告9月初发布，简历接收至10月31日（邮储银行另设通道，本表不收录银行）", portal: "https://chinapost2027.zhaopin.com", source: "https://job.bupt.edu.cn/frontpage/bupt/html/recruitmentFairForm.html?id=deca391e3bcd45ac9f3e4ce7624d319f" },
   { company: "中国华电集团（浙江公司等）", date: "2026-09-04", roles: "电力生产运行/检修维护/工程建设等为主（电气、能动、水利、土木等专业；职能管理岗以各单位公告为准）", note: "浙江公司等2027校园招聘公告9月4日发布（9月下旬宣讲）；集团级网申入口已启用", portal: "https://hd2027.iguopin.com", source: "http://job.hust.edu.cn/zpinfo1/2411999.htm" },
   { company: "中国大唐集团（科研总院等）", date: "2026-09-01", roles: "电力试验研究、能源技术研发、工程检测等技术岗为主（职能/管理岗位以各院公告为准）", note: "大唐科研总院2027年度校招公告9月初发布，西北/华北/华东等研究院分区域招聘", portal: "https://zhaopin.china-cdt.com", source: "https://xsjy.whu.edu.cn/frontpage/whu/html/recruitmentFairForm.html?id=274c50272af74c21a6c9ef279e8341ec" },
-  { company: "华润万象商业（华润置地旗下）", date: "2026-09-02", roles: "招商运营岗、营运岗、推广岗、客户关系岗、写字楼招商运营、商业物业岗、人力资源岗、财务会计岗", note: "华润万象商业2027届秋季校招已启动（百匠新人/万象生，300人），流程含AI面试", portal: "https://app.mokahr.com/campus-recruitment/crland/168540?locale=zh-CN", source: "https://career.nankai.edu.cn/correcruit/content/id/117603.html" },
+  { company: "华润置地（百匠新人/万象生）", date: "2026-08-27", roles: "百匠新人：投资管理、营销管理/策划、社群运营、平面设计、人力资源、财务会计、工程成本、招商运营等；万象生：招商营运/推广/客户关系等", note: "2027届秋季校招8月底启动（百匠新人8/27岗位先行、万象生活商业航道简章9/2发布，共300人），流程含AI面试", portal: "https://app.mokahr.com/campus-recruitment/crland/168540?locale=zh-CN", source: "https://career.nankai.edu.cn/correcruit/content/id/117603.html" },
   { company: "中国建筑（中建八局西南等）", date: "2026-08-24", roles: "施工/技术/安全/商务等工程类 + 职能管理类（会计学、财务管理、人力资源管理、行政管理、法学等）", note: "中建八局西南公司2027届「新砼人」校招8月下旬发布；中建集团统一校招平台可查更多局/公司", portal: "https://cscec.zhiye.com", source: "https://jy.xmu.edu.cn/campus/view/id/1002019" },
   { company: "中交集团", date: "2026-09-02", roles: "土木/交通/铁道/港口/电气/测绘/计算机/人工智能等专业岗位（子企业职能与财务岗以官网为准）", note: "2027届全球校园招聘9月初正式启动（全交通/全城市/全水域/全绿色/全数字）", portal: "https://zhaopin.ccccltd.cn", source: "https://www.sohu.com/a/1071287298_121124005" },
   { company: "中国能建", date: "2026-09-02", roles: "能源电力设计、工程建设、数字化/新能源等岗位（管理/职能类岗位以各企业官网为准）", note: "2027届全球校园招聘9月初启动，简历投递2026年9月-2027年6月", portal: "https://ceec.iguopin.com", source: "https://jyzd.ucass.edu.cn/frontpage/ucass/html/recruitmentinfoForm.html?positionDetailId=b6c72b2e5e4f42069f12fda091a70618" },
@@ -500,26 +501,41 @@ const DATA = [
   { company: "温氏股份", date: "2026-08-06", roles: "养殖/研发/营销/职能等岗位（以官方公告为准）", note: "农牧食品龙头2027届校园招聘正式启动", portal: "https://mp.weixin.qq.com/s/4r82YEfMv3ADYDAili-30w", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
   { company: "寒武纪", date: "2026-08-06", roles: "AI芯片/软件栈等岗位（以官方公告为准）", note: "AI芯片公司2027届校园招聘正式启动", portal: "https://mp.weixin.qq.com/s/rzDD_1biYq8hZNDm8rWklg", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
   { company: "泉峰科技", date: "2026-08-06", roles: "研发/制造/职能等岗位（以官方公告为准）", note: "电动工具制造商2027届校园招聘全面启航", portal: "https://mp.weixin.qq.com/s/brvPEXLPrDXRxACQjzA4rA", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "阿里国际（阿里巴巴旗下）", date: "2026-08-06", roles: "跨境贸易/产品/运营/技术等岗位（官网选择阿里国际）", note: "阿里旗下国际数字商业板块2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "淘宝闪购（阿里巴巴旗下）", date: "2026-08-06", roles: "电商产品/运营/技术等岗位（官网选择淘宝闪购）", note: "阿里旗下即时零售业务2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "千问事业部（阿里巴巴旗下）", date: "2026-08-06", roles: "大模型AI产品/算法/工程等岗位（官网选择千问事业部）", note: "阿里旗下通义千问事业群2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "千问办公（阿里巴巴旗下）", date: "2026-08-06", roles: "AI办公产品/运营/技术等岗位（官网选择千问办公）", note: "阿里旗下AI办公业务2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "平头哥（阿里巴巴旗下）", date: "2026-08-06", roles: "芯片/AI等岗位（官网选择平头哥）", note: "阿里旗下半导体业务2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "飞猪（阿里巴巴旗下）", date: "2026-08-06", roles: "旅行平台产品/运营/技术等岗位（官网选择飞猪）", note: "阿里旗下旅行平台2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "虎鲸文娱（阿里巴巴旗下）", date: "2026-08-06", roles: "文娱内容/运营/技术等岗位（官网选择虎鲸文娱）", note: "阿里旗下文娱业务2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "高德地图（阿里巴巴旗下）", date: "2026-08-06", roles: "地图产品/数据/算法/研发等岗位（官网选择高德地图）", note: "阿里旗下出行与位置服务业务2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
-  { company: "盒马（阿里巴巴旗下）", date: "2026-08-06", roles: "零售运营/商品/产品/供应链/门店等新零售方向岗位（官网选择盒马）", note: "阿里旗下新零售业务2027届招聘启动；在阿里巴巴校招官网投递", portal: "https://talent.alibaba.com/campus", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
+  { company: "阿里国际（阿里巴巴旗下）", date: "2026-08-06", roles: "跨境贸易/产品/运营/技术等岗位（2027届应届生+Bravo Star顶尖人才计划）", note: "阿里旗下国际数字商业板块2027届招聘启动；直达独立校招官网投递", portal: "https://aidc-jobs.alibaba.com/campus/home?lang=zh", source: "https://career.nankai.edu.cn/correcruit/content/id/116694.html" },
+  { company: "淘宝闪购（阿里巴巴旗下）", date: "2026-08-06", roles: "电商产品/运营/技术等岗位（AI全链路岗位）", note: "阿里旗下即时零售（原饿了么，2025年12月起更名淘宝闪购）2027届招聘8月5日启动；直达校招站talent.ele.me，公邮 tbshangou-campus@alibaba-inc.com", portal: "https://talent.ele.me/campus/home?lang=zh ｜ 阿里校招官网（淘宝闪购）：https://campus-talent.alibaba.com/campus/index", source: "http://job.hust.edu.cn/zpinfo1/2407240.htm" },
+  { company: "千问事业部（阿里巴巴旗下）", date: "2026-08-06", roles: "AI产品（千问APP/夸克/UC等C端）、用户运营、算法/研发等岗位", note: "阿里千问C端事业群（千问APP/夸克/AI硬件/UC/书旗）2027届招聘启动；直达 talent.quark.cn，也可在阿里校招官网选择千问事业部", portal: "https://talent.quark.cn/campus/home?lang=zh ｜ 阿里校招官网（千问事业部）：https://campus-talent.alibaba.com/campus/index", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
+  { company: "千问办公（阿里巴巴旗下）", date: "2026-08-06", roles: "AI办公产品/运营/研发等岗位（官网选择千问办公）", note: "阿里旗下AI办公业务2027届招聘启动；在阿里校招官网选千问办公投递", portal: "https://campus-talent.alibaba.com/campus/index", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
+  { company: "平头哥（阿里巴巴旗下）", date: "2026-08-06", roles: "芯片设计/软件/AI等岗位（2027届校招）", note: "阿里旗下半导体公司2027届校招启动；直达平头哥独立校招官网投递", portal: "https://recruitment.t-head.cn/campus/home?lang=zh", source: "https://lzpu.bysjy.com.cn/detail/online?id=3538545" },
+  { company: "飞猪（阿里巴巴旗下）", date: "2026-08-06", roles: "旅行平台产品/运营/技术等岗位（官网选择飞猪）", note: "阿里旗下旅行平台2027届招聘启动；在阿里校招官网选飞猪投递，招聘公邮 zhaopin-fliggy@alibaba-inc.com", portal: "https://campus-talent.alibaba.com/campus/index", source: "https://job.xidian.edu.cn/campus/view/id/755827" },
+  { company: "虎鲸文娱（阿里巴巴旗下）", date: "2026-08-06", roles: "内容/产品/运营/游戏等（优酷+大麦娱乐双方向）", note: "阿里旗下文娱集团（优酷/大麦两大事业群）2027届招聘启动；优酷、大麦分方向直达申请", portal: "优酷方向：https://job.alibabagroup.com/apply/1912250 ｜ 大麦方向：https://job.alibabagroup.com/apply/1912251", source: "https://www.nowcoder.com/feed/main/detail/ae9670015bdb42e48b9bd38774f69187" },
+  { company: "高德地图（阿里巴巴旗下）", date: "2026-08-06", roles: "地图产品/数据/算法/研发等岗位（含高德π天才计划）", note: "阿里旗下位置服务业务2027届招聘8月5日启动；直达高德独立校招官网投递", portal: "https://talent.amap.com/campus/home?lang=zh", source: "https://www.wondercv.com/xiaozhao/gaode-map-2027-campus-recruitment-beijing-hangzhou-12244-65cd17/" },
+  { company: "盒马（阿里巴巴旗下）", date: "2026-08-06", roles: "零售运营/商品/产品/供应链/门店等新零售方向岗位", note: "阿里旗下新零售业务2027届招聘启动；直达盒马独立校招官网投递", portal: "https://hire.freshippo.com/campus/home?lang=zh", source: "http://job.neu.edu.cn/campus/view/id/562478" },
   { company: "中科芯（中国电科58所）", date: "2026-08-03", roles: "集成电路研发/工艺/测试等岗位（以官方公告为准）", note: "中国电科旗下集成电路专业研究所2027届校招正式启动", portal: "https://mp.weixin.qq.com/s/b-i67TQAecXV6Rd-ntKrSg", source: "https://www.nowcoder.com/feed/main/detail/422df46df232477fa3e1a95d6de2f8f6" },
   { company: "MPS芯源系统", date: "2026-08-03", roles: "电源IC设计/应用/市场等岗位（以官方公告为准）", note: "高性能电源IC公司2027届校园招聘正式启动", portal: "https://mp.weixin.qq.com/s/_Jo92Vkrvg3p2DQI2JAciA", source: "https://www.nowcoder.com/feed/main/detail/422df46df232477fa3e1a95d6de2f8f6" },
   { company: "海信集团", date: "2026-08-03", roles: "「信动力计划」研发/制造/营销/职能等岗位（以官方公告为准）", note: "海信集团2027届信动力计划招聘火热进行中", portal: "https://mp.weixin.qq.com/s/OP4JwYsQwnDUKNG6AzKIiw", source: "https://www.nowcoder.com/feed/main/detail/422df46df232477fa3e1a95d6de2f8f6" },
   { company: "中际旭创", date: "2026-08-25", roles: "光模块研发/工程/市场等岗位（以官方公告为准）", note: "光模块龙头2027届全球校园招聘8月下旬正式启动", portal: "https://mp.weixin.qq.com/s/008PjkYoilTZw-Yxt2EEoA", source: "https://www.nowcoder.com/feed/main/detail/422df46df232477fa3e1a95d6de2f8f6" },
+  { company: "巴奴毛肚火锅", date: "2026-08-28", roles: "门店营运管理（店总方向）、总部职能（含财务/人力等）", note: "巴奴“星工场”管培生2027届校招8月28日启动：面向26-27届本科、专业不限，1-3-5-8培养模式（半年升1级）；官网网申+邮箱投递，公众号可查更多信息", portal: "https://cuixinxin344.mikecrm.com/9OHOO7K ｜ 邮箱：bnzp@banu.cn ｜ 公众号：巴奴招聘", source: "https://mobile.tyut.edu.cn/xiaozhao/details.html?id=8c64e9a4-d6e0-7f52-01be-bde6911d4472" },
+  { company: "麦当劳中国", date: "2026-06-11", roles: "菁英管培生（区域管理者/餐厅总经理方向）、门店储备经理", note: "2027届菁英管培生6月起各地陆续开放（智联/前程无忧职位），面向27届本科，培养未来餐厅总经理/区域管理者；秋招以「麦当劳中国招聘」官方渠道为准", portal: "https://www.zhaopin.com/jobdetail/CC000504200J40944257108.htm ｜ https://m.yingjiesheng.com/job-008-015-810.html", source: "https://m.yingjiesheng.com/job-008-015-810.html" },
+  { company: "百胜中国（肯德基/必胜客）", date: "2026-06-24", roles: "餐厅管理培训生（楼面经理/储备经理）、门店实习生（产品/运营岗以总部发布为准）", note: "百胜旗下肯德基/必胜客2027届校招宣讲与岗位6月起开放（长沙/上海等多地），面向27届大专及以上；总部市场/供应链等岗位关注「百胜中国招聘」", portal: "公众号：百胜中国招聘 ｜ https://m.yingjiesheng.com/xuanjianghui/xjh_6264957", source: "http://my.yingjiesheng.com/xjh-006-269-095.html" },
+  { company: "塔斯汀", date: "2026-07-31", roles: "产业链管培生、门店运营/储备干部（运营体系校招以官网为准）", note: "2027届产业链管培生岗位7月底上线（福州总部）；运营岗位校招走campus.tasiting.com或公众号", portal: "https://www.quanzhi.com/job/6a6d317473ad7cc859b59f88 ｜ https://campus.tasiting.com", source: "https://www.quanzhi.com/job/6a6d317473ad7cc859b59f88" },
+  { company: "自如", date: "2026-08-17", roles: "自如管家（业务运营）、曼舍客户管家、产品/运营岗（以官网为准）", note: "自如2027届秋招8月17日启动、网申至10月17日：自如管家月薪8-13K，base北京/上海/深圳/杭州等10城；业务类岗位为主", portal: "https://app.mokahr.com/campus-recruitment/ziroomhr/37294", source: "https://campus.niuqizp.com/job-vrl5a5ZNt.html" },
+  { company: "中海地产", date: "2026-06-17", roles: "营销策划岗、财务资金岗、运营管理岗等（2027届）", note: "中海地产2027校园招聘6月17日发布；5-6月另开「海之子」研习计划提前批（表现优异直通秋招）；网申走「中海地产招聘」公众号/公告", portal: "公众号：中海地产招聘 ｜ https://m.yingjiesheng.com/job-008-001-841.html", source: "https://m.yingjiesheng.com/job-008-001-841.html" },
+  { company: "招商蛇口", date: "2026-09-03", roles: "「新航程」管培生：营销管理、运营/客服、设计、财务、人力等", note: "招商局集团旗下地产平台2027届新航程校招9月3日启动、网申至10月3日（招200名管培生、不限专业）；base北京/上海/广州/武汉/深圳等", portal: "https://cmsk1979.zhiye.com/campus/jobs", source: "http://career.csu.edu.cn/campus/view/id/589342" },
+  { company: "绿城中国", date: "2026-09-02", roles: "「同道人」管培生（12+职能：品牌营销、运营、财务、人力等）、「理想生」营销管培", note: "2027届校招9月2日启动：上海/杭州/南京/西安/武汉/重庆6城宣讲，预计100+offer；网申走官方校招页", portal: "https://www.chinagreentown.com/joinus/campus", source: "https://www.cqbys.com/campus/view/id/733694" },
+  { company: "建发房产", date: "2026-06-05", roles: "「旗建生」管培：财务资金、数智AI、投资研究、设计管理、工程管理等", note: "厦门建发集团旗下房企2027届校招6月发布（建习生实习→直通旗建生），面向27届；投递走「建发房产招聘」公众号网申入口", portal: "公众号：建发房产招聘（网申入口） ｜ http://fjrclh.fzu.edu.cn/cmss/zpxx/61943", source: "http://fjrclh.fzu.edu.cn/cmss/zpxx/61943" },
+  { company: "碧桂园服务", date: "2026-06-04", roles: "「新锐计划」管培：项目管理、市场拓展、生活服务、基础服务、运营管理", note: "2027届新锐力量校招简章6月发布、面向27届本科专业不限（物业/房地产专业优先）；官网「加入我们-校园招聘」或公众号网申", portal: "https://www.bgyfw.com ｜ 公众号：碧桂园服务招聘（校园招聘-一键网申）", source: "https://ahnu.ahbys.com/job2.html?jid=11331&cid=4522" },
+  { company: "珀莱雅", date: "2026-08-07", roles: "产品营销/市场营销、产品开发、电商/运营、职能类；AI与研发人才专项", note: "2027届招聘8月启动（AI/技术专项先行），产品/营销/研发等秋招岗位9月陆续开放（宣讲会9/23上海）；网申走校招官网或公众号", portal: "https://jobs.proya.com/campus ｜ 公众号：珀莱雅招聘", source: "https://m.yingjiesheng.com/xuanjianghui/xjh_5957963" },
+  { company: "上海家化", date: "2026-09-04", roles: "品牌培训生、电商运营培训生、销售培训生（KA/通路/经销商方向）", note: "2027届培训生岗位9月4日起上线（品牌/电商运营/销售三方向，前程无忧渠道）；佰草集/六神/玉泽等品牌，base上海；更多岗位关注「上海家化招聘」", portal: "https://m.yingjiesheng.com/job-008-057-121.html ｜ https://www.quanzhi.com/job/6a9b70d667c5b4892cc8a129 ｜ https://www.quanzhi.com/job/6a9b70c067c5b4892cc8a110", source: "https://m.yingjiesheng.com/job-008-057-121.html" },
+  { company: "半亩花田", date: "2026-08-24", roles: "市场、电商运营、销售、产品研发、设计、IT、职能管培（8大方向）", note: "2027届校园招聘8月24日正式启动、网申至10月24日，base济南/上海/广州/厦门；扫码或公众号网申", portal: "公众号：半亩花田招聘（校招网申） ｜ https://www.banmuhuatian.com", source: "https://career.zjnu.edu.cn/campus/view/id/872120" },
+  { company: "水羊股份（御泥坊等）", date: "2026-08-23", roles: "「远洋计划」：运营专员、财务岗、供应链/生产计划、研发（配方/原料/工艺）等", note: "美妆集团（御泥坊/大水滴等）2027届远洋计划校招岗位8月下旬开放（长沙总部），面向27届本硕；投递走官方飞书校招平台", portal: "https://syounggroup.jobs.feishu.cn ｜ 公众号：水羊股份招聘", source: "https://www.shixiseng.com/intern/inn_i6mryvqyvfy6" },
+  { company: "贝泰妮（薇诺娜）", date: "2026-05-26", roles: "生产储备干部（管培生方向，2027届）、供应链/质量类（产品/市场岗以官网为准）", note: "薇诺娜母公司2027届管培方向岗位5月底开放（昆明）；正式校招公告以官网/公众号为准", portal: "https://m.yingjiesheng.com/job-007-984-846.html", source: "https://m.yingjiesheng.com/job-007-984-846.html" },
 ];
 
 const STATUSES = ["已投递", "笔试", "AI面试", "面试", "流程结束"];
 const STAGE_CLASS = { "已投递": "st1", "笔试": "st2", "AI面试": "st3", "面试": "st4", "流程结束": "st5" };
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
-const PAGE_REVISION = "20260905-d";
+const PAGE_REVISION = "20260905-e";
 
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
 const DIRS = [
@@ -661,8 +677,8 @@ const CAT = {
   "恒安集团": "快消",
   "蒙牛": "快消",
   "联合利华（UFLP）": "快消",
-  "欧莱雅": "快消",
-  "雅诗兰黛": "快消",
+  "欧莱雅": "化妆品",
+  "雅诗兰黛": "化妆品",
   "宝洁": "快消",
   "雀巢": "快消",
   "认养一头牛": "快消",
@@ -783,7 +799,7 @@ const CAT = {
   "中国邮政集团": "央企国企",
   "中国华电集团（浙江公司等）": "央企国企",
   "中国大唐集团（科研总院等）": "央企国企",
-  "华润万象商业（华润置地旗下）": "央企国企",
+  "华润置地（百匠新人/万象生）": "央企国企",
   "中国建筑（中建八局西南等）": "央企国企",
   "中交集团": "央企国企",
   "中国能建": "央企国企",
@@ -818,7 +834,7 @@ const CAT = {
   "CHARLES & KEITH（小CK）": "快消",
   "劲牌": "快消",
   "百草味": "快消",
-  "麦吉丽": "快消",
+  "麦吉丽": "化妆品",
   "悦活里": "快消",
   "万辰集团": "快消",
   "桃李面包": "快消",
@@ -850,8 +866,23 @@ const CAT = {
   "MPS芯源系统": "中厂",
   "海信集团": "家电",
   "中际旭创": "中厂",
+  "巴奴毛肚火锅": "餐饮茶饮",
+  "麦当劳中国": "餐饮茶饮",
+  "百胜中国（肯德基/必胜客）": "餐饮茶饮",
+  "塔斯汀": "餐饮茶饮",
+  "自如": "房地产",
+  "中海地产": "房地产",
+  "招商蛇口": "房地产",
+  "绿城中国": "房地产",
+  "建发房产": "房地产",
+  "碧桂园服务": "房地产",
+  "珀莱雅": "化妆品",
+  "上海家化": "化妆品",
+  "半亩花田": "化妆品",
+  "水羊股份（御泥坊等）": "化妆品",
+  "贝泰妮（薇诺娜）": "化妆品",
 };
-const SCALE_ORDER = ["大厂", "中厂", "AI中厂", "小厂", "快消", "餐饮茶饮", "服装服饰", "房地产", "金融", "央企国企", "汽车", "能源", "家电", "医药", "教育", "物流"];
+const SCALE_ORDER = ["大厂", "中厂", "AI中厂", "小厂", "快消", "化妆品", "餐饮茶饮", "服装服饰", "房地产", "金融", "央企国企", "汽车", "能源", "家电", "医药", "教育", "物流"];
 
 let progress = {};
 loadProgress();
@@ -1034,6 +1065,8 @@ function portalHtml(d) {
     return '<a href="' + escAttr(v) + '" target="_blank" rel="noopener">' + esc(v) + "</a>";
   }
   const emailRe = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+  const linkify = (s) =>
+    esc(s).replace(/(https?:\/\/[^\s"'<>）)\]]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   const segs = v.split(/[｜|;；]/).map((s) => s.trim()).filter(Boolean);
   const parts = segs.map((s) => {
     const g = s.match(/^公众号[:：]\s*(.+)$/);
@@ -1041,8 +1074,8 @@ function portalHtml(d) {
     const m = s.match(/^邮箱[:：]\s*(.+)$/);
     if (m) return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(m[1]) + '">' + esc(m[1]) + "</a>";
     if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(s)) return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(s) + '">' + esc(s) + "</a>";
-    if (s.includes("宣讲")) return '<span class="way-tag">宣讲/现场</span><span class="way-text">' + esc(s) + "</span>";
-    return '<span class="way-text">' + esc(s) + "</span>";
+    if (s.includes("宣讲")) return '<span class="way-tag">宣讲/现场</span><span class="way-text">' + linkify(s) + "</span>";
+    return '<span class="way-text">' + linkify(s) + "</span>";
   });
   return parts.join('<span class="way-sep"> ｜ </span>');
 }
