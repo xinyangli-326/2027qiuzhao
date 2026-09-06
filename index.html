@@ -184,7 +184,7 @@
 <div class="page">
   <header class="hero">
     <h1>2027届秋招信息汇总（含国央企 · 支持自定义岗位方向）</h1>
-    <p>数据截至 2026-09-05 ｜ 收录 272 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 化妆品 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+    <p id="heroMeta">数据截至 2026-09-05 ｜ 收录 272 家（大厂 / 中厂 / AI中厂 / 小厂 / 快消 / 化妆品 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
   </header>
 
   <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
@@ -256,7 +256,7 @@
 </div>
 
 <script>
-const DATA = [
+let DATA = [
   { company: "月之暗面（Kimi）", date: "2026-04-03", roles: "产品、算法、工程", note: "「穿越计划」顶尖人才校招4月3日发布，面向2027届首批16人；产品/运营以官网岗位为准", portal: "https://moonshotai.cn", source: "" },
   { company: "宇树科技", date: "2026-05-12", roles: "市场策划、销售、技术支持、AI算法、机械等", note: "2027届校招5月中旬启动，以算法/工程为主，含市场策划等非技术岗", portal: "https://unitree.zhiye.com", source: "" },
   { company: "知乎", date: "2026-05-14", roles: "产品岗、运营岗（产品运营类）", note: "2027届校招5月中旬启动（含暑期实习），产品运营类不限专业", portal: "https://app.mokahr.com/campus_apply/zhihu/68321", source: "" },
@@ -536,6 +536,7 @@ const STAGE_CLASS = { "已投递": "st1", "笔试": "st2", "AI面试": "st3", "�
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
 const PAGE_REVISION = "20260905-f";
+let CURRENT_REVISION = PAGE_REVISION;
 
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
 const DIRS = [
@@ -608,7 +609,7 @@ function loadProgress() {
   }
   progress = parsed;
 }
-const CAT = {
+let CAT = {
   "月之暗面（Kimi）": "AI中厂",
   "宇树科技": "小厂",
   "知乎": "中厂",
@@ -1209,7 +1210,9 @@ document.getElementById("restoreFile").addEventListener("change", (e) => {
 });
 
 const updateTip = document.getElementById("updateTip");
+const updateBtn = document.getElementById("checkUpdate");
 let tipTimer = null;
+let checking = false;
 function showTip(msg, cls) {
   clearTimeout(tipTimer);
   updateTip.textContent = msg;
@@ -1217,24 +1220,47 @@ function showTip(msg, cls) {
   if (cls) tipTimer = setTimeout(() => { updateTip.textContent = ""; updateTip.className = "update-tip"; }, 8000);
 }
 
-async function checkUpdate(manual) {
+function applyLatest(payload) {
+  // 同步更新头部“数据截至 / 收录 N 家”摘要，并原地切换为公司列表数据
+  const hero = document.getElementById("heroMeta");
+  if (hero && payload.updated && payload.count) {
+    const i = hero.textContent.indexOf("（大厂");
+    const tail = i >= 0 ? hero.textContent.slice(i) : "";
+    hero.textContent = "数据截至 " + payload.updated + " ｜ 收录 " + payload.count + " 家" + tail;
+  }
+  DATA = payload.data;
+  CAT = payload.cats;
+  CURRENT_REVISION = payload.rev;
+  render();
+}
+
+async function checkUpdate() {
+  if (checking) return;
+  checking = true;
+  updateBtn.disabled = true;
+  updateBtn.textContent = "检查中…";
   try {
-    const res = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+    const res = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
     if (!res.ok) throw new Error("bad status");
-    const meta = await res.json();
-    if (meta.rev && meta.rev !== PAGE_REVISION) {
-      showTip("检测到新版数据（" + meta.rev + "，更新于 " + (meta.updated || "") + "）：请刷新页面获取最新公司列表。", "warn");
-    } else if (manual) {
-      showTip("已是最新版本：" + (meta.updated || "") + "，收录 " + (meta.count || DATA.length) + " 家。", "ok");
+    const p = await res.json();
+    if (!p || !Array.isArray(p.data) || !p.cats) throw new Error("bad payload");
+    if (p.rev && p.rev !== CURRENT_REVISION) {
+      applyLatest(p);
+      showTip("检测到新版数据并已原地更新：修订 " + p.rev + "，更新于 " + (p.updated || "") + "，共收录 " + (p.count || p.data.length) + " 家。", "ok");
+    } else {
+      showTip("已是最新版本：" + (p.updated || "") + "，共收录 " + (p.count || DATA.length) + " 家。", "ok");
     }
   } catch (e) {
-    if (manual) showTip("无法联网检查（本地文件模式或网络异常），直接刷新页面即可。", "");
+    showTip("检查失败：在线页面请确认网络后重试；本地副本无法联网，请打开公网页面获取最新数据。", "warn");
+  } finally {
+    checking = false;
+    updateBtn.disabled = false;
+    updateBtn.textContent = "检查更新";
   }
 }
-document.getElementById("checkUpdate").addEventListener("click", () => checkUpdate(true));
+updateBtn.addEventListener("click", checkUpdate);
 
 render();
-setTimeout(() => checkUpdate(false), 1500);
 </script>
 </body>
 </html>
