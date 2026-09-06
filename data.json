@@ -1,7 +1,7 @@
 {
-  "rev": "20260905-f",
+  "rev": "20260907-a",
   "updated": "2026-09-05",
-  "count": 272,
+  "count": 259,
   "data": [
     {
       "company": "月之暗面（Kimi）",
@@ -286,9 +286,9 @@
       "company": "阿里巴巴",
       "cat": "大厂",
       "date": "2026-08-05",
-      "roles": "AI产品运营、AI应用产品经理、海外用户运营、产品体验设计师",
-      "note": "网申/内推8月5日开始；AI相关岗位占比约八成",
-      "portal": "https://talent.alibaba.com/campus",
+      "roles": "AI产品运营、AI应用产品经理、海外用户运营、产品体验设计师；子集团/事业群另含产品运营、用户/行业运营、市场、设计、数据、零售/物流/供应链、医药电商、跨境贸易等方向",
+      "note": "阿里集团2027届校招8月5日启动（网申/内推，AI岗位占比约八成）。淘天、阿里云、菜鸟、阿里健康、阿里国际、淘宝闪购、千问、平头哥、飞猪、虎鲸文娱、高德、盒马等原分列的子集团/事业群已合并为一行：多数业务可在阿里校招官网选择对应事业群投递，使用独立校招站的入口见投递入口列",
+      "portal": "主入口：https://talent.alibaba.com/campus ｜ 淘天：https://talent.taotian.com/campus/home ｜ 阿里健康：https://careers.alihealth.cn/campus/home ｜ 阿里国际：https://aidc-jobs.alibaba.com/campus/home?lang=zh ｜ 千问：https://talent.quark.cn/campus/home?lang=zh ｜ 平头哥：https://recruitment.t-head.cn/campus/home?lang=zh ｜ 高德：https://talent.amap.com/campus/home?lang=zh ｜ 盒马：https://hire.freshippo.com/campus/home?lang=zh ｜ 虎鲸文娱：https://job.alibabagroup.com/apply/1912250（优酷）/ https://job.alibabagroup.com/apply/1912251（大麦）",
       "source": ""
     },
     {
@@ -707,7 +707,7 @@
     },
     {
       "company": "用友",
-      "cat": "大厂",
+      "cat": "中厂",
       "date": "2026-08-01",
       "roles": "产品经理（B端：人力/协同/财务/供应链/采购）、研发、营销",
       "note": "2027届校招网申8月1日开启（官宣9月初），企业级AI方向",
@@ -734,7 +734,7 @@
     },
     {
       "company": "恒生电子",
-      "cat": "大厂",
+      "cat": "中厂",
       "date": "2026-08-13",
       "roles": "AI应用开发等研发为主，另含需求分析/金融业务研究（产品运营岗少）",
       "note": "网申/内推8月13日-10月23日，9月23日笔试",
@@ -1193,7 +1193,7 @@
     },
     {
       "company": "金蝶",
-      "cat": "大厂",
+      "cat": "中厂",
       "date": "2026-08-11",
       "roles": "产品、研发、实施顾问、销售、职能等27届校招岗位（苍穹/星空等产品线）",
       "note": "金蝶2027届校招岗位8月中旬起分批上线（mokahr校招页），面向2026.10-2027.9毕业生；ERP产品/实施/销售方向适合投递",
@@ -1522,42 +1522,6 @@
       "roles": "AI产品经理、产品经理、产品运营、AI搜索运营、游戏运营、游戏营销、游戏策划、项目管理等",
       "note": "阿里巴巴旗下游戏公司，2027届秋招8月5日启动，面向海内外27届毕业生，base广州/上海/北京",
       "portal": "https://talent.lingxigames.com/campus/home",
-      "source": ""
-    },
-    {
-      "company": "淘天集团",
-      "cat": "大厂",
-      "date": "2026-08-05",
-      "roles": "AI应用产品经理、AIGC产品经理、用户/行业运营、市场营销、数据产品等",
-      "note": "阿里巴巴旗下核心电商公司（淘宝/天猫/闲鱼等），2027届校招8月5日正式启动、网申预计12月截止；技术类占比高，产品/运营方向适合投递",
-      "portal": "https://talent.taotian.com/campus/home",
-      "source": ""
-    },
-    {
-      "company": "阿里云",
-      "cat": "大厂",
-      "date": "2026-08-05",
-      "roles": "产品类（AI产品/云计算产品等）、运营类、设计类、数据类、销售类（另含研发/算法/安全类）",
-      "note": "阿里巴巴旗下云计算公司，2027届应届生招聘8月5日随阿里集团启动（面向2026.11-2027.10毕业）；投递在阿里巴巴校招官网选择阿里云",
-      "portal": "https://talent.alibaba.com/campus",
-      "source": ""
-    },
-    {
-      "company": "菜鸟集团",
-      "cat": "物流",
-      "date": "2026-08-05",
-      "roles": "产品、运营、物流运营/供应链、市场、算法、研发等",
-      "note": "阿里巴巴旗下智慧物流公司，2027届应届生招聘8月5日启动（面向2026.11-2027.10毕业的27届）；投递在阿里巴巴校招官网选择菜鸟",
-      "portal": "https://talent.alibaba.com/campus",
-      "source": ""
-    },
-    {
-      "company": "阿里健康",
-      "cat": "医药",
-      "date": "2026-08-05",
-      "roles": "产品、运营（天猫健康/医药电商平台）、市场营销、商务拓展等（岗位以官网为准）",
-      "note": "阿里巴巴旗下数字医疗公司（香港上市），2027届应届生招聘8月5日随阿里集团启动；careers.alihealth.cn有独立校招页",
-      "portal": "https://careers.alihealth.cn/campus/home",
       "source": ""
     },
     {
@@ -2200,87 +2164,6 @@
       "source": ""
     },
     {
-      "company": "阿里国际（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "跨境贸易/产品/运营/技术等岗位（2027届应届生+Bravo Star顶尖人才计划）",
-      "note": "阿里旗下国际数字商业板块2027届招聘启动；直达独立校招官网投递",
-      "portal": "https://aidc-jobs.alibaba.com/campus/home?lang=zh",
-      "source": ""
-    },
-    {
-      "company": "淘宝闪购（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "电商产品/运营/技术等岗位（AI全链路岗位）",
-      "note": "阿里旗下即时零售（原饿了么，2025年12月起更名淘宝闪购）2027届招聘8月5日启动；直达校招站talent.ele.me，公邮 tbshangou-campus@alibaba-inc.com",
-      "portal": "https://talent.ele.me/campus/home?lang=zh ｜ 阿里校招官网（淘宝闪购）：https://campus-talent.alibaba.com/campus/index",
-      "source": ""
-    },
-    {
-      "company": "千问事业部（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "AI产品（千问APP/夸克/UC等C端）、用户运营、算法/研发等岗位",
-      "note": "阿里千问C端事业群（千问APP/夸克/AI硬件/UC/书旗）2027届招聘启动；直达 talent.quark.cn，也可在阿里校招官网选择千问事业部",
-      "portal": "https://talent.quark.cn/campus/home?lang=zh ｜ 阿里校招官网（千问事业部）：https://campus-talent.alibaba.com/campus/index",
-      "source": ""
-    },
-    {
-      "company": "千问办公（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "AI办公产品/运营/研发等岗位（官网选择千问办公）",
-      "note": "阿里旗下AI办公业务2027届招聘启动；在阿里校招官网选千问办公投递",
-      "portal": "https://campus-talent.alibaba.com/campus/index",
-      "source": ""
-    },
-    {
-      "company": "平头哥（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "芯片设计/软件/AI等岗位（2027届校招）",
-      "note": "阿里旗下半导体公司2027届校招启动；直达平头哥独立校招官网投递",
-      "portal": "https://recruitment.t-head.cn/campus/home?lang=zh",
-      "source": ""
-    },
-    {
-      "company": "飞猪（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "旅行平台产品/运营/技术等岗位（官网选择飞猪）",
-      "note": "阿里旗下旅行平台2027届招聘启动；在阿里校招官网选飞猪投递，招聘公邮 zhaopin-fliggy@alibaba-inc.com",
-      "portal": "https://campus-talent.alibaba.com/campus/index",
-      "source": ""
-    },
-    {
-      "company": "虎鲸文娱（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "内容/产品/运营/游戏等（优酷+大麦娱乐双方向）",
-      "note": "阿里旗下文娱集团（优酷/大麦两大事业群）2027届招聘启动；优酷、大麦分方向直达申请",
-      "portal": "优酷方向：https://job.alibabagroup.com/apply/1912250 ｜ 大麦方向：https://job.alibabagroup.com/apply/1912251",
-      "source": ""
-    },
-    {
-      "company": "高德地图（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "地图产品/数据/算法/研发等岗位（含高德π天才计划）",
-      "note": "阿里旗下位置服务业务2027届招聘8月5日启动；直达高德独立校招官网投递",
-      "portal": "https://talent.amap.com/campus/home?lang=zh",
-      "source": ""
-    },
-    {
-      "company": "盒马（阿里巴巴旗下）",
-      "cat": "大厂",
-      "date": "2026-08-06",
-      "roles": "零售运营/商品/产品/供应链/门店等新零售方向岗位",
-      "note": "阿里旗下新零售业务2027届招聘启动；直达盒马独立校招官网投递",
-      "portal": "https://hire.freshippo.com/campus/home?lang=zh",
-      "source": ""
-    },
-    {
       "company": "中科芯（中国电科58所）",
       "cat": "央企国企",
       "date": "2026-08-03",
@@ -2531,10 +2414,10 @@
     "高露洁": "快消",
     "昆仑万维": "中厂",
     "银河通用机器人": "小厂",
-    "用友": "大厂",
+    "用友": "中厂",
     "世纪华通": "中厂",
     "深蓝互动": "小厂",
-    "恒生电子": "大厂",
+    "恒生电子": "中厂",
     "顺丰集团（顺丰科技）": "大厂",
     "BOSS直聘": "中厂",
     "紫龙游戏": "中厂",
@@ -2585,7 +2468,7 @@
     "龙湖集团": "房地产",
     "阳光电源": "能源",
     "云天励飞": "AI中厂",
-    "金蝶": "大厂",
+    "金蝶": "中厂",
     "吉利控股": "汽车",
     "度小满": "金融",
     "宁德时代": "能源",
@@ -2622,10 +2505,6 @@
     "搜狐畅游": "中厂",
     "盛趣游戏": "中厂",
     "灵犀互娱": "中厂",
-    "淘天集团": "大厂",
-    "阿里云": "大厂",
-    "菜鸟集团": "物流",
-    "阿里健康": "医药",
     "FILA（斐乐）": "服装服饰",
     "京东物流（新锐之星）": "物流",
     "网易雷火": "大厂",
@@ -2697,15 +2576,6 @@
     "温氏股份": "快消",
     "寒武纪": "AI中厂",
     "泉峰科技": "中厂",
-    "阿里国际（阿里巴巴旗下）": "大厂",
-    "淘宝闪购（阿里巴巴旗下）": "大厂",
-    "千问事业部（阿里巴巴旗下）": "大厂",
-    "千问办公（阿里巴巴旗下）": "大厂",
-    "平头哥（阿里巴巴旗下）": "大厂",
-    "飞猪（阿里巴巴旗下）": "大厂",
-    "虎鲸文娱（阿里巴巴旗下）": "大厂",
-    "高德地图（阿里巴巴旗下）": "大厂",
-    "盒马（阿里巴巴旗下）": "大厂",
     "中科芯（中国电科58所）": "央企国企",
     "MPS芯源系统": "中厂",
     "海信集团": "家电",
