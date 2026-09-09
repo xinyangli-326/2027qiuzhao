@@ -1049,7 +1049,7 @@ const END_STAGES = ["已投递", "笔试", "AI面试", "面试"];
 const END_LABEL = { "已投递": "初筛/已投递", "笔试": "笔试", "AI面试": "AI面试", "面试": "面试" };
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
-const PAGE_REVISION = "20260909-j";
+const PAGE_REVISION = "20260909-k";
 let CURRENT_REVISION = PAGE_REVISION;
 
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
@@ -2091,20 +2091,23 @@ function escAttr(s) {
 function portalHtml(d) {
   const v = String(d.portal || "").trim();
   if (!v) return '<span class="way-text">见备注/来源页</span>';
-  if (/^https?:\/\//i.test(v)) {
-    return '<a href="' + escAttr(v) + '" target="_blank" rel="noopener">' + esc(v) + "</a>";
-  }
-  const emailRe = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+  const urlRe = /(https?:\/\/[^\s"'<>（）()\[\]｜|;；，,、。]+)/g;
   const linkify = (s) =>
-    esc(s).replace(/(https?:\/\/[^\s"'<>）)\]]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    esc(s).replace(urlRe, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   const segs = v.split(/[｜|;；]/).map((s) => s.trim()).filter(Boolean);
   const parts = segs.map((s) => {
     const g = s.match(/^公众号[:：]\s*(.+)$/);
-    if (g) return '<span class="way-tag">公众号</span><span class="way-text">' + esc(g[1]) + "</span>";
+    if (g) return '<span class="way-tag">公众号</span><span class="way-text">' + linkify(g[1]) + "</span>";
     const m = s.match(/^邮箱[:：]\s*(.+)$/);
-    if (m) return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(m[1]) + '">' + esc(m[1]) + "</a>";
+    if (m) {
+      const em = (m[1].match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/) || [m[1]])[0];
+      return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(em) + '">' + esc(m[1]) + "</a>";
+    }
     if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(s)) return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(s) + '">' + esc(s) + "</a>";
     if (s.includes("宣讲")) return '<span class="way-tag">宣讲/现场</span><span class="way-text">' + linkify(s) + "</span>";
+    if (/^https?:\/\/[^\s"'<>（）()\[\]｜|;；，,、。]+$/i.test(s)) {
+      return '<a href="' + escAttr(s) + '" target="_blank" rel="noopener">' + esc(s) + "</a>";
+    }
     return '<span class="way-text">' + linkify(s) + "</span>";
   });
   return parts.join('<span class="way-sep"> ｜ </span>');
