@@ -1,7 +1,7 @@
 {
- "rev": "20260909-e",
+ "rev": "20260909-f",
  "updated": "2026-09-09",
- "count": 845,
+ "count": 815,
  "data": [
   {
    "company": "月之暗面（Kimi）",
@@ -616,24 +616,6 @@
    "source": "https://www.wondercv.com/xiaozhao/sigmastar-2027-campus-recruitment-12146-03ecdc/"
   },
   {
-   "company": "上海米哈游网络科技股份有限公司",
-   "cat": "游戏/文娱",
-   "date": "2026-08-04",
-   "roles": "游戏研发",
-   "note": "米哈游2027校园招聘正式启动，面向2027届毕业生，开放程序&amp;技术、产品策划、美术&amp;表现、综合类等岗位，工作地点上海/北京，网申截止2024年10月31日。",
-   "portal": "https://www.wondercv.com/xiaozhao/mihoyo-2027-campus-recruitment-shanghai-beijing-12152-20df3c/",
-   "source": "https://www.wondercv.com/xiaozhao/mihoyo-2027-campus-recruitment-shanghai-beijing-12152-20df3c/"
-  },
-  {
-   "company": "元气森林（北京）食品科技集团有限公司",
-   "cat": "快消",
-   "date": "2026-08-04",
-   "roles": "多岗（以官网为准）",
-   "note": "元气森林2027创新体系校园招聘正式启动，面向2027届应届毕业生，招聘饮料产品经理、品牌经理、数字营销、设计类等岗位，工作地点北京/上海，投递流程包括简历投递、线上笔试、面试及入职实习。",
-   "portal": "https://www.wondercv.com/xiaozhao/genki-forest-2027-innovation-beijing-shanghai-12140-53cb34/",
-   "source": "https://www.wondercv.com/xiaozhao/genki-forest-2027-innovation-beijing-shanghai-12140-53cb34/"
-  },
-  {
    "company": "加多宝",
    "cat": "快消",
    "date": "2026-08-04",
@@ -859,15 +841,6 @@
    "source": ""
   },
   {
-   "company": "广州灵犀互动娱乐有限公司",
-   "cat": "游戏/文娱",
-   "date": "2026-08-06",
-   "roles": "游戏行业",
-   "note": "灵犀互娱2027届应届生招聘正式启动，面向2026年11月至2027年10月毕业的海内外应届生，工作地点覆盖广州、上海、北京。招聘岗位涵盖游戏策划、技术、算法/AI、设计、产品运营营销、项目管理等多个方向，网申于2026年8月5日开始。",
-   "portal": "https://www.wondercv.com/xiaozhao/lingxi-2027-graduate-recruitment-12252-4b8114/",
-   "source": "https://www.wondercv.com/xiaozhao/lingxi-2027-graduate-recruitment-12252-4b8114/"
-  },
-  {
    "company": "德州仪器（TI）",
    "cat": "行业巨头",
    "date": "2026-08-06",
@@ -1010,15 +983,6 @@
    "note": "拓尔微电子2027届校园招聘全面启动，面向2027届毕业生，招聘研发类、系统应用类、营销类岗位，工作城市包括西安、深圳、厦门、成都、广州。",
    "portal": "https://www.wondercv.com/xiaozhao/toll-microelectronics-2027-graduate-program-12280-30f1ab/",
    "source": "https://www.wondercv.com/xiaozhao/toll-microelectronics-2027-graduate-program-12280-30f1ab/"
-  },
-  {
-   "company": "新东方华南区",
-   "cat": "教育",
-   "date": "2026-08-07",
-   "roles": "多岗（以官网为准）",
-   "note": "新东方华南区2027届秋季校园招聘提前批启动，面向2027届本科及以上应届毕业生，招聘少儿素养、初中素养、高中素养等教师岗位，工作城市包括广州、佛山、东莞、珠海、南宁、海口。",
-   "portal": "https://www.wondercv.com/xiaozhao/new-oriental-south-china-2027-fall-early-recruitmen-12282-4b3856/",
-   "source": "https://www.wondercv.com/xiaozhao/new-oriental-south-china-2027-fall-early-recruitmen-12282-4b3856/"
   },
   {
    "company": "汕头德莱特体育文化有限公司",
@@ -1208,15 +1172,6 @@
    "note": "7大类岗位；面向2026年8月-2027年7月毕业",
    "portal": "https://hr.vivo.com/campus",
    "source": ""
-  },
-  {
-   "company": "上海莉莉丝科技股份有限公司",
-   "cat": "游戏/文娱",
-   "date": "2026-08-10",
-   "roles": "技术岗",
-   "note": "莉莉丝游戏2027届校园招聘正式启动，面向2027届毕业生开放多个岗位，包括服务器开发工程师、技术策划等，工作地点在上海。",
-   "portal": "https://www.wondercv.com/xiaozhao/lilith-games-2027-shanghai-12385-c2b1b5/",
-   "source": "https://www.wondercv.com/xiaozhao/lilith-games-2027-shanghai-12385-c2b1b5/"
   },
   {
    "company": "世纪华通",
@@ -1694,15 +1649,6 @@
    "note": "赛微微电2027届秋季校园招聘",
    "portal": "https://www.wondercv.com/xiaozhao/semiware-shanghai-2027-autumn-12463-ef40ae/",
    "source": "https://www.wondercv.com/xiaozhao/semiware-shanghai-2027-autumn-12463-ef40ae/"
-  },
-  {
-   "company": "陕西圆通速递有限公司",
-   "cat": "物流",
-   "date": "2026-08-13",
-   "roles": "物流行业、AI 算法、产品经理、开发测试",
-   "note": "圆通速递2027届秋季校园招聘启动，面向2027届毕业生，提供多岗位机会。",
-   "portal": "https://www.wondercv.com/xiaozhao/yuantong-2027-autumn-recruitment-12488-66147d/",
-   "source": "https://www.wondercv.com/xiaozhao/yuantong-2027-autumn-recruitment-12488-66147d/"
   },
   {
    "company": "飞托克",
@@ -2560,15 +2506,6 @@
    "source": "https://www.wondercv.com/xiaozhao/revopoint-2027-campus-recruitment-12645-028a8b/"
   },
   {
-   "company": "迅销（中国）商贸有限公司",
-   "cat": "快消",
-   "date": "2026-08-20",
-   "roles": "湖北省武汉市武汉经开永旺梦乐城、浙江省绍兴市柯桥万达广场、昆明市呈贡区七彩店",
-   "note": "优衣库2027校园招聘UMC经营管理培训生项目，面向2026-2027届本科及以上毕业生，专业不限，需接受全国调动，提供具有竞争力的薪酬和快速晋升通道。",
-   "portal": "https://www.wondercv.com/xiaozhao/uniqlo-2027-campus-recruitment-umc-china-12641-4d8169/",
-   "source": "https://www.wondercv.com/xiaozhao/uniqlo-2027-campus-recruitment-umc-china-12641-4d8169/"
-  },
-  {
    "company": "途游游戏",
    "cat": "中厂",
    "date": "2026-08-20",
@@ -3316,24 +3253,6 @@
    "source": ""
   },
   {
-   "company": "新东方上海学校",
-   "cat": "教育",
-   "date": "2026-08-24",
-   "roles": "民营企业",
-   "note": "新东方上海学校2027届秋季校园招聘正式启动。",
-   "portal": "https://www.wondercv.com/xiaozhao/new-oriental-shanghai-2027-autumn-campus-recruitmen-12921-49749d/",
-   "source": "https://www.wondercv.com/xiaozhao/new-oriental-shanghai-2027-autumn-campus-recruitmen-12921-49749d/"
-  },
-  {
-   "company": "新东方江苏省域",
-   "cat": "教育",
-   "date": "2026-08-24",
-   "roles": "南京镇江泰州南通淮安徐州盐城常州扬州 宿迁连云港、民营企业、教师类、运营类、教培生类",
-   "note": "新东方江苏省域2027秋季校园招聘启动",
-   "portal": "https://www.wondercv.com/xiaozhao/new-oriental-jiangsu-2027-autumn-campus-recruitment-12927-228e9f/",
-   "source": "https://www.wondercv.com/xiaozhao/new-oriental-jiangsu-2027-autumn-campus-recruitment-12927-228e9f/"
-  },
-  {
    "company": "晶盛机电",
    "cat": "智能制造/装备",
    "date": "2026-08-24",
@@ -3505,15 +3424,6 @@
    "source": "https://www.wondercv.com/xiaozhao/zhuanzhuan-2027-campus-recruitment-13046-d7e3e6/"
   },
   {
-   "company": "南京新东方文化艺术发展有限公司",
-   "cat": "教育",
-   "date": "2026-08-25",
-   "roles": "多岗（以官网为准）",
-   "note": "新东方江苏省域启动2027届秋季校园招聘，覆盖江苏11个城市，招聘教师类、运营类、教培生类、实习类岗位。教师类年薪10-25万，运营类8-12万，教培生类35-45万，实习类按岗定薪；8月28日19:00有空中宣讲直播。",
-   "portal": "https://www.wondercv.com/xiaozhao/xdf-jiangsu-2027-autumn-campus-12986-c1314e/",
-   "source": "https://www.wondercv.com/xiaozhao/xdf-jiangsu-2027-autumn-campus-12986-c1314e/"
-  },
-  {
    "company": "博众精工",
    "cat": "智能制造/装备",
    "date": "2026-08-25",
@@ -3611,24 +3521,6 @@
    "note": "希奥端2027届校园招聘已启动，面向2026年9月至2027年8月毕业的2027届毕业生，开放芯片、软件、硬件、算法、销售五大类岗位，城市覆盖深圳、南京、成都、杭州、北京、天津，并设有空中宣讲会。",
    "portal": "https://www.wondercv.com/xiaozhao/2027-graduate-campus-recruitment-13006-bacef9/",
    "source": "https://www.wondercv.com/xiaozhao/2027-graduate-campus-recruitment-13006-bacef9/"
-  },
-  {
-   "company": "平安人寿山东公司",
-   "cat": "金融",
-   "date": "2026-08-25",
-   "roles": "管培生",
-   "note": "平安人寿山东分公司2027校园招聘启动，面向全球高校毕业生，招聘NS管培生（武将专项），不限专业，提供六险二金等福利。",
-   "portal": "https://www.wondercv.com/xiaozhao/pingan-life-shandong-2027-13075-0e2043/",
-   "source": "https://www.wondercv.com/xiaozhao/pingan-life-shandong-2027-13075-0e2043/"
-  },
-  {
-   "company": "平安人寿广东公司",
-   "cat": "金融",
-   "date": "2026-08-25",
-   "roles": "管培生、全国有岗、团队搭建",
-   "note": "平安人寿广东公司2027校园招聘启动，招募NS管培生（武将专项），面向全球高校应届毕业生，不限专业，工作地点覆盖全国主要城市。",
-   "portal": "https://www.wondercv.com/xiaozhao/ping-an-life-guangdong-2027-campus-13062-386baf/",
-   "source": "https://www.wondercv.com/xiaozhao/ping-an-life-guangdong-2027-campus-13062-386baf/"
   },
   {
    "company": "广州光娱信息科技有限公司",
@@ -4180,15 +4072,6 @@
    "source": ""
   },
   {
-   "company": "西安新东方培训学校有限公司",
-   "cat": "教育",
-   "date": "2026-08-26",
-   "roles": "教师岗、保薪",
-   "note": "西安新东方2027届秋季校园招聘正式启动，面向2027届毕业生开放素质教师、素养教师、智慧学习机教师及高中教师等岗位，工作地点覆盖西安、咸阳，提供保薪计划、双通道晋升和丰富福利。",
-   "portal": "https://www.wondercv.com/xiaozhao/new-oriental-2027-autumn-13180-e29ae7/",
-   "source": "https://www.wondercv.com/xiaozhao/new-oriental-2027-autumn-13180-e29ae7/"
-  },
-  {
    "company": "长江存储",
    "cat": "中厂",
    "date": "2026-08-26",
@@ -4324,24 +4207,6 @@
    "source": ""
   },
   {
-   "company": "北京字节跳动科技有限公司",
-   "cat": "互联网/软件",
-   "date": "2026-08-27",
-   "roles": "多岗（以官网为准）",
-   "note": "字节跳动企业服务2027校园招聘正式启动，面向2027届毕业生，覆盖北京、上海、深圳、成都，热招采购经营、房产资源管理、行政、物理安全、员工流动服务、采购政策与流程等方向。",
-   "portal": "https://www.wondercv.com/xiaozhao/bytedance-enterprise-services-2027-campus-13350-c59880/",
-   "source": "https://www.wondercv.com/xiaozhao/bytedance-enterprise-services-2027-campus-13350-c59880/"
-  },
-  {
-   "company": "华为云（云计算质量运营与流程IT部）",
-   "cat": "互联网/软件",
-   "date": "2026-08-27",
-   "roles": "多岗（以官网为准）",
-   "note": "华为云云计算质量运营与流程IT部面向2027届毕业生启动校园招聘，热招研发类岗位，工作地点覆盖多个城市。",
-   "portal": "https://www.wondercv.com/xiaozhao/huawei-cloud-2027-campus-recruitment-13458-16da23/",
-   "source": "https://www.wondercv.com/xiaozhao/huawei-cloud-2027-campus-recruitment-13458-16da23/"
-  },
-  {
    "company": "华润置地（百匠新人/万象生）",
    "cat": "央企国企",
    "date": "2026-08-27",
@@ -4376,51 +4241,6 @@
    "note": "2027届校招简章8月底-9月初发布、9月中旬起多校宣讲；面向2026/2027届海内外本硕博；流程：网申→测评→简历初筛→初试→复试→offer；base芜湖等",
    "portal": "https://chery.zhiye.com/campus ｜ 公众号：奇瑞招聘",
    "source": ""
-  },
-  {
-   "company": "平安人寿上海分公司",
-   "cat": "金融",
-   "date": "2026-08-27",
-   "roles": "管培生、全球高校、平安人寿",
-   "note": "平安人寿上海分公司正式启动2027届校园招聘，推出“NEW STAR管培生计划”，面向全球高校应届生，招聘NS管培生（武将专项）与NS管培生（经营分析）岗位，不限制专业，招聘流程包括网申、测评、笔试、面试、体检、背调、签约。",
-   "portal": "https://www.wondercv.com/xiaozhao/pingan-life-shanghai-new-star-2027-13431-809f84/",
-   "source": "https://www.wondercv.com/xiaozhao/pingan-life-shanghai-new-star-2027-13431-809f84/"
-  },
-  {
-   "company": "平安人寿云南公司",
-   "cat": "金融",
-   "date": "2026-08-27",
-   "roles": "管培生、武将专项、内勤、银保",
-   "note": "平安人寿云南分公司2027校园招聘正式启动，面向海内外优秀应届生招募NS管培生（武将专项）等岗位，提供系统化培养体系与全面薪酬福利，工作地点覆盖云南昆明及多个地州。",
-   "portal": "https://www.wondercv.com/xiaozhao/pingan-life-yunnan-2027-ns-trainee-13391-0d81b5/",
-   "source": "https://www.wondercv.com/xiaozhao/pingan-life-yunnan-2027-ns-trainee-13391-0d81b5/"
-  },
-  {
-   "company": "平安人寿河北分公司",
-   "cat": "金融",
-   "date": "2026-08-27",
-   "roles": "多岗（以官网为准）",
-   "note": "平安人寿河北分公司启动新一轮秋招，面向全球高等院校毕业生（2026年1月至2027年12月），提供N5管培生四个方向的保险内勤岗位，工作地点为河北省主要城市。",
-   "portal": "https://www.wondercv.com/xiaozhao/ping-an-life-hebei-autumn-n5-campus-recruitment-13418-5172ff/",
-   "source": "https://www.wondercv.com/xiaozhao/ping-an-life-hebei-autumn-n5-campus-recruitment-13418-5172ff/"
-  },
-  {
-   "company": "平安人寿海南分公司",
-   "cat": "金融",
-   "date": "2026-08-27",
-   "roles": "NS管培生、海南、平安人寿",
-   "note": "平安人寿海南分公司秋招启动，面向全球高等院校2026年1月至2027年12月毕业的应届生，开放NS管培生（武将专项）和NS管培生（经营分析）两个岗位，工作地点在海南省，不限专业。招聘流程包括网申、测评、笔试、面试、体检、背调、签约，每位同学可投递3个岗位。",
-   "portal": "https://www.wondercv.com/xiaozhao/ns-trainee-hainan-autumn-13414-8f6fc2/",
-   "source": "https://www.wondercv.com/xiaozhao/ns-trainee-hainan-autumn-13414-8f6fc2/"
-  },
-  {
-   "company": "平安人寿湖北公司",
-   "cat": "金融",
-   "date": "2026-08-27",
-   "roles": "湖北、正式内勤、零销售、轮岗培养、全国工作地点",
-   "note": "平安人寿湖北分公司2027校园招聘正式启动，面向全球高等院校毕业生，推出New Star管培生计划，提供正式内勤编制、零销售性质的岗位，工作地点覆盖全国主要城市。",
-   "portal": "https://www.wondercv.com/xiaozhao/pingan-life-hubei-2027-13379-9e5cee/",
-   "source": "https://www.wondercv.com/xiaozhao/pingan-life-hubei-2027-13379-9e5cee/"
   },
   {
    "company": "平安人寿烟台中心支公司",
@@ -4484,15 +4304,6 @@
    "note": "指色网络启动2027届秋季校园招聘，面向2026届、2027届本科及以上毕业生，开放广告投放、产品运营、游戏策划、视频设计师、AI培训生、管培生等岗位，工作地点在长沙。",
    "portal": "https://www.wondercv.com/xiaozhao/index-color-2027-campus-recruitment-changsha-13308-e6b4b5/",
    "source": "https://www.wondercv.com/xiaozhao/index-color-2027-campus-recruitment-changsha-13308-e6b4b5/"
-  },
-  {
-   "company": "携程集团",
-   "cat": "互联网/软件",
-   "date": "2026-08-27",
-   "roles": "全球启动",
-   "note": "携程集团2027届秋季校园招聘全球启动，面向2027届应届毕业生，覆盖研发、设计、产品、综合及人才项目，8月26日起开始网申。",
-   "portal": "https://www.wondercv.com/xiaozhao/ctrip-2027-global-campus-recruitment-13444-03658c/",
-   "source": "https://www.wondercv.com/xiaozhao/ctrip-2027-global-campus-recruitment-13444-03658c/"
   },
   {
    "company": "方田教育",
@@ -4774,15 +4585,6 @@
    "source": "https://www.wondercv.com/xiaozhao/space-origin-beijing-autumn-2027-13608-765e2a/"
   },
   {
-   "company": "北京面壁智能科技有限责任公司",
-   "cat": "互联网/软件",
-   "date": "2026-08-28",
-   "roles": "多岗（以官网为准）",
-   "note": "面壁智能2028秋招『前进四』顶尖人才计划，面向2027年及以后毕业的在校硕士/博士，深度参与MiniCPM等明星项目，提供期权激励与顶尖算力支持，工作地点覆盖北京、上海、深圳、成都、西安、杭州，全年开放申请。",
-   "portal": "https://www.wondercv.com/xiaozhao/modelbest-forward-four-talent-program-13496-b25ac7/",
-   "source": "https://www.wondercv.com/xiaozhao/modelbest-forward-four-talent-program-13496-b25ac7/"
-  },
-  {
    "company": "华为-云核心网产品线",
    "cat": "互联网/软件",
    "date": "2026-08-28",
@@ -4880,15 +4682,6 @@
    "note": "成都旋极星源信息技术有限公司2027届校园招聘正式启动，面向微电子、通信、集成电路等相关专业，招聘射频/模拟芯片设计、版图和销售助理岗位，工作地点成都。",
    "portal": "https://www.wondercv.com/xiaozhao/star-source-2027-campus-recruitment-13530-0ae592/",
    "source": "https://www.wondercv.com/xiaozhao/star-source-2027-campus-recruitment-13530-0ae592/"
-  },
-  {
-   "company": "新东方华南区佛山学校",
-   "cat": "教育",
-   "date": "2026-08-28",
-   "roles": "禅城、南海、顺德",
-   "note": "新东方华南区佛山学校2027届校园招聘提前批启动，面向2027届毕业生，开设青少部、高中班级部、高中一对一部等多个教师岗位，不限专业、不限教师资格证，更看重热情与潜力。首年平均综合年薪10-20万，顶尖人才首年保底年薪30万，工作地点在佛山禅城、南海、顺德。",
-   "portal": "https://www.wondercv.com/xiaozhao/new-oriental-foshan-2027-early-campus-13481-ebbc43/",
-   "source": "https://www.wondercv.com/xiaozhao/new-oriental-foshan-2027-early-campus-13481-ebbc43/"
   },
   {
    "company": "新时达",
@@ -5044,15 +4837,6 @@
    "source": ""
   },
   {
-   "company": "蒙牛-星PLUS",
-   "cat": "快消",
-   "date": "2026-08-28",
-   "roles": "营养研究、全球院校、星PLUS",
-   "note": "蒙牛2027「星PLUS」校园招聘面向全球顶尖院校博士毕业生，聚焦营养研究方向，打造领军型人才培养项目。",
-   "portal": "https://www.wondercv.com/xiaozhao/mengniu-2027-starplus-beijing-13604-aa0e4e/",
-   "source": "https://www.wondercv.com/xiaozhao/mengniu-2027-starplus-beijing-13604-aa0e4e/"
-  },
-  {
    "company": "蒙牛-星动力",
    "cat": "快消",
    "date": "2026-08-28",
@@ -5060,15 +4844,6 @@
    "note": "蒙牛2027「星动力」校园招聘面向2027届国内外应届毕业生，热招职类包括销售、数智化、技术与工程、供应链、安全质量等方向。",
    "portal": "https://www.wondercv.com/xiaozhao/mengniu-star-power-2027-campus-recruitment-13547-c903fa/",
    "source": "https://www.wondercv.com/xiaozhao/mengniu-star-power-2027-campus-recruitment-13547-c903fa/"
-  },
-  {
-   "company": "蒙牛-未来星",
-   "cat": "快消",
-   "date": "2026-08-28",
-   "roles": "北京上海天津呼和浩特海外、管培生、全球乳业前十、多职类",
-   "note": "蒙牛2027届未来星校园招聘启动，面向2027届国内外应届毕业生，热招市场、销售、研发等九大职类，工作地点覆盖上海、北京、呼和浩特、天津和海外。",
-   "portal": "https://www.wondercv.com/xiaozhao/mengniu-2027-futurestar-campus-recruitment-13599-25b79e/",
-   "source": "https://www.wondercv.com/xiaozhao/mengniu-2027-futurestar-campus-recruitment-13599-25b79e/"
   },
   {
    "company": "虹桥正瀚",
@@ -5231,15 +5006,6 @@
    "note": "鲸灵集团2027届校园招聘正式启动，面向2027届本科及以上应届生，招聘战略管培生（BEST·ONE），工作地点杭州。项目提供2年高潜加速培养，包含全链路历练、战训一体、双线陪跑等机制。",
    "portal": "https://www.wondercv.com/xiaozhao/whale-bestone-2027-hangzhou-13711-7d0e0b/",
    "source": "https://www.wondercv.com/xiaozhao/whale-bestone-2027-hangzhou-13711-7d0e0b/"
-  },
-  {
-   "company": "麦吉丽集团",
-   "cat": "快消",
-   "date": "2026-08-29",
-   "roles": "武汉 上海、美妆、管培生",
-   "note": "麦吉丽集团2027届校园招聘正式启动，面向2027届毕业生，招募电商、市场、产品营销、数据洞察、设计、产品六大管培生岗位，工作地点覆盖武汉、上海。",
-   "portal": "https://www.wondercv.com/xiaozhao/mageline-2027-campus-recruitment-13680-4df6fa/",
-   "source": "https://www.wondercv.com/xiaozhao/mageline-2027-campus-recruitment-13680-4df6fa/"
   },
   {
    "company": "东风汽车股份",
@@ -5852,15 +5618,6 @@
    "note": "2027年度直招（9/2-9/19）+统招（9/2-10/7）启动，10月25日统一笔试；80余家子分公司、每人限投1岗",
    "portal": "https://zhaopin.chnenergy.com.cn",
    "source": ""
-  },
-  {
-   "company": "复星集团",
-   "cat": "传媒/广告",
-   "date": "2026-09-02",
-   "roles": "产品运营、营销",
-   "note": "招聘公告 复星集团2027届校园招聘已正式启动。本页面转载的公告标题为《复星2027届校园招聘正式启动》。 所属企业 复星集团 招聘届别 面向 2027 届毕业生 待补充信息 当前公告正文未披露具体岗位、工作地点、招聘进度、待遇及福利等细节。后续相关信息请以复星集团官方发布的完整",
-   "portal": "https://www.wondercv.com/xiaozhao/fosun-2027-campus-recruitment-13909-34fa85/",
-   "source": "https://www.wondercv.com/xiaozhao/fosun-2027-campus-recruitment-13909-34fa85/"
   },
   {
    "company": "孚新工程",
@@ -6763,15 +6520,6 @@
    "source": "https://www.wondercv.com/xiaozhao/tenafe-2027-campus-recruitment-14268-83bbdb/"
   },
   {
-   "company": "吉利控股集团",
-   "cat": "汽车",
-   "date": "2026-09-06",
-   "roles": "多岗（以官网为准）",
-   "note": "吉利控股集团2027届全球校园招聘正式启动，开放5000+岗位，面向2027届本科/硕士/博士毕业生，网申截止2026年10月31日。",
-   "portal": "https://www.wondercv.com/xiaozhao/geely-2027-global-campus-recruitment-14324-4f5d90/",
-   "source": "https://www.wondercv.com/xiaozhao/geely-2027-global-campus-recruitment-14324-4f5d90/"
-  },
-  {
    "company": "大信会计师事务所（特殊普通合伙）",
    "cat": "专业服务/咨询",
    "date": "2026-09-06",
@@ -6943,15 +6691,6 @@
    "source": ""
   },
   {
-   "company": "信永中和集团",
-   "cat": "专业服务/咨询",
-   "date": "2026-09-07",
-   "roles": "多岗（以官网为准）",
-   "note": "信永中和集团启动2027校园招聘，面向2027届毕业生，专业不限，提供审计、税务、管理咨询、信息技术、工程管理和职能支持等多元赛道，工作地点覆盖全国多城。",
-   "portal": "https://www.wondercv.com/xiaozhao/shinewing-2027-campus-recruitment-14442-b647b8/",
-   "source": "https://www.wondercv.com/xiaozhao/shinewing-2027-campus-recruitment-14442-b647b8/"
-  },
-  {
    "company": "光迅科技",
    "cat": "中厂",
    "date": "2026-09-07",
@@ -7040,15 +6779,6 @@
    "note": "优诺创新27秋招（2026秋季校招）面向2026届及2027届毕业生，在广州招聘产品开发专员、亚马逊英语运营专员和亚马逊（德/法/西班牙语）运营专员。公司专注B2C跨境电商（出口），覆盖3C电子、汽配、户外用品、五金工具等类目，并为应届生提供系统化带教、四级培养体系、双通道晋升及AI工具库资源。",
    "portal": "https://www.wondercv.com/xiaozhao/canton-2026-autumn-ecommerce-campus-recruitment-14413-8dd474/",
    "source": "https://www.wondercv.com/xiaozhao/canton-2026-autumn-ecommerce-campus-recruitment-14413-8dd474/"
-  },
-  {
-   "company": "得力",
-   "cat": "快消",
-   "date": "2026-09-07",
-   "roles": "多岗（以官网为准）",
-   "note": "得力集团2027届全球校园招聘正式启动。作为全球化文创科技产业集团，业务覆盖全球150+国家与地区，本次校招设置8大职类、20+岗位方向，提供周末双休、五险一金、1V1导师带教等成长保障。",
-   "portal": "https://www.wondercv.com/xiaozhao/deli-group-2027-global-campus-recruitment-14430-7d7d46/",
-   "source": "https://www.wondercv.com/xiaozhao/deli-group-2027-global-campus-recruitment-14430-7d7d46/"
   },
   {
    "company": "方正电机",
@@ -7678,8 +7408,6 @@
   "盛趣游戏": "中厂",
   "米哈游": "中厂",
   "sigmastar": "半导体/电子",
-  "上海米哈游网络科技股份有限公司": "游戏/文娱",
-  "元气森林（北京）食品科技集团有限公司": "快消",
   "加多宝": "快消",
   "北京凯读投资管理有限公司": "金融",
   "国投证券": "金融",
@@ -7705,7 +7433,6 @@
   "华芯巨数（杭州）微电子有限公司": "半导体/电子",
   "天津紫龙奇点互动娱乐有限公司": "游戏/文娱",
   "寒武纪": "AI中厂",
-  "广州灵犀互动娱乐有限公司": "游戏/文娱",
   "德州仪器（TI）": "行业巨头",
   "德邦快递": "物流",
   "泉峰科技": "中厂",
@@ -7722,7 +7449,6 @@
   "成都爱瑞无线科技有限公司": "智能制造/装备",
   "扬子江药业": "医药",
   "拓尔微电子股份有限公司": "半导体/电子",
-  "新东方华南区": "教育",
   "汕头德莱特体育文化有限公司": "智能制造/装备",
   "深信服": "中厂",
   "深圳拓竹科技有限公司": "半导体/电子",
@@ -7744,7 +7470,6 @@
   "盛趣信息技术(上海)有限公司": "游戏/文娱",
   "OPPO": "大厂",
   "vivo": "大厂",
-  "上海莉莉丝科技股份有限公司": "游戏/文娱",
   "世纪华通": "中厂",
   "云天励飞": "AI中厂",
   "作业帮": "中厂",
@@ -7798,7 +7523,6 @@
   "腾讯投资": "金融",
   "蜜雪冰城": "餐饮茶饮",
   "赛微微电": "智能制造/装备",
-  "陕西圆通速递有限公司": "物流",
   "飞托克": "智能制造/装备",
   "苏州能讯高能半导体有限公司": "智能制造/装备",
   "华为": "大厂",
@@ -7894,7 +7618,6 @@
   "荣耀": "大厂",
   "西安图为电气技术有限公司": "智能制造/装备",
   "西安知象光电科技有限公司": "快消",
-  "迅销（中国）商贸有限公司": "快消",
   "途游游戏": "中厂",
   "重庆晞望网络科技有限公司": "互联网/软件",
   "长春永固科技有限公司": "半导体/电子",
@@ -7978,8 +7701,6 @@
   "名创优品": "中厂",
   "大连科苑同芳学校": "教育",
   "好未来（学而思）": "中厂",
-  "新东方上海学校": "教育",
-  "新东方江苏省域": "教育",
   "晶盛机电": "智能制造/装备",
   "粉笔": "教育",
   "网易云音乐": "大厂",
@@ -7999,7 +7720,6 @@
   "力芯微": "智能制造/装备",
   "北京学而思教育科技有限公司": "教育",
   "北京转转精神科技有限公司": "快消",
-  "南京新东方文化艺术发展有限公司": "教育",
   "博众精工": "智能制造/装备",
   "合肥蔚蓝恒星科技有限公司": "能源",
   "吉天星舟": "智能制造/装备",
@@ -8011,8 +7731,6 @@
   "山石网科通信技术股份有限公司": "互联网/软件",
   "希奥端": "半导体/电子",
   "希奥端（深圳）计算技术有限公司": "半导体/电子",
-  "平安人寿山东公司": "金融",
-  "平安人寿广东公司": "金融",
   "广州光娱信息科技有限公司": "游戏/文娱",
   "库洛游戏": "中厂",
   "形朗（深圳）科技有限公司": "半导体/电子",
@@ -8074,7 +7792,6 @@
   "腾讯音乐": "中厂",
   "芯行纪科技有限公司": "半导体/电子",
   "蔚来": "汽车",
-  "西安新东方培训学校有限公司": "教育",
   "长江存储": "中厂",
   "麦田能源": "能源",
   "TOP TOY": "快消",
@@ -8090,17 +7807,10 @@
   "信芯微": "半导体/电子",
   "光至科技": "智能制造/装备",
   "全棉时代（Purcotton）": "快消",
-  "北京字节跳动科技有限公司": "互联网/软件",
-  "华为云（云计算质量运营与流程IT部）": "互联网/软件",
   "华润置地（百匠新人/万象生）": "央企国企",
   "南孚集团": "能源",
   "天健会计师事务所": "专业服务/咨询",
   "奇瑞汽车": "汽车",
-  "平安人寿上海分公司": "金融",
-  "平安人寿云南公司": "金融",
-  "平安人寿河北分公司": "金融",
-  "平安人寿海南分公司": "金融",
-  "平安人寿湖北公司": "金融",
   "平安人寿烟台中心支公司": "金融",
   "平安人寿黑龙江分公司": "金融",
   "广东三石园科技有限公司": "智能制造/装备",
@@ -8108,7 +7818,6 @@
   "得力集团": "快消",
   "恒安集团": "快消",
   "指色网络": "游戏/文娱",
-  "携程集团": "互联网/软件",
   "方田教育": "教育",
   "旋极星源": "智能制造/装备",
   "星源博锐": "汽车",
@@ -8140,7 +7849,6 @@
   "先进芯测": "智能制造/装备",
   "劲牌": "快消",
   "北京太空起源": "智能制造/装备",
-  "北京面壁智能科技有限责任公司": "互联网/软件",
   "华为-云核心网产品线": "互联网/软件",
   "哈乐沃德": "游戏/文娱",
   "坤维科技": "半导体/电子",
@@ -8152,7 +7860,6 @@
   "心动（TapTap）": "中厂",
   "悦活里": "快消",
   "成都旋极星源信息技术有限公司": "互联网/软件",
-  "新东方华南区佛山学校": "教育",
   "新时达": "智能制造/装备",
   "昂赛微电子": "智能制造/装备",
   "星海图": "互联网/软件",
@@ -8170,9 +7877,7 @@
   "芯慧微": "半导体/电子",
   "芯源微": "智能制造/装备",
   "蒙牛": "快消",
-  "蒙牛-星PLUS": "快消",
   "蒙牛-星动力": "快消",
-  "蒙牛-未来星": "快消",
   "虹桥正瀚": "专业服务/咨询",
   "西安安泰测试科技有限公司": "互联网/软件",
   "赛赋医药": "医药",
@@ -8191,7 +7896,6 @@
   "达坦能源科技": "能源",
   "雷鸟科技": "互联网/软件",
   "鲸灵": "互联网/软件",
-  "麦吉丽集团": "快消",
   "东风汽车股份": "央企国企",
   "老乡鸡": "餐饮茶饮",
   "CHARLES & KEITH（小CK）": "快消",
@@ -8260,7 +7964,6 @@
   "其域创新": "中厂",
   "北方电子研究院（兵器206所）": "央企国企",
   "国家能源集团": "央企国企",
-  "复星集团": "传媒/广告",
   "孚新工程": "汽车",
   "宇晶股份": "中厂",
   "晨光文具（科力普）": "快消",
@@ -8361,7 +8064,6 @@
   "中哲物产集团": "跨境电商/外贸",
   "北京聪明核桃教育科技有限公司": "教育",
   "南京特纳飞电子技术有限公司": "半导体/电子",
-  "吉利控股集团": "汽车",
   "大信会计师事务所（特殊普通合伙）": "专业服务/咨询",
   "平头哥半导体": "专业服务/咨询",
   "无锡翼盟电子科技有限公司": "半导体/电子",
@@ -8381,7 +8083,6 @@
   "临工重机股份有限公司": "智能制造/装备",
   "保定飞凌嵌入式技术有限公司": "智能制造/装备",
   "信永中和": "金融",
-  "信永中和集团": "专业服务/咨询",
   "光迅科技": "中厂",
   "华润双鹤": "医药",
   "南京天际易达通信技术有限公司": "智能制造/装备",
@@ -8392,7 +8093,6 @@
   "帝迈生物": "医药",
   "广东东泰": "传媒/广告",
   "广州优诺创新科技有限公司": "跨境电商/外贸",
-  "得力": "快消",
   "方正电机": "智能制造/装备",
   "桥介数物": "智能制造/装备",
   "欣旺达": "能源",
