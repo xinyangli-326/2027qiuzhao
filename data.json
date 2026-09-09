@@ -1,7 +1,7 @@
 {
- "rev": "20260909-h",
+ "rev": "20260909-i",
  "updated": "2026-09-09",
- "count": 782,
+ "count": 781,
  "data": [
   {
    "company": "月之暗面（Kimi）",
@@ -3089,15 +3089,6 @@
    "note": "2027届校园招聘8月24日正式启动、网申至10月24日，base济南/上海/广州/厦门；扫码或公众号网申",
    "portal": "公众号：半亩花田招聘（校招网申） ｜ https://www.banmuhuatian.com",
    "source": ""
-  },
-  {
-   "company": "卫华集团",
-   "cat": "智能制造/装备",
-   "date": "2026-08-24",
-   "roles": "校园精英招募、工业起重机、港口起重机",
-   "note": "卫华集团2027届校园精英招募计划正在进行，诚邀有志于起重行业的人才加盟。",
-   "portal": "https://www.wondercv.com/xiaozhao/weihua-2027-campus-elite-recruitment-12928-381dab/",
-   "source": "https://www.wondercv.com/xiaozhao/weihua-2027-campus-elite-recruitment-12928-381dab/"
   },
   {
    "company": "双汇（领英汇/群英汇）",
@@ -7386,7 +7377,6 @@
   "信捷电气": "智能制造/装备",
   "加特兰微电子": "半导体/电子",
   "半亩花田": "化妆品",
-  "卫华集团": "智能制造/装备",
   "双汇（领英汇/群英汇）": "快消",
   "名创优品": "中厂",
   "大连科苑同芳学校": "教育",
