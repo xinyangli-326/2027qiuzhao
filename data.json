@@ -1,7 +1,7 @@
 {
- "rev": "20260909-k",
+ "rev": "20260909-l",
  "updated": "2026-09-09",
- "count": 775,
+ "count": 769,
  "data": [
   {
    "company": "月之暗面（Kimi）",
@@ -791,18 +791,9 @@
    "cat": "大厂",
    "date": "2026-08-05",
    "roles": "AI产品运营、AI应用产品经理、海外用户运营、产品体验设计师；子集团/事业群另含产品运营、用户/行业运营、市场、设计、数据、零售/物流/供应链、医药电商、跨境贸易等方向",
-   "note": "阿里集团2027届校招8月5日启动（网申/内推，AI岗位占比约八成）。淘天、阿里云、菜鸟、阿里健康、阿里国际、淘宝闪购、千问、平头哥、飞猪、虎鲸文娱、高德、盒马等原分列的子集团/事业群已合并为一行：多数业务可在阿里校招官网选择对应事业群投递，使用独立校招站的入口见投递入口列",
+   "note": "阿里集团2027届校招8月5日启动（网申/内推，AI岗位占比约八成）。淘天、阿里云、菜鸟、阿里健康、阿里国际、淘宝闪购、千问/千问办公、平头哥、飞猪、虎鲸文娱、高德、盒马等子集团/事业群已合并为一行：多数业务可在阿里校招官网选择对应事业群投递，使用独立校招站的入口见投递入口列。其中淘天AI技术类岗位占比超90%，平头哥/菜鸟另有AI数据、AI Infra、算法等岗，具体以官网对应事业群为准。",
    "portal": "主入口：https://talent.alibaba.com/campus ｜ 淘天：https://talent.taotian.com/campus/home ｜ 阿里健康：https://careers.alihealth.cn/campus/home ｜ 阿里国际：https://aidc-jobs.alibaba.com/campus/home?lang=zh ｜ 千问：https://talent.quark.cn/campus/home?lang=zh ｜ 平头哥：https://recruitment.t-head.cn/campus/home?lang=zh ｜ 高德：https://talent.amap.com/campus/home?lang=zh ｜ 盒马：https://hire.freshippo.com/campus/home?lang=zh ｜ 虎鲸文娱：https://job.alibabagroup.com/apply/1912250（优酷）/ https://job.alibabagroup.com/apply/1912251（大麦）",
    "source": ""
-  },
-  {
-   "company": "千问办公",
-   "cat": "互联网/软件",
-   "date": "2026-08-06",
-   "roles": "多岗（以官网为准）",
-   "note": "阿里巴巴千问办公27秋招 千问办公丨2027届应届生招聘正式启动 关于千问办公 千问办公是阿里巴巴旗下 AI 原生办公品牌，致力于让每个人都能拥有真正能干活、靠得住的 AI 工作伙伴。 面向人群 - 海内外 2027 届应届毕业生 - 毕业时间：2026年11月 – AI应用研发",
-   "portal": "https://www.wondercv.com/xiaozhao/alibaba-qianwen-2027-autumn-recruit-12245-745b6c/",
-   "source": "https://www.wondercv.com/xiaozhao/alibaba-qianwen-2027-autumn-recruit-12245-745b6c/"
   },
   {
    "company": "华芯巨数（杭州）微电子有限公司",
@@ -875,24 +866,6 @@
    "note": "砺算科技2027校园招聘，面向2027届及部分2026届毕业生，招聘GPU相关岗位，工作地点上海、南京、北京。",
    "portal": "https://www.wondercv.com/xiaozhao/lisuan-tech-gpu-campus-2027-12255-ad6de4/",
    "source": "https://www.wondercv.com/xiaozhao/lisuan-tech-gpu-campus-2027-12255-ad6de4/"
-  },
-  {
-   "company": "虎鲸文化娱乐（北京）有限公司",
-   "cat": "游戏/文娱",
-   "date": "2026-08-06",
-   "roles": "多岗（以官网为准）",
-   "note": "虎鲸文娱2027届校招启动，面向2026年11月至2027年10月毕业的应届生，开放技术、产品、设计、内容、运营、游戏等岗位，工作地点包括北京、上海、杭州、西安。",
-   "portal": "https://www.wondercv.com/xiaozhao/tiger-whale-entertainment-2027-campus-recruitment-12241-636513/",
-   "source": "https://www.wondercv.com/xiaozhao/tiger-whale-entertainment-2027-campus-recruitment-12241-636513/"
-  },
-  {
-   "company": "飞猪商务服务（杭州）有限公司",
-   "cat": "互联网/软件",
-   "date": "2026-08-06",
-   "roles": "技术、产品、运营",
-   "note": "飞猪2027届秋季校园招聘正式启动，面向2027届毕业生，提供技术、产品、运营、设计等多类岗位。",
-   "portal": "https://www.wondercv.com/xiaozhao/feizhu-beijing-2027-autumn-campus-recruitment-12251-3e28d9/",
-   "source": "https://www.wondercv.com/xiaozhao/feizhu-beijing-2027-autumn-campus-recruitment-12251-3e28d9/"
   },
   {
    "company": "上海伏达半导体有限公司",
@@ -1046,15 +1019,6 @@
    "note": "海浦蒙特2027届全球校园招聘正式启动，面向2027届应届毕业生，招聘控制科学与工程、电气工程等专业硕士及以上学历人才，提供具有竞争力的薪资和福利。",
    "portal": "https://www.wondercv.com/xiaozhao/hipomont-shenzhen-2027-global-campus-recruitment-12344-55425b/",
    "source": "https://www.wondercv.com/xiaozhao/hipomont-shenzhen-2027-global-campus-recruitment-12344-55425b/"
-  },
-  {
-   "company": "淘天有限公司",
-   "cat": "互联网/软件",
-   "date": "2026-08-08",
-   "roles": "AI技术类、算法工程师",
-   "note": "淘天集团2027届应届生招聘正式启动，面向2026年11月至2027年10月毕业的海内外应届毕业生，AI技术类岗位占比超90%，涵盖智能算法产品事业部、1688等部门，工作地点包括北京、杭州等地，招聘流程包括网申、测评、笔试、面试、发放意向书和正式Offer。",
-   "portal": "https://www.wondercv.com/xiaozhao/taotian-group-ai-algorithm-engineer-2027-12345-eb5650/",
-   "source": "https://www.wondercv.com/xiaozhao/taotian-group-ai-algorithm-engineer-2027-12345-eb5650/"
   },
   {
    "company": "申洲集团",
@@ -6169,15 +6133,6 @@
    "source": "https://www.wondercv.com/xiaozhao/daxin-2027-campus-recruitment-14286-1f8378/"
   },
   {
-   "company": "平头哥半导体",
-   "cat": "专业服务/咨询",
-   "date": "2026-09-06",
-   "roles": "多岗（以官网为准）",
-   "note": "平头哥（上海）半导体技术有限公司发布2027届秋招岗位信息，开放AI数据工程师、AI应用研发工程师、AI Infra工程师、AI SRE等岗位。",
-   "portal": "https://www.wondercv.com/xiaozhao/t-head-2027-autumn-ai-campus-14318-32a3ed/",
-   "source": "https://www.wondercv.com/xiaozhao/t-head-2027-autumn-ai-campus-14318-32a3ed/"
-  },
-  {
    "company": "无锡翼盟电子科技有限公司",
    "cat": "半导体/电子",
    "date": "2026-09-06",
@@ -6203,15 +6158,6 @@
    "note": "苏州灵猴机器人开启2027届校招，开放50+热招岗位、招聘100+人，覆盖苏州/嘉兴/深圳/北京四大地点和管培生、销售PM、研发、应用技术、平台职能5大方向，面向2027届本科及以上毕业生（含2026届未就业）。",
    "portal": "https://www.wondercv.com/xiaozhao/linkhou-2027-campus-recruitment-14315-b0a7fd/",
    "source": "https://www.wondercv.com/xiaozhao/linkhou-2027-campus-recruitment-14315-b0a7fd/"
-  },
-  {
-   "company": "菜鸟网络科技有限公司",
-   "cat": "物流",
-   "date": "2026-09-06",
-   "roles": "多岗（以官网为准）",
-   "note": "菜鸟集团2027届秋季校园招聘项目，目前开放AI数据工程师、智能体运行时安全评测与防御关键技术研究（阿里星）等岗位，面向硕士及以上学历，工作地点覆盖杭州、北京、上海。",
-   "portal": "https://www.wondercv.com/xiaozhao/cainiao-2027-autumn-campus-14317-23f799/",
-   "source": "https://www.wondercv.com/xiaozhao/cainiao-2027-autumn-campus-14317-23f799/"
   },
   {
    "company": "蛮啾网络",
@@ -7068,7 +7014,6 @@
   "爱科微科技（上海）股份有限公司": "半导体/电子",
   "联想": "行业巨头",
   "阿里巴巴": "大厂",
-  "千问办公": "互联网/软件",
   "华芯巨数（杭州）微电子有限公司": "半导体/电子",
   "天津紫龙奇点互动娱乐有限公司": "游戏/文娱",
   "寒武纪": "AI中厂",
@@ -7077,8 +7022,6 @@
   "泉峰科技": "中厂",
   "温氏股份": "快消",
   "砺算科技（上海）有限公司": "半导体/电子",
-  "虎鲸文化娱乐（北京）有限公司": "游戏/文娱",
-  "飞猪商务服务（杭州）有限公司": "互联网/软件",
   "上海伏达半导体有限公司": "智能制造/装备",
   "上海思格新能源技术有限公司": "能源",
   "中大咨询": "专业服务/咨询",
@@ -7096,7 +7039,6 @@
   "春风动力": "智能制造/装备",
   "杭州宇泛智能科技有限公司": "智能制造/装备",
   "海浦蒙特": "半导体/电子",
-  "淘天有限公司": "互联网/软件",
   "申洲集团": "服装服饰",
   "眸芯科技": "半导体/电子",
   "酷哇机器人": "汽车",
@@ -7665,11 +7607,9 @@
   "中哲物产集团": "跨境电商/外贸",
   "北京聪明核桃教育科技有限公司": "教育",
   "大信会计师事务所（特殊普通合伙）": "专业服务/咨询",
-  "平头哥半导体": "专业服务/咨询",
   "无锡翼盟电子科技有限公司": "半导体/电子",
   "芯驰科技": "半导体/电子",
   "苏州灵猴机器人有限公司": "智能制造/装备",
-  "菜鸟网络科技有限公司": "物流",
   "蛮啾网络": "游戏/文娱",
   "西安交大捷普网络科技有限公司": "互联网/软件",
   "西安奇点能源股份有限公司": "互联网/软件",
