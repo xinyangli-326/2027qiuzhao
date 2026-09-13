@@ -70,6 +70,25 @@
   .search { flex: 1 1 240px; display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; }
   .search svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
   .search input { border: 0; outline: 0; padding: 9px 0; font-size: 14px; width: 100%; background: transparent; color: var(--text); font-family: inherit; }
+  .search { position: relative; }
+  .search .qclear { display: none; flex: none; border: 0; background: transparent; color: var(--muted); font-size: 13px; line-height: 1; cursor: pointer; padding: 4px 2px; }
+  .search .qclear:hover { color: var(--text); }
+  .sugs { display: none; position: absolute; left: -1px; right: -1px; top: calc(100% + 4px); z-index: 30; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(16,24,40,.14); max-height: 296px; overflow: auto; }
+  .sugs.open { display: block; }
+  .sug { display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 13px; cursor: pointer; border-top: 1px solid #f1f5f9; }
+  .sug:first-child { border-top: 0; }
+  .sug:hover, .sug.active { background: #eef2f8; }
+  .sug-name { font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sug .sug-cat { flex: none; margin-left: auto; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--gray-bg); color: var(--gray-fg); }
+  .sug .sug-hint { flex: none; margin-left: auto; font-size: 11px; color: var(--muted); background: #f1f5f9; padding: 1px 7px; border-radius: 999px; }
+  .sug.none, .sug.more { color: var(--muted); font-size: 12.5px; cursor: default; }
+  .sug.none:hover, .sug.more:hover { background: transparent; }
+  mark.hit { background: #fde68a; color: #7c2d12; border-radius: 3px; padding: 0 2px; }
+  .qcount { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .qcount.warn { color: #b45309; }
+  tbody tr.hit-row { background: #fffbeb; }
+  tbody tr.hit-row:nth-child(even) { background: #fff7df; }
+  tbody tr.hit-row td.company { color: #7c2d12; }
   .sortbox { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
   .sortbox select, .btn {
     font-family: inherit; font-size: 13px; color: var(--text);
@@ -219,10 +238,13 @@
   </div>
 
   <div class="controls">
-    <div class="search">
+    <div class="search" id="searchBox">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="q" type="search" placeholder="搜索公司、岗位、备注…" aria-label="搜索">
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="输入公司名搜索，如：腾讯 / 字节 / 中广核…" aria-label="搜索公司" aria-autocomplete="list" aria-expanded="false" aria-controls="qSug">
+      <button class="qclear" id="qClear" type="button" title="清空搜索" aria-label="清空搜索">✕</button>
+      <div class="sugs" id="qSug" role="listbox" aria-label="公司名匹配建议"></div>
     </div>
+    <span class="qcount" id="qCount" role="status" aria-live="polite"></span>
     <div class="sortbox">
       <label for="sort">排序</label>
       <select id="sort" aria-label="排序方式">
@@ -1044,7 +1066,7 @@ const END_STAGES = ["已投递", "笔试", "AI面试", "面试"];
 const END_LABEL = { "已投递": "初筛/已投递", "笔试": "笔试", "AI面试": "AI面试", "面试": "面试" };
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
-const PAGE_REVISION = "20260913-a";
+const PAGE_REVISION = "20260913-b";
 let CURRENT_REVISION = PAGE_REVISION;
 
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
@@ -1898,7 +1920,7 @@ const SCALE_ORDER = ["大厂", "行业巨头", "中厂", "AI中厂", "小厂", "
 let progress = {};
 loadProgress();
 
-let state = { q: "", dirTerms: [], stage: "全部", scale: "全部", dirs: [], sort: "date-asc" };
+let state = { q: "", qExact: false, dirTerms: [], stage: "全部", scale: "全部", dirs: [], sort: "date-asc" };
 
 function countByStage() {
   const c = { "全部": DATA.length, "未投递": 0, "已投递": 0, "笔试": 0, "AI面试": 0, "面试": 0, "流程结束": 0 };
@@ -1998,9 +2020,74 @@ function matches(d) {
     const text = dirText(d);
     if (!state.dirTerms.every((t) => text.includes(t))) return false;
   }
+  return matchQ(d);
+}
+
+// ---- 公司名搜索：归一化、匹配与高亮 ----
+function normText(s) {
+  return String(s == null ? "" : s)
+    .toLowerCase()
+    .replace(/[\s\u3000]+/g, "")
+    .replace(/[()（）【】\[\]·・、,，.。!！?？:：;；"'“”‘’\/\\|｜_\-—]+/g, "");
+}
+function qParts(raw) {
+  return String(raw == null ? "" : raw).split(/[\s,，、;；]+/).map(normText).filter(Boolean);
+}
+function companyHit(d, parts) {
+  if (!parts || !parts.length) return false;
+  const n = normText(d.company);
+  return parts.every((p) => n.includes(p));
+}
+function companyRank(d, parts) {
+  const n = normText(d.company);
+  const q = (parts || []).join("");
+  if (!q) return 99;
+  if (n === q) return 0;
+  if (n.startsWith(q)) return 1;
+  if (n.includes(q)) return 2;
+  return 99;
+}
+function matchQ(d) {
   if (!state.q) return true;
-  const q = state.q.toLowerCase();
-  return (d.company + d.roles + d.note + String(d.source || "") + String(d.portal || "")).toLowerCase().includes(q);
+  if (state.qExact) return d.company === state.q;
+  const parts = qParts(state.q);
+  if (!parts.length) return true;
+  const blob = (d.company + d.roles + d.note + String(d.source || "") + String(d.portal || "")).toLowerCase();
+  if (blob.indexOf(String(state.q).toLowerCase()) >= 0) return true;
+  // 容忍空格/全角符号：按归一化后的文本再匹配一次
+  const nb = normText(blob);
+  return parts.every((p) => nb.includes(p));
+}
+// 归一化文本到原文的下标映射，用于在原文里高亮命中片段
+function normIndexMap(text) {
+  const raw = String(text == null ? "" : text);
+  let norm = "";
+  const map = [];
+  for (let i = 0; i < raw.length; i++) {
+    const n = normText(raw[i]);
+    if (!n) continue;
+    norm += n;
+    for (let k = 0; k < n.length; k++) map.push(i);
+  }
+  return { raw: raw, norm: norm, map: map };
+}
+function hitHtml(text) {
+  const raw = String(text == null ? "" : text);
+  if (!state.q || state.qExact) return esc(raw);
+  const q = state.q.trim();
+  if (!q) return esc(raw);
+  const parts = qParts(q);
+  const rawIdx = raw.toLowerCase().indexOf(q.toLowerCase());
+  if (rawIdx >= 0) {
+    return esc(raw.slice(0, rawIdx)) + '<mark class="hit">' + esc(raw.slice(rawIdx, rawIdx + q.length)) + "</mark>" + esc(raw.slice(rawIdx + q.length));
+  }
+  const nm = normIndexMap(raw);
+  const target = parts.find((p) => nm.norm.indexOf(p) >= 0);
+  if (!target) return esc(raw);
+  const s = nm.norm.indexOf(target);
+  const start = nm.map[s];
+  const end = nm.map[Math.min(s + target.length - 1, nm.map.length - 1)] + 1;
+  return esc(raw.slice(0, start)) + '<mark class="hit">' + esc(raw.slice(start, end)) + "</mark>" + esc(raw.slice(end));
 }
 
 function tlHtml(company, rec) {
@@ -2026,7 +2113,12 @@ function endStageHtml(company, rec) {
 function render() {
   let list = DATA.filter(matches);
   const [key, dir] = state.sort.split("-");
+  const parts = qParts(state.q);
   list.sort((a, b) => {
+    if (parts.length && !state.qExact) {
+      const byName = companyRank(a, parts) - companyRank(b, parts);
+      if (byName) return byName;
+    }
     let r = 0;
     if (key === "date") r = a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
     else if (key === "company") r = a.company.localeCompare(b.company, "zh");
@@ -2051,9 +2143,10 @@ function render() {
       const s = rec.stage;
       const cls = STAGE_CLASS[s] || "st0";
       const tr = document.createElement("tr");
+      if (parts.length && companyHit(d, parts)) tr.className = "hit-row";
       tr.innerHTML =
         '<td class="num">' + (i + 1) + "</td>" +
-        '<td class="company">' + esc(d.company) + ' <span class="cat-badge cat-' + CAT[d.company] + '">' + CAT[d.company] + "</span></td>" +
+        '<td class="company">' + hitHtml(d.company) + ' <span class="cat-badge cat-' + CAT[d.company] + '">' + CAT[d.company] + "</span></td>" +
         '<td class="cat-cell">' + CAT[d.company] + "</td>" +
         '<td class="date">' + d.date + "</td>" +
         '<td class="roles">' + esc(d.roles) + "</td>" +
@@ -2066,6 +2159,15 @@ function render() {
         "</select>" + tlHtml(d.company, rec) + (s === "流程结束" ? endStageHtml(d.company, rec) : "") + "</td>";
       tbody.appendChild(tr);
     });
+  }
+  const qc = document.getElementById("qCount");
+  if (qc) {
+    if (!state.q) { qc.textContent = ""; qc.className = "qcount"; }
+    else {
+      const nameHits = DATA.filter((d) => companyHit(d, parts)).length;
+      qc.textContent = (state.qExact ? "已定位： " : "公司名匹配 " + nameHits + " 家 ｜ ") + "当前显示 " + list.length + " 家";
+      qc.className = "qcount" + (list.length ? "" : " warn");
+    }
   }
   renderStats();
   renderScaleChips();
@@ -2164,10 +2266,109 @@ document.getElementById("tbody").addEventListener("click", (e) => {
   render();
 });
 
-document.getElementById("q").addEventListener("input", (e) => {
-  state.q = e.target.value.trim();
+const qInput = document.getElementById("q");
+const qSug = document.getElementById("qSug");
+const qClear = document.getElementById("qClear");
+const qBox = document.getElementById("searchBox");
+let sugActive = -1;
+
+function openSug(open) {
+  if (!qSug) return;
+  qSug.classList.toggle("open", !!open);
+  qInput.setAttribute("aria-expanded", open ? "true" : "false");
+  if (!open) sugActive = -1;
+}
+function syncQClear() {
+  if (qBox) qBox.classList.toggle("hasq", !!state.q);
+  if (qClear) qClear.style.display = state.q ? "block" : "none";
+}
+function renderSug() {
+  if (!qSug) return;
+  const parts = qParts(state.q);
+  if (!parts.length) { qSug.innerHTML = ""; openSug(false); return; }
+  const nameMatches = DATA.filter((d) => companyHit(d, parts))
+    .sort((a, b) => companyRank(a, parts) - companyRank(b, parts) || a.company.localeCompare(b.company, "zh"));
+  const shown = nameMatches.slice(0, 8).map((d) => ({ d, kind: "name" }));
+  if (shown.length < 8) {
+    const q = state.q.toLowerCase();
+    DATA.filter((d) => !companyHit(d, parts) && (d.company + d.roles + d.note).toLowerCase().includes(q))
+      .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+      .slice(0, 8 - shown.length)
+      .forEach((d) => shown.push({ d, kind: "note" }));
+  }
+  sugActive = -1;
+  if (!shown.length) {
+    qSug.innerHTML = '<div class="sug none">没有公司名匹配「' + esc(state.q) + '」，下方表格仍会按岗位/备注关键词筛选</div>';
+  } else {
+    qSug.innerHTML = shown.map(({ d, kind }) =>
+      '<div class="sug" role="option" data-company="' + escAttr(d.company) + '">' +
+        '<span class="sug-name">' + hitHtml(d.company) + "</span>" +
+        (kind === "name"
+          ? '<span class="sug-cat cat-' + escAttr(CAT[d.company] || "") + '">' + esc(CAT[d.company] || "") + "</span>"
+          : '<span class="sug-hint">备注提及</span>') +
+      "</div>"
+    ).join("") + (nameMatches.length > 8 ? '<div class="sug more">另有 ' + (nameMatches.length - 8) + ' 家公司名匹配，继续输入可缩小范围</div>' : "");
+  }
+  openSug(true);
+}
+function pickCompany(company) {
+  if (!company) return;
+  qInput.value = company;
+  state.q = company;
+  state.qExact = true;
+  syncQClear();
+  openSug(false);
   render();
+  const row = document.querySelector("#tbody tr.hit-row");
+  if (row && row.scrollIntoView) { try { row.scrollIntoView({ block: "center" }); } catch (e) {} }
+  qInput.blur();
+}
+function clearQ() {
+  qInput.value = "";
+  state.q = "";
+  state.qExact = false;
+  syncQClear();
+  openSug(false);
+  render();
+  qInput.focus();
+}
+qInput.addEventListener("input", (e) => {
+  state.q = e.target.value.trim();
+  state.qExact = false;
+  syncQClear();
+  render();
+  renderSug();
 });
+qInput.addEventListener("focus", () => { if (state.q && !state.qExact) renderSug(); });
+qInput.addEventListener("keydown", (e) => {
+  const items = Array.from(qSug.querySelectorAll(".sug[data-company]"));
+  if (e.key === "ArrowDown" && items.length) {
+    e.preventDefault();
+    if (!qSug.classList.contains("open")) { renderSug(); return; }
+    sugActive = (sugActive + 1) % items.length;
+  } else if (e.key === "ArrowUp" && items.length) {
+    e.preventDefault();
+    sugActive = (sugActive - 1 + items.length) % items.length;
+  } else if (e.key === "Enter") {
+    if (items.length) { e.preventDefault(); pickCompany(items[sugActive >= 0 ? sugActive : 0].dataset.company); }
+    return;
+  } else if (e.key === "Escape") {
+    if (qSug.classList.contains("open")) openSug(false);
+    else clearQ();
+    return;
+  } else return;
+  items.forEach((el, i) => el.classList.toggle("active", i === sugActive));
+  if (items[sugActive] && items[sugActive].scrollIntoView) items[sugActive].scrollIntoView({ block: "nearest" });
+});
+qSug.addEventListener("mousedown", (e) => {
+  const el = e.target.closest(".sug[data-company]");
+  if (!el) return;
+  e.preventDefault();
+  pickCompany(el.dataset.company);
+});
+qClear.addEventListener("click", clearQ);
+document.addEventListener("click", (e) => { if (qBox && !qBox.contains(e.target)) openSug(false); });
+syncQClear();
 
 function parseDirTerms(raw) {
   return String(raw).split(/[\s,，、;；]+/).map((s) => s.trim().toLowerCase()).filter(Boolean);
