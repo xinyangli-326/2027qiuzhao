@@ -1,291 +1,579 @@
 <!doctype html>
+
 <html lang="zh-CN">
+
 <head>
+
 <meta charset="utf-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>2027届秋招信息汇总（产品/AI产品/运营）</title>
+
 <style>
+
   :root {
+
     --navy: #1f3864;
+
     --navy-2: #2f5290;
+
     --bg: #f5f7fa;
+
     --card: #ffffff;
+
     --text: #1f2937;
+
     --muted: #6b7280;
+
     --line: #e5e7eb;
+
     --blue-bg: #dbeafe; --blue-fg: #1d4ed8;
+
     --amber-bg: #fef3c7; --amber-fg: #b45309;
+
     --purple-bg: #f3e8ff; --purple-fg: #7e22ce;
+
     --green-bg: #dcfce7; --green-fg: #15803d;
+
     --gray-bg: #f3f4f6; --gray-fg: #6b7280;
+
     --rose-bg: #fee2e2; --rose-fg: #b91c1c;
+
   }
+
   * { box-sizing: border-box; }
+
   body {
+
     margin: 0;
+
     font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+
     background: var(--bg);
+
     color: var(--text);
+
     line-height: 1.55;
+
   }
+
   .page { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; }
 
+
+
   header.hero {
+
     background: linear-gradient(120deg, var(--navy), var(--navy-2));
+
     color: #fff;
+
     border-radius: 12px;
+
     padding: 22px 24px 18px;
+
   }
+
   header.hero h1 { margin: 0 0 6px; font-size: 22px; letter-spacing: .5px; }
+
   header.hero p { margin: 0; font-size: 13px; opacity: .85; }
 
+
+
   .stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+
   .chip {
+
     background: var(--card);
+
     border: 1px solid var(--line);
+
     border-radius: 999px;
+
     padding: 5px 12px;
+
     font-size: 12.5px;
+
     color: var(--muted);
+
     cursor: pointer;
+
     user-select: none;
+
     transition: all .15s ease;
+
   }
+
   .chip b { color: var(--text); font-weight: 600; }
+
   .chip:hover { border-color: var(--navy-2); }
+
   .chip.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+
   .chip.active b { color: #fff; }
+
   .chip.dot::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
   .chip.dot.s1::before { background: var(--blue-fg); }
+
   .chip.dot.s2::before { background: var(--amber-fg); }
+
   .chip.dot.s3::before { background: var(--purple-fg); }
+
   .chip.dot.s4::before { background: var(--green-fg); }
+
   .chip.dot.s5::before { background: var(--rose-fg); }
+
   .chip.dot.s0::before { background: #cbd5e1; }
 
+
+
   .controls {
+
     display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+
     margin: 14px 0 10px;
+
   }
+
   .search { flex: 1 1 240px; display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; }
+
   .search svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+
   .search input { border: 0; outline: 0; padding: 9px 0; font-size: 14px; width: 100%; background: transparent; color: var(--text); font-family: inherit; }
+
   .search { position: relative; }
+
   .search .qclear { display: none; flex: none; border: 0; background: transparent; color: var(--muted); font-size: 13px; line-height: 1; cursor: pointer; padding: 4px 2px; }
+
   .search .qclear:hover { color: var(--text); }
+
   .sugs { display: none; position: absolute; left: -1px; right: -1px; top: calc(100% + 4px); z-index: 30; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(16,24,40,.14); max-height: 296px; overflow: auto; }
+
   .sugs.open { display: block; }
+
   .sug { display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 13px; cursor: pointer; border-top: 1px solid #f1f5f9; }
+
   .sug:first-child { border-top: 0; }
+
   .sug:hover, .sug.active { background: #eef2f8; }
+
   .sug-name { font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   .sug .sug-cat { flex: none; margin-left: auto; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--gray-bg); color: var(--gray-fg); }
+
   .sug .sug-hint { flex: none; margin-left: auto; font-size: 11px; color: var(--muted); background: #f1f5f9; padding: 1px 7px; border-radius: 999px; }
+
   .sug.none, .sug.more { color: var(--muted); font-size: 12.5px; cursor: default; }
+
   .sug.none:hover, .sug.more:hover { background: transparent; }
+
   mark.hit { background: #fde68a; color: #7c2d12; border-radius: 3px; padding: 0 2px; }
+
   .qcount { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+
   .qcount.warn { color: #b45309; }
+
   tbody tr.hit-row { background: #fffbeb; }
+
   tbody tr.hit-row:nth-child(even) { background: #fff7df; }
+
   tbody tr.hit-row td.company { color: #7c2d12; }
+
   .sortbox { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+
   .sortbox select, .btn {
+
     font-family: inherit; font-size: 13px; color: var(--text);
+
     background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; cursor: pointer;
+
   }
+
   .btn:hover { border-color: var(--navy-2); }
+
   .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+
   .btn.primary:hover { background: var(--navy-2); }
 
+
+
   .table-wrap {
+
     background: var(--card);
+
     border: 1px solid var(--line);
+
     border-radius: 10px;
+
     overflow: auto;
+
     max-height: 72vh;
+
     box-shadow: 0 1px 3px rgba(16,24,40,.06);
+
   }
+
   table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; font-size: 13px; }
+
   thead th {
+
     position: sticky; top: 0; z-index: 2;
+
     background: var(--navy); color: #fff;
+
     text-align: left; padding: 10px 12px; white-space: nowrap;
+
     font-weight: 600; letter-spacing: .3px;
+
   }
+
   thead th.sortable { cursor: pointer; }
+
   thead th.sortable:hover { background: var(--navy-2); }
+
   thead th .arrow { font-size: 11px; opacity: .75; margin-left: 3px; }
+
   tbody td { padding: 10px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+
   tbody tr:nth-child(even) { background: #f9fafb; }
+
   tbody tr:hover { background: #eef2f8; }
+
   td.num, th.num { text-align: center; white-space: nowrap; }
+
   td.date { white-space: nowrap; color: var(--muted); }
+
   td.company { font-weight: 600; white-space: nowrap; }
+
   td.company .cat-badge { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; vertical-align: 1px; }
+
   .cat-大厂 { background: #e0e7ff; color: #3730a3; }
+
   .cat-行业巨头 { background: #e2e8f0; color: #0f172a; }
+
   .cat-中厂 { background: #e0f2fe; color: #075985; }
+
   .cat-AI中厂 { background: #fae8ff; color: #86198f; }
+
   .cat-小厂 { background: #fef3c7; color: #92400e; }
+
   .cat-快消 { background: #fce7f3; color: #9d174d; }
+
   .cat-化妆品 { background: #fdf2f8; color: #be185d; }
+
   .cat-餐饮茶饮 { background: #ccfbf1; color: #0f766e; }
+
   .cat-服装服饰 { background: #ecfccb; color: #3f6212; }
+
   .cat-房地产 { background: #d1fae5; color: #065f46; }
+
   .cat-金融 { background: #ffedd5; color: #c2410c; }
+
   .cat-汽车 { background: #dbeafe; color: #1e40af; }
+
   .cat-能源 { background: #fef9c3; color: #a16207; }
+
   .cat-家电 { background: #ede9fe; color: #6d28d9; }
+
   .cat-医药 { background: #ffe4e6; color: #be123c; }
+
   .cat-教育 { background: #f1f5f9; color: #334155; }
+
   .cat-物流 { background: #f5f3ff; color: #5b21b6; }
+
   .cat-央企国企 { background: #ecfdf5; color: #047857; }
+
   td.cat-cell { text-align: center; white-space: nowrap; color: var(--muted); font-size: 12px; }
+
   td.roles { max-width: 300px; }
+
   td.note { max-width: 260px; color: var(--muted); font-size: 12.5px; }
+
   td.links a { color: var(--blue-fg); text-decoration: none; word-break: break-all; display: block; font-size: 12px; }
+
   td.links a:hover { text-decoration: underline; }
+
   td.links .way-text { color: var(--navy-2); word-break: break-all; display: block; font-size: 12px; }
+
   td.links .way-tag { display: inline-block; font-size: 10.5px; font-weight: 600; color: #6d28d9; background: #ede9fe; border-radius: 999px; padding: 1px 7px; margin-bottom: 3px; }
+
   td.links .way-sep { color: #cbd5e1; margin: 0 3px; }
 
+
+
   .dirbox {
+
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+
     margin: 10px 2px 2px; padding: 8px 10px; background: #f8fafc;
+
     border: 1px solid var(--line); border-radius: 12px;
+
   }
+
   .dirbox label { font-size: 13px; font-weight: 700; color: var(--navy-2); white-space: nowrap; }
+
   .dirbox input#dirQ { flex: 1 1 260px; min-width: 200px; }
+
   .dirbox .dir-hint { flex-basis: 100%; font-size: 11.5px; color: var(--muted); }
+
   .dirbox button { white-space: nowrap; }
 
+
+
   select.status {
+
     font-family: inherit; font-size: 12.5px; font-weight: 600;
+
     border: 1px solid var(--line); border-radius: 999px;
+
     padding: 5px 8px; cursor: pointer; width: 106px; outline: 0;
+
     background: var(--gray-bg); color: var(--gray-fg);
+
     appearance: auto;
+
   }
+
   select.status.st1 { background: var(--blue-bg); color: var(--blue-fg); border-color: #bfdbfe; }
+
   select.status.st2 { background: var(--amber-bg); color: var(--amber-fg); border-color: #fde68a; }
+
   select.status.st3 { background: var(--purple-bg); color: var(--purple-fg); border-color: #e9d5ff; }
+
   select.status.st4 { background: var(--green-bg); color: var(--green-fg); border-color: #bbf7d0; }
+
   select.status.st5 { background: var(--rose-bg); color: var(--rose-fg); border-color: #fecaca; }
 
+
+
   .empty { text-align: center; padding: 40px 16px; color: var(--muted); }
+
   footer { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
   footer a { color: var(--navy-2); }
 
+
+
   .chips-label { font-size: 12.5px; color: var(--muted); align-self: center; font-weight: 600; margin-right: 2px; white-space: nowrap; }
+
   .update-tip { margin: 8px 2px 0; font-size: 12.5px; color: var(--muted); min-height: 0; }
+
   .update-tip.ok { color: #15803d; }
+
   .update-tip.warn { color: #b45309; }
+
   .stage-cell { min-width: 196px; }
+
   .stage-cell select.status { width: 100%; }
+
   .tl-row { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; margin-top: 6px; }
+
   .tl-row button.tl {
+
     font-family: inherit; font-size: 11.5px; color: var(--blue-fg);
+
     background: var(--blue-bg); border: 1px solid #bfdbfe; border-radius: 999px;
+
     padding: 2px 8px; cursor: pointer; white-space: nowrap;
+
   }
+
   .tl-row button.tl:hover { background: #bfdbfe; }
+
   .tl-row .tl-arrow { color: #cbd5e1; font-style: normal; }
+
   .tl-empty { color: var(--muted); font-size: 11.5px; }
+
   .end-row { padding-top: 2px; }
+
   .end-label { color: var(--muted); font-size: 11.5px; margin-right: 6px; }
+
   select.end-stage {
+
     font-family: inherit; font-size: 11.5px; padding: 1px 4px;
+
     border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;
+
     color: var(--blue-fg); max-width: 140px;
+
   }
+
+
 
   @media (max-width: 640px) {
+
     header.hero h1 { font-size: 18px; }
+
     .controls { align-items: stretch; }
+
     .sortbox { flex: 1 1 100%; }
+
   }
+
 </style>
+
 </head>
+
 <body>
+
 <div class="page">
+
   <header class="hero">
+
     <h1>2027届秋招信息汇总（含国央企 · 支持自定义岗位方向）</h1>
-    <p id="heroMeta">数据截至 2026-09-09 ｜ 收录 770 家（大厂 / 行业巨头 / 中厂 / AI中厂 / 小厂 / 快消 / 化妆品 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流 / 半导体/电子 / 智能制造/装备 / 互联网/软件 / 专业服务/咨询 / 游戏/文娱 / 传媒/广告 / 化工/材料 / 农牧/食品 / 跨境电商/外贸）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+
+    <p id="heroMeta">数据截至 2026-09-09 ｜ 收录 772 家（大厂 / 行业巨头 / 中厂 / AI中厂 / 小厂 / 快消 / 化妆品 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流 / 半导体/电子 / 智能制造/装备 / 互联网/软件 / 专业服务/咨询 / 游戏/文娱 / 传媒/广告 / 化工/材料 / 农牧/食品 / 跨境电商/外贸）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+
   </header>
 
+
+
   <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
+
   <div class="stats" id="scaleChips" role="group" aria-label="按公司分类筛选"></div>
+
   <div class="stats" id="dirChips" role="group" aria-label="按职业方向筛选"></div>
 
+
+
   <div class="dirbox">
+
     <label for="dirQ">我的求职方向</label>
+
     <input id="dirQ" list="dirSug" placeholder="例如：财务 会计｜人力 行政｜法务｜产品 运营｜营销 品牌…" aria-label="自定义岗位方向">
+
     <datalist id="dirSug">
+
       <option value="财务"></option><option value="会计"></option><option value="审计"></option>
+
       <option value="人力资源"></option><option value="行政"></option><option value="法务"></option>
+
       <option value="合规"></option><option value="党务"></option><option value="党建"></option>
+
       <option value="战略"></option><option value="投资"></option><option value="市场营销"></option>
+
       <option value="品牌"></option><option value="产品经理"></option><option value="产品运营"></option>
+
       <option value="运营"></option><option value="数据分析"></option><option value="商业分析"></option>
+
       <option value="供应链"></option><option value="采购"></option><option value="物流"></option>
+
       <option value="客户服务"></option><option value="销售"></option><option value="商务"></option>
+
       <option value="设计"></option><option value="技术"></option><option value="算法"></option>
+
       <option value="管培"></option>
+
     </datalist>
+
     <button class="btn" id="clearDir" type="button">清除</button>
+
     <span class="dir-hint">输入你想投的岗位 / 职能关键词即可反向筛出开放相关岗位的公司；多个词用空格或逗号分隔（需同时满足），例如“财务 人力”会筛出同时有财务和人力方向岗位的公司（如中国移动、中国太平、华润万象商业等）。</span>
+
   </div>
+
+
 
   <div class="controls">
+
     <div class="search" id="searchBox">
+
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+
       <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="输入公司名搜索，如：腾讯 / 字节 / 中广核…" aria-label="搜索公司" aria-autocomplete="list" aria-expanded="false" aria-controls="qSug">
+
       <button class="qclear" id="qClear" type="button" title="清空搜索" aria-label="清空搜索">✕</button>
+
       <div class="sugs" id="qSug" role="listbox" aria-label="公司名匹配建议"></div>
+
     </div>
+
     <span class="qcount" id="qCount" role="status" aria-live="polite"></span>
+
     <div class="sortbox">
+
       <label for="sort">排序</label>
+
       <select id="sort" aria-label="排序方式">
+
         <option value="date-asc">开启时间 ↑</option>
+
         <option value="date-desc">开启时间 ↓</option>
+
         <option value="company-asc">公司名 A→Z</option>
+
         <option value="stage">按投递进度</option>
+
       </select>
+
     </div>
+
     <button class="btn primary" id="export" type="button">导出 CSV</button>
+
     <button class="btn" id="checkUpdate" type="button">检查更新</button>
+
   </div>
+
   <div id="updateTip" class="update-tip" role="status"></div>
 
+
+
   <div class="table-wrap">
+
     <table aria-label="2027届秋招公司信息与投递进度">
+
       <thead>
+
         <tr>
+
           <th class="num">#</th>
+
           <th>公司</th>
+
           <th>公司分类</th>
+
           <th>开启秋招时间</th>
+
           <th>相关岗位方向（可自定义筛选财务/人力等）</th>
+
           <th>备注</th>
+
           <th>投递入口 / 投递方式</th>
+
           <th>信息来源</th>
+
           <th>投递进度（自动记录日期）</th>
+
         </tr>
+
       </thead>
+
       <tbody id="tbody"></tbody>
+
     </table>
+
   </div>
 
+
+
   <footer>
+
     <span>提示：选择投递状态会自动记上当天日期（如 2026-09-05）；点进度条上的日期可把该环节更新为今天；清空请在下拉框选“未填写”。没有校招官网入口的公司会直接标注公众号/邮箱等投递方式。进度只保存在本机浏览器，不会上传到任何服务器，可随时导出 CSV / 备份 JSON。</span>
+
     <span><a href="#" id="backup" role="button">备份进度</a> ｜ <a href="#" id="restore" role="button">恢复进度</a></span>
+
     <input type="file" id="restoreFile" accept=".json" hidden>
+
   </footer>
+
 </div>
 
+
+
 <script>
+
 let DATA = [
   { company: "月之暗面（Kimi）", date: "2026-04-03", roles: "产品、算法、工程", note: "「穿越计划」顶尖人才校招4月3日发布，面向2027届首批16人；产品/运营以官网岗位为准", portal: "https://careers.kimi.com/campus", source: "" },
   { company: "宇树科技", date: "2026-05-12", roles: "市场策划、销售、技术支持、AI算法、机械等", note: "2027届校招5月中旬启动，以算法/工程为主，含市场策划等非技术岗", portal: "https://unitree.zhiye.com", source: "" },
@@ -821,6 +1109,7 @@ let DATA = [
   { company: "鸿裕吉", date: "2026-08-31", roles: "管理培训生、机械、自动化", note: "鸿裕吉2027届校园招聘正式启动，面向应届毕业生招聘管理培训生，本科及以上学历，机械工程、自动化等相关专业可投，工作地点在青岛，薪资5K-8K。", portal: "https://honrock.com/cn/", source: "" },
   { company: "黑芝麻智能", date: "2026-08-31", roles: "芯片类", note: "黑芝麻智能2027届校园招聘启动，开放芯片、AI工具链、算法、软件类岗位，覆盖深圳、成都、上海、武汉。", portal: "https://www.blacksesame.com/zh/join-us", source: "" },
   { company: "58同城", date: "2026-09-01", roles: "产品类（AI产品经理等）、算法、开发", note: "58A计划（5月起转正实习）先行，秋招9月1日-11月1日", portal: "https://app.mokahr.com/m/campus-recruitment/58/150953", source: "" },
+  { company: "三棵树", date: "2026-09-01", roles: "「森计划」管培：研发、生产、营销、职能等；另有实习生招聘", note: "三棵树2027届「森计划」校园招聘已启动，含应届生（本硕博）与实习生招聘；官方投递入口见“投递入口”列。", portal: "https://3treesgroup.zhaopin.com/", source: "" },
   { company: "东方希望", date: "2026-09-01", roles: "全国多地、重工、农牧、饲料", note: "东方希望集团2027届秋季校园招聘启动，面向2027届应届毕业生，热招重工、农牧、饲料等方向，工作地点覆盖国内多区域及海外。", portal: "https://www.easthope.cn/", source: "" },
   { company: "中国一汽", date: "2026-09-01", roles: "研发、制造、营销、职能等方向（2027全球校招，可投多个子企业、每企业限1岗）", note: "2027全球校园招聘9月初启动，面向2026/2027届；含视频简历环节", portal: "https://faw-zhaopin.hotjob.cn/mobile/home", source: "" },
   { company: "中国中车（唐山等子公司）", date: "2026-09-01", roles: "机械、电气、软件、智能制造等技术岗为主（唐山/大连/四方所等，职能岗以各单位为准）", note: "中车唐山等子公司2027届校招9月启动并陆续宣讲", portal: "https://crrc-ts.hotjob.cn", source: "" },
@@ -831,6 +1120,7 @@ let DATA = [
   { company: "乐学培优", date: "2026-09-01", roles: "多岗（以官网为准）", note: "乐学培优2027届校园招聘正式启动，面向2026、2027届本科及以上海内外应届毕业生，提供教学岗和职能岗，工作地点覆盖北京、上海、无锡等10个城市，教师岗位年薪15-50W。", portal: "https://lexue.com/join?referralCode=A01-XY-whx", source: "" },
   { company: "佳农云果科技", date: "2026-09-01", roles: "国际采购", note: "佳农水果集团2027届秋季校园招聘正式开启，招聘管培生（采购&amp;质检&amp;销售）、国际采购、国内采购、销售、库管等岗位。公司是中国水果行业头部企业，年销售额超百亿，业务覆盖全国及海外。", portal: "", source: "" },
   { company: "华友钴业", date: "2026-09-01", roles: "玉林", note: "华友钴业2027校园招聘正式启动。", portal: "https://wecruit.hotjob.cn/SU62624051bef57c796a7ac122/mc/po", source: "" },
+  { company: "古茗（古茗茶饮）", date: "2026-09-01", roles: "管培生（门店运营、供应链、职能等，以官网为准）", note: "古茗茶饮2027届校园招聘已启动；官方投递入口见“投递入口”列（古茗科技集团校园招聘系统）。", portal: "https://app.mokahr.com/campus-recruitment/guming/39377", source: "" },
   { company: "四方继保", date: "2026-09-01", roles: "多岗（以官网为准）", note: "四方股份已正式启动2027届全球校园招聘，面向全球应届毕业生开放申请。", portal: "https://www.sf-auto.com/", source: "" },
   { company: "多益网络", date: "2026-09-01", roles: "游戏策划、程序（客户端/服务器/算法等）、美术、职能/运营等方向（以官网为准）", note: "2027届秋招秋季正式批9月1日-11月30日，面向2027届（毕业时间2026年8月-2027年7月）；base广州/成都等，投递走多益校招官网", portal: "https://xz.duoyi.com/ANa", source: "" },
   { company: "安仕新能源", date: "2026-09-01", roles: "新能源、电池", note: "安仕新能源2027届秋季招聘启动，工作地点深圳，面向本科及以上学历的2027届毕业生，招聘电子工程师、结构工程师等多个技术及业务岗位。公司为国家级专精特新“小巨人”企业，提供有竞争力的薪酬与完善的培养体系。", portal: "https://www.acebattery.com.cn/", source: "" },
@@ -1059,90 +1349,176 @@ let DATA = [
   { company: "药明康德", date: "2026-09-15", roles: "化学/生物/分析等研发类为主；职能与运营支持类以官网为准", note: "药明康德2027校园招聘网申9月15日-12月31日（每人3次投递机会），9月下旬起线上面试；产品/运营岗较少", portal: "https://wuxiapptec.zhiye.com/campus/jobs", source: "" }
 ];
 
+
+
 const STATUSES = ["已投递", "笔试", "AI面试", "面试", "流程结束"];
+
 const STAGE_CLASS = { "已投递": "st1", "笔试": "st2", "AI面试": "st3", "面试": "st4", "流程结束": "st5" };
+
 // 流程结束时可标记“结束于哪个阶段”：初筛（即“已投递”那一步）、笔试、AI面试、面试
+
 const END_STAGES = ["已投递", "笔试", "AI面试", "面试"];
+
 const END_LABEL = { "已投递": "初筛/已投递", "笔试": "笔试", "AI面试": "AI面试", "面试": "面试" };
+
 const LEGACY_KEY = "qiuzhao2027_progress_v1";
+
 const STORAGE_KEY = "qiuzhao2027_progress_v2";
-const PAGE_REVISION = "20260913-b";
+
+const PAGE_REVISION = "20260913-c";
+
 let CURRENT_REVISION = PAGE_REVISION;
 
+
+
 // 职业方向：关键词命中 roles/note/公司名，用于方向筛选（多选时取交集）
+
 const DIRS = [
+
   ["AI产品", ["AI产品", "AIGC产品", "AI应用产品", "AI技术产品", "人工智能产品", "大模型产品"]],
+
   ["产品经理", ["产品经理", "PM", "产品岗", "产品类", "产品方向", "产品策划", "中后台产品", "商业化产品"]],
+
   ["产品运营", ["产品运营"]],
+
   ["运营", ["运营", "用户增长", "内容运营", "用户运营", "活动运营"]],
+
   ["市场/品牌", ["市场", "营销", "品牌", "公关", "广告"]],
+
   ["销售/商务", ["销售", "商务", "BD", "拓展"]],
+
   ["游戏策划", ["游戏策划", "虚拟世界", "游戏方向", "制作人", "游戏行业"]],
+
   ["电商/零售", ["电商", "零售", "门店", "新零售", "直播", "天猫", "京东自营"]],
+
   ["数据/分析", ["数据分析", "商业分析", "经营分析", "策略", "数据产品", "用户研究"]],
+
   ["供应链/物流", ["供应链", "物流", "仓储", "采购", "配送"]],
+
   ["管培/综合", ["管培", "管理培训生", "综合管理", "项目管理", "职能"]],
+
   ["研发/技术", ["研发", "算法", "开发", "技术", "工程"]],
+
 ];
 
+
+
 function todayStr() {
+
   const d = new Date();
+
   const p = (n) => String(n).padStart(2, "0");
+
   return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+
 }
+
+
 
 // 把任意格式的进度记录归一化为 {stage, dates, updatedAt}
+
 function coerceRec(v) {
+
   if (!v) return null;
+
   if (typeof v === "string") {
+
     if (!STATUSES.includes(v)) return null;
+
     return { stage: v, dates: { [v]: todayStr() }, updatedAt: todayStr(), endStage: "", endDate: "" };
+
   }
+
   if (typeof v !== "object") return null;
+
   const dates = {};
+
   if (v.dates && typeof v.dates === "object") {
+
     STATUSES.forEach((st) => { if (typeof v.dates[st] === "string" && v.dates[st]) dates[st] = v.dates[st]; });
+
   }
+
   const endStage = END_STAGES.includes(v.endStage) ? v.endStage : "";
+
   return {
+
     stage: STATUSES.includes(v.stage) ? v.stage : "",
+
     dates,
+
     updatedAt: typeof v.updatedAt === "string" ? v.updatedAt : "",
+
     endStage,
+
     endDate: (endStage && typeof v.endDate === "string") ? v.endDate : "",
+
   };
+
 }
+
+
 
 function normRec(company) {
+
   const rec = coerceRec(progress[company]);
+
   return rec || { stage: "", dates: {}, updatedAt: "", endStage: "", endDate: "" };
+
 }
+
+
 
 function stageOf(company) {
+
   return normRec(company).stage;
+
 }
+
+
 
 function saveProgress() {
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+
 }
 
+
+
 function loadProgress() {
+
   let parsed = {};
+
   const raw = localStorage.getItem(STORAGE_KEY);
+
   if (raw) {
+
     try { parsed = JSON.parse(raw); } catch (e) { parsed = {}; }
+
   } else {
+
     // 迁移旧版（仅存当前状态的字符串）到带日期的结构
+
     try {
+
       const old = JSON.parse(localStorage.getItem(LEGACY_KEY) || "{}");
+
       for (const c of Object.keys(old)) {
+
         const rec = coerceRec(old[c]);
+
         if (rec && rec.stage) parsed[c] = rec;
+
       }
+
     } catch (e) { parsed = {}; }
+
   }
+
   progress = parsed;
+
 }
+
 let CAT = {
 "月之暗面（Kimi）": "AI中厂",
 "宇树科技": "小厂",
@@ -1678,6 +2054,7 @@ let CAT = {
 "鸿裕吉": "智能制造/装备",
 "黑芝麻智能": "汽车",
 "58同城": "中厂",
+"三棵树": "化工/材料",
 "东方希望": "农牧/食品",
 "中国一汽": "央企国企",
 "中国中车（唐山等子公司）": "央企国企",
@@ -1688,6 +2065,7 @@ let CAT = {
 "乐学培优": "教育",
 "佳农云果科技": "快消",
 "华友钴业": "汽车",
+"古茗（古茗茶饮）": "餐饮茶饮",
 "四方继保": "汽车",
 "多益网络": "中厂",
 "安仕新能源": "汽车",
@@ -1915,589 +2293,1176 @@ let CAT = {
 "美赫电子": "半导体/电子",
 "药明康德": "医药"
 };
+
 const SCALE_ORDER = ["大厂", "行业巨头", "中厂", "AI中厂", "小厂", "快消", "化妆品", "餐饮茶饮", "服装服饰", "房地产", "金融", "央企国企", "汽车", "能源", "家电", "医药", "教育", "物流", "半导体/电子", "智能制造/装备", "互联网/软件", "专业服务/咨询", "游戏/文娱", "传媒/广告", "化工/材料", "农牧/食品", "跨境电商/外贸"];
 
+
+
 let progress = {};
+
 loadProgress();
+
+
 
 let state = { q: "", qExact: false, dirTerms: [], stage: "全部", scale: "全部", dirs: [], sort: "date-asc" };
 
+
+
 function countByStage() {
+
   const c = { "全部": DATA.length, "未投递": 0, "已投递": 0, "笔试": 0, "AI面试": 0, "面试": 0, "流程结束": 0 };
+
   DATA.forEach((d) => {
+
     const s = stageOf(d.company);
+
     if (!s) c["未投递"]++;
+
     else if (c[s] !== undefined) c[s]++;
+
   });
+
   return c;
+
 }
+
+
 
 function renderStats() {
+
   const c = countByStage();
+
   const chips = [
+
     ["全部", c["全部"], "all", ""],
+
     ["未投递", c["未投递"], "s0", "dot s0"],
+
     ["已投递", c["已投递"], "s1", "dot s1"],
+
     ["笔试", c["笔试"], "s2", "dot s2"],
+
     ["AI面试", c["AI面试"], "s3", "dot s3"],
+
     ["面试", c["面试"], "s4", "dot s4"],
+
     ["流程结束", c["流程结束"], "s5", "dot s5"],
+
   ];
+
   const stats = document.getElementById("stats");
+
   stats.innerHTML = "";
+
   chips.forEach(([label, n, key, cls]) => {
+
     const el = document.createElement("button");
+
     el.type = "button";
+
     el.className = "chip " + cls + (state.stage === label ? " active" : "");
+
     el.setAttribute("aria-pressed", state.stage === label ? "true" : "false");
+
     el.innerHTML = label + " <b>" + n + "</b>";
+
     el.addEventListener("click", () => { state.stage = label; render(); });
+
     stats.appendChild(el);
+
   });
+
 }
+
+
 
 function renderScaleChips() {
+
   const c = { "全部": DATA.length };
+
   SCALE_ORDER.forEach((s) => { c[s] = DATA.filter((d) => CAT[d.company] === s).length; });
+
   const chips = [["全部", c["全部"], "all"], ...SCALE_ORDER.map((s) => [s, c[s], s])];
+
   const box = document.getElementById("scaleChips");
+
   box.innerHTML = "";
+
   chips.forEach(([label, n, key]) => {
+
     const el = document.createElement("button");
+
     el.type = "button";
+
     el.className = "chip" + (state.scale === label ? " active" : "");
+
     el.setAttribute("aria-pressed", state.scale === label ? "true" : "false");
+
     el.innerHTML = label + " <b>" + n + "</b>";
+
     el.addEventListener("click", () => { state.scale = label; render(); });
+
     box.appendChild(el);
+
   });
+
 }
+
+
 
 function dirText(d) {
+
   return (d.company + " " + d.roles + " " + d.note + " " + (CAT[d.company] || "")).toLowerCase();
+
 }
+
 function matchDir(d, words) {
+
   const text = dirText(d);
+
   return words.some((w) => text.includes(w.toLowerCase()));
+
 }
+
 function matchesDirs(d) {
+
   return state.dirs.every((i) => matchDir(d, DIRS[i][1]));
+
 }
+
+
 
 function renderDirChips() {
+
   const box = document.getElementById("dirChips");
+
   box.innerHTML = '<span class="chips-label">职业方向：</span>';
+
   const mk = (label, n, key, active) => {
+
     const el = document.createElement("button");
+
     el.type = "button";
+
     el.className = "chip" + (active ? " active" : "");
+
     el.setAttribute("aria-pressed", active ? "true" : "false");
+
     el.innerHTML = label + " <b>" + n + "</b>";
+
     el.addEventListener("click", () => {
+
       if (key === "all") state.dirs = [];
+
       else {
+
         state.dirs = state.dirs.includes(key) ? state.dirs.filter((x) => x !== key) : [...state.dirs, key];
+
       }
+
       render();
+
     });
+
     box.appendChild(el);
+
   };
+
   mk("全部", DATA.length, "all", state.dirs.length === 0);
+
   DIRS.forEach(([label, words], i) => {
+
     mk(label, DATA.filter((d) => matchDir(d, words)).length, i, state.dirs.includes(i));
+
   });
+
 }
+
+
 
 function matches(d) {
+
   const st = stageOf(d.company);
+
   if (state.stage !== "全部") {
+
     if (state.stage === "未投递") { if (st) return false; }
+
     else if (st !== state.stage) return false;
+
   }
+
   if (state.scale !== "全部" && CAT[d.company] !== state.scale) return false;
+
   if (state.dirs.length && !matchesDirs(d)) return false;
+
   if (state.dirTerms.length) {
+
     const text = dirText(d);
+
     if (!state.dirTerms.every((t) => text.includes(t))) return false;
+
   }
+
   return matchQ(d);
+
 }
+
+
 
 // ---- 公司名搜索：归一化、匹配与高亮 ----
+
 function normText(s) {
+
   return String(s == null ? "" : s)
+
     .toLowerCase()
+
     .replace(/[\s\u3000]+/g, "")
+
     .replace(/[()（）【】\[\]·・、,，.。!！?？:：;；"'“”‘’\/\\|｜_\-—]+/g, "");
+
 }
+
 function qParts(raw) {
+
   return String(raw == null ? "" : raw).split(/[\s,，、;；]+/).map(normText).filter(Boolean);
+
 }
+
 function companyHit(d, parts) {
+
   if (!parts || !parts.length) return false;
+
   const n = normText(d.company);
+
   return parts.every((p) => n.includes(p));
+
 }
+
 function companyRank(d, parts) {
+
   const n = normText(d.company);
+
   const q = (parts || []).join("");
+
   if (!q) return 99;
+
   if (n === q) return 0;
+
   if (n.startsWith(q)) return 1;
+
   if (n.includes(q)) return 2;
+
   return 99;
+
 }
+
 function matchQ(d) {
+
   if (!state.q) return true;
+
   if (state.qExact) return d.company === state.q;
+
   const parts = qParts(state.q);
+
   if (!parts.length) return true;
+
   const blob = (d.company + d.roles + d.note + String(d.source || "") + String(d.portal || "")).toLowerCase();
+
   if (blob.indexOf(String(state.q).toLowerCase()) >= 0) return true;
+
   // 容忍空格/全角符号：按归一化后的文本再匹配一次
+
   const nb = normText(blob);
+
   return parts.every((p) => nb.includes(p));
+
 }
+
 // 归一化文本到原文的下标映射，用于在原文里高亮命中片段
+
 function normIndexMap(text) {
+
   const raw = String(text == null ? "" : text);
+
   let norm = "";
+
   const map = [];
+
   for (let i = 0; i < raw.length; i++) {
+
     const n = normText(raw[i]);
+
     if (!n) continue;
+
     norm += n;
+
     for (let k = 0; k < n.length; k++) map.push(i);
+
   }
+
   return { raw: raw, norm: norm, map: map };
+
 }
+
 function hitHtml(text) {
+
   const raw = String(text == null ? "" : text);
+
   if (!state.q || state.qExact) return esc(raw);
+
   const q = state.q.trim();
+
   if (!q) return esc(raw);
+
   const parts = qParts(q);
+
   const rawIdx = raw.toLowerCase().indexOf(q.toLowerCase());
+
   if (rawIdx >= 0) {
+
     return esc(raw.slice(0, rawIdx)) + '<mark class="hit">' + esc(raw.slice(rawIdx, rawIdx + q.length)) + "</mark>" + esc(raw.slice(rawIdx + q.length));
+
   }
+
   const nm = normIndexMap(raw);
+
   const target = parts.find((p) => nm.norm.indexOf(p) >= 0);
+
   if (!target) return esc(raw);
+
   const s = nm.norm.indexOf(target);
+
   const start = nm.map[s];
+
   const end = nm.map[Math.min(s + target.length - 1, nm.map.length - 1)] + 1;
+
   return esc(raw.slice(0, start)) + '<mark class="hit">' + esc(raw.slice(start, end)) + "</mark>" + esc(raw.slice(end));
+
 }
+
+
 
 function tlHtml(company, rec) {
+
   const reached = STATUSES.filter((st) => rec.dates[st]);
+
   if (!reached.length) return '<span class="tl-empty">尚未记录</span>';
+
   return '<div class="tl-row">' +
+
     reached.map((st, i) =>
+
       (i ? '<i class="tl-arrow">→</i>' : "") +
+
       (st === "流程结束" && rec.endStage
+
         ? '<button type="button" class="tl" data-stage="' + escAttr(st) + '" data-company="' + escAttr(company) + '" title="点击把「' + esc(st) + '」更新为今天">' + esc(st) + "·" + esc(END_LABEL[rec.endStage]) + " " + esc(rec.dates[st]) + "</button>"
+
         : '<button type="button" class="tl" data-stage="' + escAttr(st) + '" data-company="' + escAttr(company) + '" title="点击把「' + esc(st) + '」更新为今天">' + esc(st) + " " + esc(rec.dates[st]) + "</button>")
+
     ).join("") +
+
   "</div>";
+
 }
+
+
 
 function endStageHtml(company, rec) {
+
   const opts = ['<option value="">未标注</option>'].concat(
+
     END_STAGES.map((st) => '<option value="' + escAttr(st) + '"' + (rec.endStage === st ? " selected" : "") + ">" + esc(END_LABEL[st]) + "</option>")
+
   ).join("");
+
   return '<div class="tl-row end-row"><span class="end-label">流程结束于</span><select class="status end-stage" data-company="' + escAttr(company) + '" aria-label="' + escAttr(company) + ' 流程结束阶段">' + opts + "</select></div>";
+
 }
+
+
 
 function render() {
+
   let list = DATA.filter(matches);
+
   const [key, dir] = state.sort.split("-");
+
   const parts = qParts(state.q);
+
   list.sort((a, b) => {
+
     if (parts.length && !state.qExact) {
+
       const byName = companyRank(a, parts) - companyRank(b, parts);
+
       if (byName) return byName;
+
     }
+
     let r = 0;
+
     if (key === "date") r = a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+
     else if (key === "company") r = a.company.localeCompare(b.company, "zh");
+
     else if (key === "stage") {
+
       const av = stageOf(a.company) ? STATUSES.indexOf(stageOf(a.company)) + 1 : 0;
+
       const bv = stageOf(b.company) ? STATUSES.indexOf(stageOf(b.company)) + 1 : 0;
+
       r = av - bv;
+
     }
+
     return dir === "desc" ? -r : r;
+
   });
+
   if (key === "date" && state.sort === "date-desc") { /* handled */ }
 
+
+
   const tbody = document.getElementById("tbody");
+
   tbody.innerHTML = "";
+
   if (!list.length) {
+
     const tr = document.createElement("tr");
+
     tr.innerHTML = '<td colspan="9" class="empty">没有符合条件的公司，换个关键词试试</td>';
+
     tbody.appendChild(tr);
+
   } else {
+
     list.forEach((d, i) => {
+
       const rec = normRec(d.company);
+
       const s = rec.stage;
+
       const cls = STAGE_CLASS[s] || "st0";
+
       const tr = document.createElement("tr");
+
       if (parts.length && companyHit(d, parts)) tr.className = "hit-row";
+
       tr.innerHTML =
+
         '<td class="num">' + (i + 1) + "</td>" +
+
         '<td class="company">' + hitHtml(d.company) + ' <span class="cat-badge cat-' + CAT[d.company] + '">' + CAT[d.company] + "</span></td>" +
+
         '<td class="cat-cell">' + CAT[d.company] + "</td>" +
+
         '<td class="date">' + d.date + "</td>" +
+
         '<td class="roles">' + esc(d.roles) + "</td>" +
+
         '<td class="note">' + esc(d.note) + "</td>" +
+
         '<td class="links">' + portalHtml(d) + "</td>" +
+
         (d.source ? '<td class="links"><a href="' + escAttr(d.source) + '" target="_blank" rel="noopener">来源</a></td>' : '<td class="links"><span class="way-text">—</span></td>') +
+
         '<td class="stage-cell"><select class="status ' + cls + '" data-company="' + escAttr(d.company) + '" aria-label="' + escAttr(d.company) + ' 投递进度">' +
+
           '<option value="">未填写</option>' +
+
           STATUSES.map((st) => '<option value="' + st + '"' + (st === s ? " selected" : "") + ">" + st + "</option>").join("") +
+
         "</select>" + tlHtml(d.company, rec) + (s === "流程结束" ? endStageHtml(d.company, rec) : "") + "</td>";
+
       tbody.appendChild(tr);
+
     });
+
   }
+
   const qc = document.getElementById("qCount");
+
   if (qc) {
+
     if (!state.q) { qc.textContent = ""; qc.className = "qcount"; }
+
     else {
+
       const nameHits = DATA.filter((d) => companyHit(d, parts)).length;
+
       qc.textContent = (state.qExact ? "已定位： " : "公司名匹配 " + nameHits + " 家 ｜ ") + "当前显示 " + list.length + " 家";
+
       qc.className = "qcount" + (list.length ? "" : " warn");
+
     }
+
   }
+
   renderStats();
+
   renderScaleChips();
+
   renderDirChips();
+
 }
+
+
 
 function esc(s) {
+
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
 }
+
 function escAttr(s) {
+
   return esc(s).replace(/'/g, "&#39;");
+
 }
+
 function portalHtml(d) {
+
   const v = String(d.portal || "").trim();
+
   if (!v) return '<span class="way-text">官方投递入口待补充</span>';
+
   const urlRe = /(https?:\/\/[^\s"'<>（）()\[\]｜|;；，,、。]+)/g;
+
   const linkify = (s) =>
+
     esc(s).replace(urlRe, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+
   const segs = v.split(/[｜|;；]/).map((s) => s.trim()).filter(Boolean);
+
   const parts = segs.map((s) => {
+
     const g = s.match(/^公众号[:：]\s*(.+)$/);
+
     if (g) return '<span class="way-tag">公众号</span><span class="way-text">' + linkify(g[1]) + "</span>";
+
     const m = s.match(/^邮箱[:：]\s*(.+)$/);
+
     if (m) {
+
       const em = (m[1].match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/) || [m[1]])[0];
+
       return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(em) + '">' + esc(m[1]) + "</a>";
+
     }
+
     if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(s)) return '<span class="way-tag">邮箱</span><a href="mailto:' + escAttr(s) + '">' + esc(s) + "</a>";
+
     if (s.includes("宣讲")) return '<span class="way-tag">宣讲/现场</span><span class="way-text">' + linkify(s) + "</span>";
+
     if (/^https?:\/\/[^\s"'<>（）()\[\]｜|;；，,、。]+$/i.test(s)) {
+
       return '<a href="' + escAttr(s) + '" target="_blank" rel="noopener">' + esc(s) + "</a>";
+
     }
+
     return '<span class="way-text">' + linkify(s) + "</span>";
+
   });
+
   return parts.join('<span class="way-sep"> ｜ </span>');
+
 }
+
+
 
 function setStageRecord(company, value) {
+
   const rec = normRec(company);
+
   rec.stage = value;
+
   rec.dates[value] = todayStr();
+
   rec.updatedAt = todayStr();
+
   progress[company] = rec;
+
   saveProgress();
+
   render();
+
 }
+
+
 
 document.getElementById("tbody").addEventListener("change", (e) => {
+
   const endSel = e.target.closest("select.end-stage");
+
   if (endSel) {
+
     const company = endSel.dataset.company;
+
     const rec = normRec(company);
+
     const val = endSel.value;
+
     rec.endStage = END_STAGES.includes(val) ? val : "";
+
     rec.endDate = rec.endStage ? todayStr() : "";
+
     rec.updatedAt = todayStr();
+
     progress[company] = rec;
+
     saveProgress();
+
     render();
+
     return;
+
   }
+
   const sel = e.target.closest("select.status");
+
   if (!sel) return;
+
   const company = sel.dataset.company;
+
   const value = sel.value;
+
   const rec = normRec(company);
+
   const hasRecord = rec.stage || STATUSES.some((st) => rec.dates[st]);
+
   if (!value) {
+
     if (hasRecord && !confirm("确定清空「" + company + "」的投递进度和日期记录吗？")) {
+
       sel.value = rec.stage;
+
       return;
+
     }
+
     delete progress[company];
+
     saveProgress();
+
     render();
+
     return;
+
   }
+
   setStageRecord(company, value);
+
 });
+
+
 
 document.getElementById("tbody").addEventListener("click", (e) => {
+
   const btn = e.target.closest("button.tl");
+
   if (!btn) return;
+
   const company = btn.dataset.company;
+
   const st = btn.dataset.stage;
+
   if (!company || !st || !STATUSES.includes(st)) return;
+
   const rec = normRec(company);
+
   const curIdx = rec.stage ? STATUSES.indexOf(rec.stage) : -1;
+
   const nextIdx = STATUSES.indexOf(st);
+
   // 点历史环节只更新该环节日期，不回退当前进度
+
   rec.stage = nextIdx >= curIdx ? st : rec.stage;
+
   rec.dates[st] = todayStr();
+
   rec.updatedAt = todayStr();
+
   progress[company] = rec;
+
   saveProgress();
+
   render();
+
 });
+
+
 
 const qInput = document.getElementById("q");
+
 const qSug = document.getElementById("qSug");
+
 const qClear = document.getElementById("qClear");
+
 const qBox = document.getElementById("searchBox");
+
 let sugActive = -1;
 
+
+
 function openSug(open) {
+
   if (!qSug) return;
+
   qSug.classList.toggle("open", !!open);
+
   qInput.setAttribute("aria-expanded", open ? "true" : "false");
+
   if (!open) sugActive = -1;
+
 }
+
 function syncQClear() {
+
   if (qBox) qBox.classList.toggle("hasq", !!state.q);
+
   if (qClear) qClear.style.display = state.q ? "block" : "none";
+
 }
+
 function renderSug() {
+
   if (!qSug) return;
+
   const parts = qParts(state.q);
+
   if (!parts.length) { qSug.innerHTML = ""; openSug(false); return; }
+
   const nameMatches = DATA.filter((d) => companyHit(d, parts))
+
     .sort((a, b) => companyRank(a, parts) - companyRank(b, parts) || a.company.localeCompare(b.company, "zh"));
+
   const shown = nameMatches.slice(0, 8).map((d) => ({ d, kind: "name" }));
+
   if (shown.length < 8) {
+
     const q = state.q.toLowerCase();
+
     DATA.filter((d) => !companyHit(d, parts) && (d.company + d.roles + d.note).toLowerCase().includes(q))
+
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+
       .slice(0, 8 - shown.length)
+
       .forEach((d) => shown.push({ d, kind: "note" }));
+
   }
+
   sugActive = -1;
+
   if (!shown.length) {
+
     qSug.innerHTML = '<div class="sug none">没有公司名匹配「' + esc(state.q) + '」，下方表格仍会按岗位/备注关键词筛选</div>';
+
   } else {
+
     qSug.innerHTML = shown.map(({ d, kind }) =>
+
       '<div class="sug" role="option" data-company="' + escAttr(d.company) + '">' +
+
         '<span class="sug-name">' + hitHtml(d.company) + "</span>" +
+
         (kind === "name"
+
           ? '<span class="sug-cat cat-' + escAttr(CAT[d.company] || "") + '">' + esc(CAT[d.company] || "") + "</span>"
+
           : '<span class="sug-hint">备注提及</span>') +
+
       "</div>"
+
     ).join("") + (nameMatches.length > 8 ? '<div class="sug more">另有 ' + (nameMatches.length - 8) + ' 家公司名匹配，继续输入可缩小范围</div>' : "");
+
   }
+
   openSug(true);
+
 }
+
 function pickCompany(company) {
+
   if (!company) return;
+
   qInput.value = company;
+
   state.q = company;
+
   state.qExact = true;
+
   syncQClear();
+
   openSug(false);
+
   render();
+
   const row = document.querySelector("#tbody tr.hit-row");
+
   if (row && row.scrollIntoView) { try { row.scrollIntoView({ block: "center" }); } catch (e) {} }
+
   qInput.blur();
+
 }
+
 function clearQ() {
+
   qInput.value = "";
+
   state.q = "";
+
   state.qExact = false;
+
   syncQClear();
+
   openSug(false);
+
   render();
+
   qInput.focus();
+
 }
+
 qInput.addEventListener("input", (e) => {
+
   state.q = e.target.value.trim();
+
   state.qExact = false;
+
   syncQClear();
+
   render();
+
   renderSug();
+
 });
+
 qInput.addEventListener("focus", () => { if (state.q && !state.qExact) renderSug(); });
+
 qInput.addEventListener("keydown", (e) => {
+
   const items = Array.from(qSug.querySelectorAll(".sug[data-company]"));
+
   if (e.key === "ArrowDown" && items.length) {
+
     e.preventDefault();
+
     if (!qSug.classList.contains("open")) { renderSug(); return; }
+
     sugActive = (sugActive + 1) % items.length;
+
   } else if (e.key === "ArrowUp" && items.length) {
+
     e.preventDefault();
+
     sugActive = (sugActive - 1 + items.length) % items.length;
+
   } else if (e.key === "Enter") {
+
     if (items.length) { e.preventDefault(); pickCompany(items[sugActive >= 0 ? sugActive : 0].dataset.company); }
+
     return;
+
   } else if (e.key === "Escape") {
+
     if (qSug.classList.contains("open")) openSug(false);
+
     else clearQ();
+
     return;
+
   } else return;
+
   items.forEach((el, i) => el.classList.toggle("active", i === sugActive));
+
   if (items[sugActive] && items[sugActive].scrollIntoView) items[sugActive].scrollIntoView({ block: "nearest" });
+
 });
+
 qSug.addEventListener("mousedown", (e) => {
+
   const el = e.target.closest(".sug[data-company]");
+
   if (!el) return;
+
   e.preventDefault();
+
   pickCompany(el.dataset.company);
+
 });
+
 qClear.addEventListener("click", clearQ);
+
 document.addEventListener("click", (e) => { if (qBox && !qBox.contains(e.target)) openSug(false); });
+
 syncQClear();
 
+
+
 function parseDirTerms(raw) {
+
   return String(raw).split(/[\s,，、;；]+/).map((s) => s.trim().toLowerCase()).filter(Boolean);
+
 }
+
 const dirQ = document.getElementById("dirQ");
+
 dirQ.addEventListener("input", (e) => {
+
   state.dirTerms = parseDirTerms(e.target.value);
+
   render();
+
 });
+
 document.getElementById("clearDir").addEventListener("click", () => {
+
   dirQ.value = "";
+
   state.dirTerms = [];
+
   render();
+
   dirQ.focus();
+
 });
+
+
 
 document.getElementById("sort").addEventListener("change", (e) => {
+
   state.sort = e.target.value;
+
   render();
+
 });
+
+
 
 document.getElementById("export").addEventListener("click", () => {
+
   const head = ["序号", "公司", "公司分类", "开启秋招时间", "相关岗位方向（产品/运营/财务/人力等）", "备注", "投递入口/投递方式", "信息来源", "投递进度", "已投递日期", "笔试日期", "AI面试日期", "面试日期", "流程结束日期", "流程结束阶段", "最近变更"];
+
   const lines = DATA.map((d, i) => [
+
     i + 1, d.company, CAT[d.company], d.date, d.roles, d.note, d.portal, d.source,
+
     (normRec(d.company).stage || "未填写"),
+
     ...STATUSES.map((st) => normRec(d.company).dates[st] || ""),
+
     normRec(d.company).endStage ? (END_LABEL[normRec(d.company).endStage] || normRec(d.company).endStage) : "",
+
     normRec(d.company).updatedAt || "",
+
   ]);
+
   const csv = [head, ...lines]
+
     .map((row) => row.map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(","))
+
     .join("\r\n");
+
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+
   const a = document.createElement("a");
+
   a.href = URL.createObjectURL(blob);
+
   a.download = "2027届秋招投递进度.csv";
+
   a.click();
+
   URL.revokeObjectURL(a.href);
+
 });
+
+
 
 document.getElementById("backup").addEventListener("click", (e) => {
+
   e.preventDefault();
+
   const blob = new Blob([JSON.stringify(progress, null, 2)], { type: "application/json" });
+
   const a = document.createElement("a");
+
   a.href = URL.createObjectURL(blob);
+
   a.download = "qiuzhao-progress.json";
+
   a.click();
+
   URL.revokeObjectURL(a.href);
+
 });
+
+
 
 document.getElementById("restore").addEventListener("click", (e) => {
+
   e.preventDefault();
+
   document.getElementById("restoreFile").click();
+
 });
+
 document.getElementById("restoreFile").addEventListener("change", (e) => {
+
   const file = e.target.files[0];
+
   if (!file) return;
+
   const reader = new FileReader();
+
   reader.onload = () => {
+
     try {
+
       const data = JSON.parse(reader.result);
+
       DATA.forEach((d) => {
+
         const rec = coerceRec(data[d.company]);
+
         if (rec && (rec.stage || STATUSES.some((st) => rec.dates[st]))) progress[d.company] = rec;
+
       });
+
       saveProgress();
+
       render();
+
       alert("进度已恢复");
+
     } catch (err) {
+
       alert("文件格式不正确，请选择备份的 JSON 文件");
+
     }
+
   };
+
   reader.readAsText(file);
+
   e.target.value = "";
+
 });
+
+
 
 const updateTip = document.getElementById("updateTip");
+
 const updateBtn = document.getElementById("checkUpdate");
+
 let tipTimer = null;
+
 let checking = false;
+
 function showTip(msg, cls) {
+
   clearTimeout(tipTimer);
+
   updateTip.textContent = msg;
+
   updateTip.className = "update-tip " + (cls || "");
+
   if (cls) tipTimer = setTimeout(() => { updateTip.textContent = ""; updateTip.className = "update-tip"; }, 8000);
+
 }
+
+
 
 function applyLatest(payload) {
+
   // 同步更新头部“数据截至 / 收录 N 家”摘要，并原地切换为公司列表数据
+
   const hero = document.getElementById("heroMeta");
+
   if (hero && payload.updated && payload.count) {
+
     const i = hero.textContent.indexOf("（大厂");
+
     const tail = i >= 0 ? hero.textContent.slice(i) : "";
+
     hero.textContent = "数据截至 " + payload.updated + " ｜ 收录 " + payload.count + " 家" + tail;
+
   }
+
   DATA = payload.data;
+
   CAT = payload.cats;
+
   CURRENT_REVISION = payload.rev;
+
   render();
+
 }
+
+
 
 async function checkUpdate() {
+
   if (checking) return;
+
   checking = true;
+
   updateBtn.disabled = true;
+
   updateBtn.textContent = "检查中…";
+
   try {
+
     const res = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+
     if (!res.ok) throw new Error("bad status");
+
     const p = await res.json();
+
     if (!p || !Array.isArray(p.data) || !p.cats) throw new Error("bad payload");
+
     if (p.rev && p.rev !== CURRENT_REVISION) {
+
       applyLatest(p);
+
       showTip("检测到新版数据并已原地更新：修订 " + p.rev + "，更新于 " + (p.updated || "") + "，共收录 " + (p.count || p.data.length) + " 家。", "ok");
+
     } else {
+
       showTip("已是最新版本：" + (p.updated || "") + "，共收录 " + (p.count || DATA.length) + " 家。", "ok");
+
     }
+
   } catch (e) {
+
     showTip("检查失败：在线页面请确认网络后重试；本地副本无法联网，请打开公网页面获取最新数据。", "warn");
+
   } finally {
+
     checking = false;
+
     updateBtn.disabled = false;
+
     updateBtn.textContent = "检查更新";
+
   }
+
 }
+
 updateBtn.addEventListener("click", checkUpdate);
 
+
+
 render();
+
 </script>
+
 </body>
+
 </html>
+
