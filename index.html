@@ -1793,7 +1793,8 @@
   .ai-side-ctl { flex: none; border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: #fff;
     display: flex; flex-direction: column; gap: 8px; align-items: center; }
   .ai-ring-wrap { position: relative; width: 72px; height: 72px; display: grid; place-items: center; }
-  .ai-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ai-ring { display: none; }   /* 不限时：不显示进度环 */
+  .ai-ring-wrap { width: auto; height: auto; padding: 2px 0 6px; }
   .ai-ring circle { fill: none; stroke-width: 6; stroke-linecap: round; }
   .ai-ring-bg { stroke: var(--line); }
   .ai-ring-fg { stroke: #1d4ed8; stroke-dasharray: 188.5; stroke-dashoffset: 0; transition: stroke-dashoffset .4s linear, stroke .3s; }
@@ -2517,14 +2518,6 @@
           </select>
         </div>
         <div class="ai-field">
-          <label for="aiLimit">每题限时</label>
-          <select id="aiLimit">
-            <option value="60">60 秒（AI 初筛常见）</option>
-            <option value="90" selected>90 秒（推荐）</option>
-            <option value="120">120 秒（案例/深挖）</option>
-            <option value="0">不限时（文字练习）</option>
-          </select>
-          <div class="ai-note" style="margin-top:6px">调研显示：答到限时的 70%–80%（约 60–70 秒）命中率最高，太短显得空洞，超时会被硬切。</div>
           <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:600;color:var(--navy)">
             <input type="checkbox" id="aiAutoRead" checked> 每题自动朗读题目（浏览器自带语音，不联网）
           </label>
@@ -10546,7 +10539,7 @@ render();
     var company = ($("aiCompany").value || "").trim();
     var type = $("aiType").value;
     var count = Number($("aiCount").value) || 8;
-    var limit = Number($("aiLimit").value) || 0;
+    var limit = 0;   // 不做限时：只记录用时，不催、不打断
     var rnd = $("aiRandom") ? !!$("aiRandom").checked : true;
     var qs = pickQuestions(type, count, company, rnd);
     // 简历深挖：把用户简历拆成条目后生成追问链，混进本次面试
@@ -10700,7 +10693,6 @@ render();
     var ta2 = $("aiAnswer");
     if (ta2) ta2.placeholder = S.type === "英文题" ? "Type your answer in English… (Enter to send)" : "在这里回答，可直接打字或点麦克风说（Enter 发送，Shift+Enter 换行）";
     $("aiAnswer").value = it.answer || "";
-    var ideal = $("aiIdeal"); if (ideal) ideal.textContent = S.limit ? Math.round(S.limit * 0.7) + "–" + Math.round(S.limit * 0.8) + "s" : "不限时";
     startTimer();
     avatarStart();
     avatarState("AI 面试官 · 提问中", "speaking");
@@ -10728,19 +10720,7 @@ render();
   function updateTimer() {
     var sec = elapsed();
     var t = $("aiTimer");
-    if (t) {
-      t.textContent = fmtTime(sec);
-      t.classList.toggle("warn", S.limit > 0 && sec > S.limit * 0.8 && sec <= S.limit);
-      t.classList.toggle("over", S.limit > 0 && sec > S.limit);
-    }
-    var ring = $("aiTimeBar");
-    if (ring) {
-      var frac = clamp(sec / (S.limit > 0 ? S.limit : 180), 0, 1);
-      var C = 2 * Math.PI * 30;
-      ring.setAttribute("stroke-dasharray", C.toFixed(1));
-      ring.setAttribute("stroke-dashoffset", (C * frac).toFixed(1));
-      ring.style.stroke = frac > 0.92 ? "#b91c1c" : frac > 0.78 ? "#b45309" : "#1d4ed8";
-    }
+    if (t) t.textContent = fmtTime(sec);   // 只显示用了多久，不限时、不变色、不提醒
   }
 
   function submit() {
@@ -10883,7 +10863,7 @@ render();
       dims: dims, total: total, grade: total >= 85 ? "A" : total >= 70 ? "B" : total >= 55 ? "C" : "D",
       strengths: strengths, weaknesses: weaknesses,
       items: S.items.map(function (x) {
-        return { q: x.q.q, id: x.q.id, answer: x.answer, follow: x.follow, seconds: Math.round(x.seconds), score: x.score };
+        return { q: x.q.q, id: x.q.id, intent: x.q.intent || "", answer: x.answer, follow: x.follow, turns: x.turns || [], seconds: Math.round(x.seconds), score: x.score };
       })
     };
   }
@@ -10906,6 +10886,7 @@ render();
     rep.items.forEach(function (it, i) {
       h += '<div class="ai-answer"><div class="ai-meta"><span class="ai-pill">第 ' + (i + 1) + " 题</span>" + (it.score ? "得分 " + it.score.total + "（" + it.score.grade + "） ｜ 用时 " + it.seconds + "s" : "未作答") + "</div>"
         + "<pre>" + escAII(it.q) + "</pre>"
+        + (it.intent ? '<div class="ai-note" style="margin:2px 0 6px">这题在问：' + escAII(it.intent) + "</div>" : "")
         + (it.answer ? '<pre style="color:var(--muted)">' + escAII(it.answer.slice(0, 600)) + (it.answer.length > 600 ? "…" : "") + "</pre>" : "")
         + (it.turns && it.turns.length ? '<div class="ai-note" style="margin:6px 0 2px"><b>追问链</b></div>'
             + it.turns.map(function (t) { return '<pre style="color:var(--navy);margin:2px 0">↳ 追问：' + escAII(t.q) + "</pre>"
@@ -11084,6 +11065,10 @@ render();
   function micHint(text) {
     var h = $("aiVoiceHint"); if (h) h.textContent = text || "";
     var st = $("aiRecState"); if (st && text) st.textContent = text;
+  }
+  function showIntent() {
+    var cb = $("aiShowIntent");
+    return cb ? !!cb.checked : true;
   }
   function micAutoOn() {
     var cb = $("aiAutoMic");
@@ -11345,21 +11330,104 @@ render();
     return found.slice(0, 24);
   }
 
+  // JD 关键词分类：不同类别的词要用不同题型，不能全套"举一个能力的例子"
+  var JD_INDUSTRY = ["游玩", "文旅", "景区", "乐园", "休闲娱乐", "餐饮", "零售", "服务", "生活服务", "电商", "跨境",
+    "快消", "美妆", "母婴", "汽车", "家电", "金融", "医疗", "教育", "游戏", "体育", "酒店", "酒旅", "宠物"];
+  var JD_PRODUCT = ["本地推", "来客", "POI", "团购", "直播", "短视频", "达人", "核销", "小程序", "千川", "巨量", "投放",
+    "广告", "DOU+", "星图", "预约", "会员", "私域", "看板"];
+  var JD_DUTY = ["销售", "大客户", "商务谈判", "客户开拓", "客户经营", "资源分配", "资源投入", "市场规划", "策略制定",
+    "整合营销", "培训", "咨询", "运营", "项目管理", "跨部门", "服务商", "渠道"];
+  var JD_SKILL = ["数据分析", "SQL", "Excel", "Python", "PPT", "沟通", "协调", "抗压", "学习能力", "逻辑", "洞察",
+    "执行力", "商务谈判技巧", "文字写作", "英语", "汇报", "复盘", "演讲"];
+
+  function classifyJdKw(k) {
+    if (JD_INDUSTRY.some(function (x) { return k.indexOf(x) >= 0; })) return "industry";
+    if (JD_PRODUCT.some(function (x) { return k.indexOf(x) >= 0; })) return "product";
+    if (JD_DUTY.some(function (x) { return k.indexOf(x) >= 0; })) return "duty";
+    if (JD_SKILL.some(function (x) { return k.indexOf(x) >= 0; })) return "skill";
+    return "other";
+  }
+
+  // 按类型生成"读得懂"的题：行业问行业理解、产品问怎么讲给客户、职责问经历、能力问例子
+  function jdQuestionFor(k, kind) {
+    if (kind === "industry") {
+      return {
+        q: "这份 JD 是做「" + k + "」行业的客户：你对「" + k + "」这类客户在抖音上怎么做生意了解多少？请讲清他们的经营链路，以及你能帮上什么。",
+        intent: "面试官想看你是不是真了解这个行业，而不是只会说「我能吃苦」。",
+        kw: [k, "经营链路", "客户", "痛点", "内容", "投流", "核销", "目标"],
+        points: ["先说行业特点：消费频次、客单价、决策方式、季节性", "再说抖音上的链路：POI/商品 → 内容 → 投流 → 到店核销 → 复购", "最后说自己：哪段经历能迁移过来 + 入职 3 个月能做什么"],
+        pit: ["只表态「我很感兴趣」", "把行业链路说成所有行业通用"],
+        follow: ["如果这个行业我们已经有很成熟的打法，你的价值在哪？"]
+      };
+    }
+    if (kind === "product") {
+      return {
+        q: "JD 里提到「" + k + "」：如果客户还不懂这个产品，你会怎么讲明白，并把它落到客户的具体经营动作上？",
+        intent: "面试官想确认你懂产品逻辑，而且能把产品翻译成客户听得懂的价值。",
+        kw: [k, "客户价值", "场景", "效果", "数据", "落地", "动作"],
+        points: ["用一句话讲清「这是什么、解决谁的什么问题」", "给一个场景例子（什么客户、什么目标、怎么用）", "说清衡量效果的指标口径"],
+        pit: ["背产品说明书", "只讲功能不讲客户价值"],
+        follow: ["客户说「我预算不够」你怎么回应？"]
+      };
+    }
+    if (kind === "duty") {
+      return {
+        q: "JD 的职责包括「" + k + "」：请讲一次你做过类似事情的具体经历——你的动作、结果，以及哪些是你独立完成的。",
+        intent: "这是最典型的「经历对岗位」题，看你的经历能不能迁移到这个职责上。",
+        kw: [k, "目标", "我负责", "动作", "结果", "数据", "复盘"],
+        points: ["按「背景 → 我的动作 → 结果数据 → 复盘」讲", "把动作对应到 JD 的职责词上", "分清个人贡献与团队"],
+        pit: ["只讲团队做了什么", "结果没有数字"],
+        follow: ["如果这项工作没有现成流程，你怎么开始？"]
+      };
+    }
+    if (kind === "skill") {
+      return {
+        q: "JD 要求「" + k + "」能力：请举一个你做过的、最能证明这项能力的例子——具体做法 + 结果数据 + 你个人的部分。",
+        intent: "用一件具体的事证明这项能力，别只做自我评价。",
+        kw: [k, "具体", "做法", "数据", "结果", "我负责"],
+        points: ["先说场景与目标，再说你做了什么", "给出量化结果与口径", "说清你的不可替代部分"],
+        pit: ["泛泛说「我这项能力很强」", "例子和岗位无关"],
+        follow: ["这项能力你觉得自己现在能打几分？扣分扣在哪？"]
+      };
+    }
+    return {
+      q: "JD 里提到「" + k + "」：结合这份工作，你怎么理解它在业务里的位置？你自己哪段经历和它相关？",
+      intent: "看你能不能把 JD 里的关键词讲出业务含义，而不是只念原文。",
+      kw: [k, "业务", "作用", "客户", "经历", "匹配"],
+      points: ["先解释这个词在业务里指什么", "再给一个相关经历或观察", "最后说明你能贡献什么"],
+      pit: ["复述 JD 原文", "答不出与自己的关系"],
+      follow: ["如果让你入职后负责这块，你的第一步是什么？"]
+    };
+  }
+
   function makeJDQuestions(jdKw, company, max) {
     var out = [];
-    shuffle(jdKw.slice()).slice(0, max).forEach(function (k) {
+    var norm = function (x) { return x.replace(/(能力|技巧|相关工作|相关经验|经验)$/g, ""); };
+    var seenKw = {};
+    var typed = [];
+    jdKw.forEach(function (k) {
+      var kd = classifyJdKw(k);
+      if (kd === "other") return;
+      var key = norm(k);
+      if (seenKw[key] || seenKw[k]) return;
+      seenKw[key] = 1; seenKw[k] = 1;
+      typed.push({ k: k, kind: kd });
+    });
+    var kindOrder = { industry: 0, product: 1, duty: 2, skill: 3 };
+    typed.sort(function (a, b) { return (kindOrder[a.kind] || 9) - (kindOrder[b.kind] || 9); });
+    typed.forEach(function (item) {
+      if (out.length >= max) return;
+      var spec = jdQuestionFor(item.k, item.kind);
       out.push({
         id: "jd" + Math.random().toString(36).slice(2, 7), types: ["JD 匹配"], dirs: [dirPick],
-        q: "JD 里要求「" + k + "」：请举一个你做过的、能证明这项能力的例子——具体做法 + 结果数据 + 你个人的部分。",
-        kw: [k, "我负责", "具体", "数据", "结果", "项目"],
-        points: ["先把 JD 要求翻译成你自己的经历", "用「做法 → 结果」两段式，结果带数字", "说清哪些是你做的（个人贡献）"],
-        pit: ["泛泛说「我具备这个能力」没有例子", "例子和 JD 要求对不上"], follow: ["如果这项能力我们要求很高，你打算怎么补？"]
+        q: spec.q, intent: spec.intent, kw: spec.kw, points: spec.points, pit: spec.pit, follow: spec.follow
       });
     });
     if (company) {
       out.push({
         id: "jdv" + Math.random().toString(36).slice(2, 6), types: ["JD 匹配"], dirs: [dirPick],
         q: "看完这份 JD，你认为这个岗位最重要的三件事是什么？你哪段经历能证明你扛得住？",
+        intent: "看你能不能从 JD 里抓重点，并用自己的经历对上。",
         kw: ["职责", "优先级", "匹配", "经历", "能力", "贡献", "理解"],
         points: ["先从 JD 里归纳出 2–3 项核心职责", "逐条对应自己的经历证据", "给出入职后 3 个月的交付预期"],
         pit: ["只复述 JD 原文", "谈不到自己"], follow: ["你觉得这份 JD 里最难的一项是什么？"]
