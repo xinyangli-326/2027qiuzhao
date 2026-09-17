@@ -2594,7 +2594,7 @@
         </div>
       </div>
       <div class="ai-note" style="margin-top:12px">
-        评分说明：内容匹配 35%（关键词命中 / 岗位词）、结构逻辑 25%（STAR 四段 + 分点 + 结论先行）、表达流畅 20%（语速、口头禅、句子长度）、深度亮点 20%（量化结果、复盘反思、方法细节）。全部在本地计算，可解释、可复现。
+        面试过程不打扰你：<b>答题时不给提示、也不显示分数</b>，整场答完后统一生成评分报告（含逐题复盘）。评分维度：内容匹配 35%、结构逻辑 25%（STAR 四段＋分点）、表达流畅 20%（语速·口头禅）、深度亮点 20%（量化·复盘·方法细节），全部在本机计算。
       </div>
     </div>
 
@@ -2614,7 +2614,7 @@
             <b>模拟面试进行中</b>
             <span class="ai-note" id="aiDirTag">方向：综合</span>
             <span class="ai-grow"></span>
-            <span class="ai-note"> 进度 <b id="aiProgress">1 / 8</b> ｜ 最佳区间 <b id="aiIdeal">60–70s</b></span>
+            <span class="ai-note">进度 <b id="aiProgress">1 / 8</b> · 答完统一出报告</span>
           </div>
           <div class="ai-chat" id="aiChat" aria-live="polite"></div>
           <div class="ai-compose">
@@ -2647,7 +2647,7 @@
             <video id="aiSelf" playsinline muted></video>
             <canvas id="aiCamCanvas" width="64" height="48" hidden></canvas>
             <div class="ai-self-empty" id="aiSelfEmpty"><span class="ai-cam-icon">📷</span>摄像头未开启</div>
-            <div class="ai-stage-tag" id="aiCamState">摄像头：关闭</div>
+            <div class="ai-stage-tag tr" id="aiCamState">摄像头：关闭</div>
           </div>
           <div class="ai-side-ctl">
             <div class="ai-ring-wrap">
@@ -10504,13 +10504,6 @@ render();
     c.scrollTop = c.scrollHeight;
   }
   function chatClear() { var c = $("aiChat"); if (c) c.innerHTML = ""; }
-  function hintFor(q) {
-    if (q.w) return "提示：这类题考临场判断——先给判断标准，再说取舍与代价，最后收口给结论（不用硬套 STAR）。";
-    if (q.id === "comp") return "提示：说具体业务与数据，别说「平台大、有发展」这类套话。";
-    if (q.types && q.types.indexOf("简历深挖") >= 0) return "提示：这是顺着你简历的追问，重点是个人贡献 + 数据 + 复盘。";
-    if (q.types && q.types.indexOf("JD 匹配") >= 0) return "提示：把 JD 要求翻译成你自己的经历，结果尽量带数字。";
-    return "提示：按「背景→任务→行动→结果」回答，结果尽量带数字。";
-  }
   function typeInto(el, text) {
     if (!el) return;
     var i = 0; el.textContent = "";
@@ -10525,98 +10518,72 @@ render();
       }
     }, 24);
   }
+  // —— 报告与点评用的展示组件 ——
+  function bar(label, val, color) {
+    return '<div class="ai-bar"><span>' + label + '</span><span class="ai-track"><i style="width:' + val + "%;background:" + color + '"></i></span><span class="ai-val">' + val + "</span></div>";
+  }
+  function highlight(text, kws) {
+    var out = escAII(text);
+    (kws || []).forEach(function (k) {
+      if (!k) return;
+      var safe = escAII(k).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      try { out = out.replace(new RegExp(safe, "g"), '<span class="ai-hit">' + escAII(k) + "</span>"); } catch (e) {}
+    });
+    return out;
+  }
+  function starTags(r) {
+    var map = { S: "背景", T: "任务", A: "行动", R: "结果" };
+    return Object.keys(map).map(function (k) {
+      return '<span class="ai-tag ' + (r.star[k] ? "ok" : "no") + '">' + (r.star[k] ? "✓ " : "✗ ") + map[k] + "</span>";
+    }).join("")
+      + '<span class="ai-tag ' + (r.hasBullet ? "ok" : "no") + '">' + (r.hasBullet ? "✓ 分点" : "✗ 分点") + "</span>"
+      + '<span class="ai-tag ' + (r.leadFirst ? "ok" : "no") + '">' + (r.leadFirst ? "✓ 结论先行" : "✗ 结论先行") + "</span>";
+  }
   function scoreBars(r) {
     return bar("内容匹配", r.content, "linear-gradient(90deg,#1d4ed8,#60a5fa)")
       + bar("结构逻辑", r.structure, "linear-gradient(90deg,#7e22ce,#c084fc)")
       + bar("表达流畅", r.delivery, "linear-gradient(90deg,#0f766e,#34d399)")
       + bar("深度亮点", r.depth, "linear-gradient(90deg,#b45309,#fbbf24)");
   }
-  function feedbackHtml(it, r) {
-    var kws = (it.q.kw || []).concat(S.jdKw || []).concat(DIR_LEX[dirBase(S.dir)] || []);
-    var html = "";
-    html += '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">'
-      + '<span class="ai-score" style="font-size:26px">' + r.total + '</span><span class="ai-grade">' + r.grade + "</span>"
-      + '<span class="ai-note">' + Math.round(it.seconds) + "s ｜ " + r.len + " 字" + (r.cpm ? " ｜ 语速 " + r.cpm + " 字/分" : "") + " ｜ 口头禅 " + r.fillers + " 处</span></div>";
-    if (S.limit > 0 && it.seconds > S.limit * 0.9) {
-      html += '<div class="ai-note" style="color:var(--amber-fg);margin-bottom:6px">⏱ 接近或超过限时（' + S.limit + "s）：面试会打断，练到限时的 70%–80%。</div>";
-    }
-    html += scoreBars(r);
-    html += '<div style="margin-top:8px">' + starTags(r) + "</div>";
-    html += '<div style="margin-top:10px"><b style="font-size:12.5px;color:var(--navy)">关键词命中 ' + r.hits.length + "/" + kws.length + "</b>"
-      + '<div class="ai-note" style="line-height:2;margin-top:4px">' + highlight(it.answer + (it.follow ? " " + it.follow : ""), kws) + "</div></div>";
-    html += '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--navy);font-weight:600">参考答案要点 / 常见扣分点</summary>'
-      + '<ul class="ai-list" style="margin-top:6px">' + (it.q.points || []).map(function (p) { return "<li>" + escAII(p) + "</li>"; }).join("") + "</ul>"
-      + '<div class="ai-note" style="margin:4px 0">常见扣分点</div><ul class="ai-list">' + (it.q.pit || []).map(function (p) { return "<li>" + escAII(p) + "</li>"; }).join("") + "</ul></details>";
-    html += '<div style="margin-top:10px"><b style="font-size:12.5px;color:var(--navy)">改进建议</b><ul class="ai-list">'
-      + r.advice.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul></div>";
-    if (r.follow && r.follow.length) {
-      html += '<div style="margin-top:10px;border-top:1px dashed var(--line);padding-top:8px">'
-        + '<b style="font-size:12.5px;color:var(--navy)">面试官追问</b><ul class="ai-list" style="margin-top:4px">'
-        + r.follow.map(function (f) { return "<li>" + escAII(f) + "</li>"; }).join("") + "</ul>"
-        + '<textarea id="aiFollowInput" style="width:100%;min-height:56px;margin-top:6px;border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:13px;font-family:inherit" placeholder="补充一句具体动作或数字即可显著提分（可留空）"></textarea>'
-        + '<div class="ai-actions"><button class="btn" id="aiFollowBtn" type="button">提交补充并重新评分</button></div></div>';
-    }
-    var cfgNow = load(CFG_KEY, {});
-    html += '<div class="ai-actions" style="margin-top:10px">'
-      + '<button class="btn primary" id="aiNext" type="button">' + (S.idx + 1 >= S.items.length ? "查看面试报告" : "下一题") + "</button>"
-      + '<button class="btn" id="aiRetry" type="button">重答本题</button>'
-      + '<button class="btn" id="aiPrompt" type="button">📋 复制点评提示词</button>'
-      + (cfgNow.key ? '<button class="btn" id="aiDeep" type="button">✨ AI 深度点评</button>' : "")
-      + "</div>";
-    return html;
-  }
-  function bindFeedback(it, r) {
-    var nb = $("aiNext"); if (nb) nb.onclick = next;
-    var rb = $("aiRetry"); if (rb) rb.onclick = function () {
-      it.answer = ""; it.score = null; it.follow = ""; it.followIdx = 0;
-      $("aiAnswer").value = ""; startTimer(); renderChat();
-    };
-    var ab = $("aiFollowBtn");
-    if (ab) ab.onclick = function () {
-      var inp = $("aiFollowInput");
-      var extra = (inp && inp.value || "").trim();
-      if (!extra) { alert("先写一句补充内容再提交"); return; }
-      it.follow = (it.follow ? it.follow + " " : "") + extra;
-      it.followIdx = (it.followIdx || 0) + 1;
-      var r2 = analyze(it.answer + " " + it.follow, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
-      var chain = it.q.follow || [];
-      r2.follow = it.followIdx < 2 ? chain.slice(it.followIdx, it.followIdx + 1) : [];
-      it.score = r2;
-      store(CUR_KEY, S);
-      renderChat();
-    };
-    var pb2 = $("aiPrompt"); if (pb2) pb2.onclick = function () { copyPrompt(buildPrompt(it, r)); };
-    var db = $("aiDeep"); if (db) db.onclick = deepReview;
-  }
   function renderChat() {
     chatClear();
     var cur = S.items[S.idx];
     S.items.slice(0, S.idx + 1).forEach(function (x, i) {
       var isCur = x === cur;
-      if (isCur && !x.score && !x.answer) {
-        // 当前题：打字机式提问 + 等待回答
-        var h = bubble("ai", '<div class="ai-q-text"></div><div class="ai-note" style="margin-top:6px">' + escAII(hintFor(x.q)) + "</div>");
-        chatPush(h);
+      if (isCur && !x.answer) {
+        // 当前题：打字机式提问（不给任何答题提示），然后等待作答
+        chatPush(bubble("ai", '<div class="ai-q-text"></div>'));
         var els = document.querySelectorAll("#aiChat .ai-q-text");
         typeInto(els[els.length - 1], x.q.q);
         setTimeout(function () {
-          if (S && S.items[S.idx] === x && !x.score) {
+          if (S && S.items[S.idx] === x && !x.answer) {
             chatPush('<div class="ai-msg" style="padding-left:36px"><span class="ai-typing"><i></i><i></i><i></i></span>'
               + '<span class="ai-note" style="margin-left:8px">等待你的回答…</span></div>');
           }
         }, Math.min(1600, x.q.q.length * 24 + 200));
         return;
       }
-      chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.q.q) + '</div><div class="ai-note" style="margin-top:6px">' + escAII(hintFor(x.q)) + "</div>"));
+      chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.q.q) + "</div>"));
       if (x.answer) chatPush(bubble("me", escAII(x.answer)));
       if (x.follow) chatPush(bubble("me", '<span class="ai-note">补充回答：</span>' + escAII(x.follow)));
-      if (x.score) { chatPush(bubble("coach", feedbackHtml(x, x.score))); bindFeedback(x, x.score); }
+      // 面试官追问：只提问，不给分数
+      if (x.pendingFollow) chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.pendingFollow) + "</div>"));
+      // 控制条（无任何评分信息）
+      if (x.answer) {
+        var ctl = '<div class="ai-actions">';
+        if (x.pendingFollow) ctl += '<button class="btn" type="button" data-focus="1">回答这个追问</button>';
+        ctl += '<button class="btn primary" type="button" data-next="1">'
+          + (S.idx + 1 >= S.items.length ? "结束并生成报告" : "下一题") + "</button></div>";
+        chatPush(bubble("ai", ctl));
+      }
     });
-    // 面试官会"接着说"：有追问时在数字人旁边浮出气泡
-    if (cur && cur.score && cur.score.follow && cur.score.follow.length) {
-      avatarState("AI 面试官 · 追问中", "speaking");
-      avatarSay(cur.score.follow[0], "智能追问");
-    }
+    document.querySelectorAll("#aiChat [data-next]").forEach(function (b) { b.onclick = next; });
+    document.querySelectorAll("#aiChat [data-focus]").forEach(function (b) {
+      b.onclick = function () {
+        var box = $("aiAnswer");
+        if (box) { box.focus(); box.placeholder = "回答面试官的追问（也可以直接点下一题）…"; }
+      };
+    });
     var c = $("aiChat"); if (c) c.scrollTop = c.scrollHeight;
   }
 
@@ -10630,7 +10597,7 @@ render();
     var ta2 = $("aiAnswer");
     if (ta2) ta2.placeholder = S.type === "英文题" ? "Type your answer in English… (Enter to send)" : "在这里回答，可直接打字或点麦克风说（Enter 发送，Shift+Enter 换行）";
     $("aiAnswer").value = it.answer || "";
-    $("aiIdeal").textContent = S.limit ? Math.round(S.limit * 0.7) + "–" + Math.round(S.limit * 0.8) + "s" : "不限时";
+    var ideal = $("aiIdeal"); if (ideal) ideal.textContent = S.limit ? Math.round(S.limit * 0.7) + "–" + Math.round(S.limit * 0.8) + "s" : "不限时";
     startTimer();
     avatarStart();
     avatarState("AI 面试官 · 提问中", "speaking");
@@ -10674,51 +10641,51 @@ render();
     stopSpeak();
     var txt = ($("aiAnswer").value || "").trim();
     var sec = elapsed();
+    if (!txt) {
+      chatPush(bubble("ai", '<div class="ai-note">还没有听到你的回答——可以说 30 秒思路，或点「跳跃本题」。</div>'));
+      return;
+    }
+    if (it.pendingFollow) {
+      // 这是对追问的补充回答
+      it.follow = (it.follow ? it.follow + " " : "") + txt;
+      it.pendingFollow = null;
+      it.score = analyze(it.answer + " " + it.follow, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
+      $("aiAnswer").value = "";
+      store(CUR_KEY, S);
+      renderChat();
+      return;
+    }
     it.answer = txt;
     it.seconds = Math.max(it.seconds, sec);
     it.cam = camSummary(CAM.metrics);
     camReset();
-    if (it.follow) txt = txt + " " + it.follow;
-    if (!txt) {
-      chatPush(bubble("coach", '<div class="ai-note">还没有听到你的回答：可以先说 30 秒思路，或点「跳过本题」。</div>'));
-      return;
-    }
     stopTimer();
+    // 静默评分：结果只在最后的总报告里出现
     var r = analyze(txt, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
     it.score = r;
+    it.pendingFollow = (r.follow && r.follow.length) ? r.follow[0] : null;   // 追问一层，答不答都行
+    $("aiAnswer").value = "";
+    var box = $("aiAnswer");
+    if (box) box.placeholder = it.pendingFollow ? "可以补充回答上面的追问，也可以直接点「下一题」…" : "在这里回答，可直接打字或点麦克风说（Enter 发送）";
     store(CUR_KEY, S);
     renderChat();
-    var box = $("aiAnswer"); if (box) box.value = "";
-    avatarState("AI 面试官 · 追问中", "speaking");
-  }
-
-  function bar(label, val, color) {
-    return '<div class="ai-bar"><span>' + label + '</span><span class="ai-track"><i style="width:' + val + "%;background:" + color + '"></i></span><span class="ai-val">' + val + "</span></div>";
-  }
-
-  function highlight(text, kws) {
-    var out = escAII(text);
-    kws.forEach(function (k) {
-      if (!k) return;
-      var safe = escAII(k).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      try { out = out.replace(new RegExp(safe, "g"), '<span class="ai-hit">' + escAII(k) + "</span>"); } catch (e) {}
-    });
-    return out;
-  }
-
-  function starTags(r) {
-    var map = { S: "背景", T: "任务", A: "行动", R: "结果" };
-    return Object.keys(map).map(function (k) {
-      return '<span class="ai-tag ' + (r.star[k] ? "ok" : "no") + '">' + (r.star[k] ? "✓ " : "✗ ") + map[k] + "</span>";
-    }).join("") + '<span class="ai-tag ' + (r.hasBullet ? "ok" : "no") + '">' + (r.hasBullet ? "✓ 分点" : "✗ 分点") + "</span>"
-      + '<span class="ai-tag ' + (r.leadFirst ? "ok" : "no") + '">' + (r.leadFirst ? "✓ 结论先行" : "✗ 结论先行") + "</span>";
+    if (it.pendingFollow) {
+      avatarState("AI 面试官 · 追问中", "speaking");
+      avatarSay(it.pendingFollow, "追问");
+    } else {
+      avatarState("AI 面试官 · 聆听完毕", "listening");
+    }
   }
 
   function next() {
     if (!S) return;
     stopSpeak();
+    var it = S.items[S.idx];
+    if (it) it.pendingFollow = null;
     if (S.idx + 1 >= S.items.length) { finish(); return; }
     S.idx++; store(CUR_KEY, S);
+    var box = $("aiAnswer");
+    if (box) box.placeholder = "在这里回答，可直接打字或点麦克风说（Enter 发送）";
     renderQ();
   }
 
