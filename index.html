@@ -1660,10 +1660,16 @@
   .ai-entry:hover { filter: brightness(1.08); border-color: var(--navy-2); }
   .ai-mask { position: fixed; inset: 0; background: rgba(15, 23, 42, .55); backdrop-filter: blur(3px); z-index: 900; display: none; }
   .ai-mask.open { display: block; }
-  .ai-panel { position: fixed; z-index: 901; inset: 3vh 50% auto 50%; transform: translateX(-50%); width: min(1040px, 94vw);
+  .ai-panel { position: fixed; z-index: 901; inset: 3vh 50% auto 50%; transform: translateX(-50%) scale(.98); opacity: 0;
+    transition: transform .18s ease, opacity .18s ease; width: min(1040px, 94vw);
     max-height: 94vh; background: var(--card); border-radius: 16px; box-shadow: 0 24px 60px rgba(15, 23, 42, .35);
     display: none; flex-direction: column; overflow: hidden; }
-  .ai-panel.open { display: flex; }
+  .ai-panel.open { display: flex; transform: translateX(-50%) scale(1); opacity: 1; }
+  /* 窗口标题栏（像视频会议窗口） */
+  .ai-win { display: flex; align-items: center; gap: 7px; padding: 8px 12px; background: #f1f4f9;
+    border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--navy); }
+  .ai-win-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .ai-win-dot.r { background: #ff5f57; } .ai-win-dot.y { background: #febc2e; } .ai-win-dot.g { background: #28c840; }
   .ai-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line);
     background: linear-gradient(135deg, rgba(31, 56, 100, .06), rgba(47, 82, 144, .12)); }
   .ai-head h2 { margin: 0; font-size: 17px; color: var(--navy); }
@@ -1726,7 +1732,7 @@
   /* —— 数字人面试官 + 摄像头 —— */
   .ai-video { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
   /* —— 面试房间（聊天流 + 右侧视频位）—— */
-  .ai-room { display: grid; grid-template-columns: minmax(0, 1fr) 264px; gap: 12px; height: min(70vh, 600px); min-height: 460px; }
+  .ai-room { display: grid; grid-template-columns: minmax(0, 1fr) 286px; gap: 12px; height: min(70vh, 600px); min-height: 460px; }
   .ai-chat-wrap { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; border: 1px solid var(--line);
     border-radius: 14px; background: linear-gradient(180deg, #fbfcff, #f5f7fb); overflow: hidden; }
   .ai-chat-head { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line);
@@ -1757,6 +1763,13 @@
     border-radius: 12px; padding: 9px 11px; font-size: 13.5px; font-family: inherit; line-height: 1.7; resize: vertical; }
   .ai-compose textarea:focus { outline: 2px solid #bfdbfe; border-color: var(--navy-2); }
   .ai-compose-bar { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .ai-send { width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer; color: #fff;
+    background: linear-gradient(135deg, var(--navy), var(--navy-2)); display: grid; place-items: center;
+    box-shadow: 0 4px 12px rgba(31,56,100,.28); transition: transform .12s ease, filter .12s ease; }
+  .ai-send:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .ai-send:active { transform: scale(.95); }
+  .ai-cam-icon { display: block; font-size: 22px; margin-bottom: 4px; opacity: .75; }
+  .ai-self-empty { border: 1px dashed rgba(203,213,225,.28); border-radius: 10px; margin: 8px; }
   .ai-grow { flex: 1; }
   .ai-icon-btn { border: 1px solid var(--line); background: #fff; border-radius: 10px; width: 34px; height: 32px;
     font-size: 15px; cursor: pointer; }
@@ -1768,9 +1781,11 @@
   .ai-nameplate { position: absolute; left: 8px; top: 8px; background: rgba(15,23,42,.6); color: #fff;
     font-size: 11.5px; padding: 3px 9px; border-radius: 999px; display: flex; gap: 5px; align-items: center; }
   /* 面试官旁边的浮动追问气泡（参考多面"智能追问"） */
-  .ai-float-bubble { position: absolute; left: 8px; right: 8px; bottom: 6px; background: linear-gradient(135deg, #6d5efc, #8b7bff);
+  .ai-float-bubble { position: relative; flex: none; margin-top: -4px; background: linear-gradient(135deg, #6d5efc, #8b7bff);
     color: #fff; font-size: 11px; line-height: 1.55; padding: 6px 9px; border-radius: 10px;
     box-shadow: 0 8px 20px rgba(80,70,220,.35); animation: ai-in .25s ease-out; }
+  .ai-float-bubble::before { content: ""; position: absolute; top: -5px; left: 20px; width: 11px; height: 11px;
+    background: #7a6bfd; transform: rotate(45deg); border-radius: 2px; }
   .ai-stage-tag.tr { left: auto; right: 8px; top: 8px; bottom: auto; }
   .ai-float-bubble b { display: inline-block; background: rgba(255,255,255,.22); border-radius: 999px;
     padding: 0 6px; margin-right: 4px; font-size: 10.5px; }
@@ -1787,6 +1802,7 @@
   .ai-side-btns .btn { width: 100%; }
   .ai-stage { position: relative; border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
     background: linear-gradient(160deg, #0f172a, #1f3864); flex: 1 1 0; min-height: 96px; }
+  .ai-side .ai-stage:first-child { flex: 1.35 1 0; min-height: 138px; }
   .ai-stage canvas, .ai-stage video { display: block; width: 100%; height: 100%; object-fit: cover; }
   .ai-stage-tag { position: absolute; left: 8px; bottom: 8px; background: rgba(15,23,42,.62); color: #fff;
     font-size: 11px; padding: 3px 8px; border-radius: 999px; }
@@ -2483,7 +2499,6 @@
         <div class="ai-field">
           <label for="aiType">面试类型</label>
           <select id="aiType">
-            <option value="AI面试">AI 面试 / 机器初筛（真实高频，含连续追问）</option>
             <option value="行为面">行为面 / 综合面（HR + 业务）</option>
             <option value="专业面">专业面（岗位技能）</option>
             <option value="案例面">案例面 / 商业分析</option>
@@ -2588,6 +2603,12 @@
       <div class="ai-room">
         <!-- 左：对话流 -->
         <div class="ai-chat-wrap">
+          <div class="ai-win">
+            <span class="ai-win-dot r"></span><span class="ai-win-dot y"></span><span class="ai-win-dot g"></span>
+            <b id="aiWinTitle">模拟面试</b>
+            <span class="ai-grow"></span>
+            <span class="ai-note">本地运行 · 不录制 · 不上传</span>
+          </div>
           <div class="ai-chat-head">
             <span class="ai-live-dot"></span>
             <b>模拟面试进行中</b>
@@ -2607,7 +2628,9 @@
               <button class="btn" id="aiPlayback" type="button" hidden>▶ 回放</button>
               <span class="ai-grow"></span>
               <span class="ai-note" id="aiVoiceHint"></span>
-              <button class="btn primary" id="aiSubmit" type="button">提交本题</button>
+              <button class="ai-send" id="aiSubmit" type="button" title="提交本题（Enter）" aria-label="提交本题">
+                <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 12l15-7-6 7 6 7z" fill="currentColor"/></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -2618,12 +2641,12 @@
             <canvas id="aiAvatar" aria-label="数字人面试官"></canvas>
             <div class="ai-nameplate">面试官 · 林澜 <span class="ai-aibadge">AI</span></div>
             <div class="ai-stage-tag tr" id="aiAvatarState">等待开始</div>
-            <div class="ai-float-bubble" id="aiAvatarBubble" hidden></div>
           </div>
+          <div class="ai-float-bubble" id="aiAvatarBubble" hidden></div>
           <div class="ai-stage ai-self">
             <video id="aiSelf" playsinline muted></video>
             <canvas id="aiCamCanvas" width="64" height="48" hidden></canvas>
-            <div class="ai-self-empty" id="aiSelfEmpty">摄像头未开启<br><span style="font-size:11px">画面只在本地分析，不录制、不上传</span></div>
+            <div class="ai-self-empty" id="aiSelfEmpty"><span class="ai-cam-icon">📷</span>摄像头未开启</div>
             <div class="ai-stage-tag" id="aiCamState">摄像头：关闭</div>
           </div>
           <div class="ai-side-ctl">
@@ -9859,7 +9882,7 @@ render();
 <script>
 /* AI-INTERVIEW:JS:START */
 /* AI 面试助手：本地出题 + 本地评分（可选 BYO API Key 做深度点评）
-   评分维度参考主流 AI 面试系统：内容匹配 35% / 结构逻辑 25% / 表达流畅 20% / 深度亮点 20% */
+   评分维度：内容匹配 35% / 结构逻辑 25% / 表达流畅 20% / 深度亮点 20% */
 (function () {
   "use strict";
 
@@ -9991,51 +10014,6 @@ render();
     { id: "w16", w: true, types: ["案例面"], dirs: ["综合/管培"], q: "如果让你用一句话把本场面试的结论讲给 CEO 听，你会怎么说？", kw: ["结论先行", "一句话", "价值", "证据", "建议"], points: ["结论先行、去掉过程", "给一个关键证据", "给一个明确建议"], pit: ["又讲一遍过程", "没有结论"], follow: ["如果 CEO 只有 10 秒呢？"] }
   ];
 
-  // ============ 面经真题（来自公开面经帖子，按「公司 + 岗位」挂载，不跨岗位乱套）============
-  // types: AI面试 = 机器初筛；co = 只有选了该公司才会出现
-  var MJ = [
-    // —— AI 面试（机器初筛，真实高频，答题=一件事+连续追问）——
-    { id: "mj01", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "对于本次应聘的岗位，吸引你的地方主要有哪些？", kw: ["岗位", "业务", "匹配", "能力", "成长", "了解"], points: ["说 Job 本身而不是公司名气（职责/业务/成长路径）", "把岗位要求和你的一段经历对上", "给出你了解该岗位的具体依据"], pit: ["只谈公司大、稳定", "任何岗位都能套用"], follow: ["如果实际工作和描述不一样呢？"] },
-    { id: "mj02", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "如果后续面试顺利，有哪些因素会影响你最终选择是否加入？", kw: ["选择", "判断标准", "业务", "成长", "团队", "城市", "优先级"], points: ["给出 2–3 个明确的判断标准并排序", "说明标准背后的理由", "表达诚意但不过度承诺"], pit: ["说「都行、看公司安排」", "只谈薪资"], follow: ["如果标准和家里期望冲突呢？"] },
-    { id: "mj03", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "日常生活中总会碰到一些复杂的事情，可以说说你最近一年处理过的最复杂的一件事吗？难点在哪里、你具体如何解决的？", kw: ["背景", "难点", "拆解", "方案", "取舍", "推进", "结果"], points: ["AI 面最经典的「一件事 + 三层追问」，务必讲满 60–90 秒", "先说难点定性，再讲拆解与动作", "结果带数据，并准备继续被追问"], pit: ["选一件其实不复杂的事", "只说难，不说怎么解"], follow: ["你是如何梳理各方分歧的核心矛盾、判断不同方案的关键影响因素的？", "你具体做了什么？"] },
-    { id: "mj04", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "工作中总会遇到一些流程或方法可以优化，回想一次你主动发现这类问题的经历：你当时是怎么意识到问题的？又是如何推动优化落地的？", kw: ["主动", "问题", "数据", "方案", "推动", "协作", "结果"], points: ["讲清「怎么发现的」（数据/反馈/对比）", "讲推动过程：说服了谁、遇到什么阻力", "给结果与沉淀"], pit: ["只是提了建议没推动", "结果不可衡量"], follow: ["提出优化方案时，你为什么觉得自己应该主动承担，而不是等别人提出来？"] },
-    { id: "mj05", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "当你发现某个指标（如转化率、占比）下降速度没有达到预期时，你是如何调整策略来确保最终达成目标的？", kw: ["指标", "拆解", "原因", "调整", "节奏", "复盘", "达成"], points: ["先讲怎么定位没达预期的原因", "讲你调整了哪两个具体动作", "给最终结果与后续机制"], pit: ["只说「加大力度」", "没有节点与数据"], follow: ["如果调完还是没达成，你会怎么办？"] },
-    { id: "mj06", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "当你需要同时处理多项任务时，你是如何调整自己的状态来保持效率的？", kw: ["优先级", "计划", "跟进", "沟通", "习惯", "效率", "结果"], points: ["给排序原则与工具（清单/看板/时间块）", "讲一次真实的多任务场景", "给效率或交付结果"], pit: ["说「我会加班做完」", "只有原则没有例子"], follow: ["为了保证不偏离目标，你做了哪些计划、跟进和保障动作？"] },
-    { id: "mj07", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "当对方的方案可能存在问题时，你是如何组织语言，确保你的观点被清晰、准确地理解？", kw: ["沟通", "事实", "数据", "换位", "方案", "共识", "结果"], points: ["先认可对方合理部分再提问题", "用事实/数据而非情绪表达", "落到共同目标与替代方案"], pit: ["直接否定对方", "绕圈子不敢说"], follow: ["如果对方坚持不改呢？"] },
-    { id: "mj08", src: "面经", types: ["AI面试"], dirs: ["综合/管培"], q: "当你与人沟通发生冲突时，你是怎么解决的？", kw: ["冲突", "目标", "沟通", "数据", "妥协", "共识", "结果"], points: ["把冲突落到目标或事实分歧", "讲你的沟通动作与让步边界", "结果与关系维护"], pit: ["强调自己争赢了", "只说感受"], follow: ["如果对方是领导呢？"] },
-
-    // —— 国企 / 央企结构化面试（中核、国家电网等）——
-    { id: "mj10", src: "面经", co: "中核", types: ["行为面"], dirs: ["综合/管培"], q: "你为什么想来中核？你对中核的了解有多少？", kw: ["业务", "核电", "技术", "平台", "成长", "匹配", "国家战略"], points: ["说清中核的主业与你在投的具体单位", "结合自己专业/经历讲匹配", "表达长期稳定意愿"], pit: ["只说「国企稳定」", "把集团和子公司搞混"], follow: ["如果分配你去外地基地呢？"] },
-    { id: "mj11", src: "面经", types: ["行为面"], dirs: ["综合/管培"], q: "你挂过科吗？/ 考研吗？/ 高考成绩多少？四级多少分？（国企面试高频直球问题）", kw: ["如实", "原因", "改进", "现状", "成绩", "规划"], points: ["如实回答，不遮掩也不编造", "如果有瑕疵，给出原因与后面的改进", "把话题引导到当下状态与专业能力"], pit: ["含糊或撒谎（国企会核验）", "过度解释显得心虚"], follow: ["成绩不理想，你怎么证明你的学习能力？"] },
-    { id: "mj12", src: "面经", types: ["行为面"], dirs: ["综合/管培"], q: "当时是什么场景、什么促使你这么做？你采取了哪些措施来降低风险？", kw: ["背景", "动机", "风险", "措施", "协作", "结果", "复盘"], points: ["这是结构化面试的标准开场追问，回答要按「背景→动机→措施→结果」", "主动说风险识别与应对", "给可验证结果"], pit: ["跳步直接讲结果", "不提风险"], follow: ["当时遇到的最大技术/业务难点是什么？你是如何独立攻克的？"] },
-    { id: "mj13", src: "面经", types: ["行为面"], dirs: ["综合/管培"], q: "你是如何收集各部门不同的需求，确保方案可落地的？", kw: ["调研", "需求", "对齐", "优先级", "资源", "落地", "反馈"], points: ["讲清收集需求的方式与覆盖范围", "讲分歧如何收敛（标准/优先级/拍板机制）", "讲落地后的反馈闭环"], pit: ["只说「开会讨论」", "没有优先级取舍"], follow: ["如果两个部门的需求互相冲突，你怎么定？"] },
-    { id: "mj14", src: "面经", types: ["行为面"], dirs: ["综合/管培"], q: "项目落地后，你是如何评估方案的长期稳定性并规划后续迭代的？", kw: ["指标", "监控", "复盘", "迭代", "长效机制", "数据"], points: ["给出评估指标与观察周期", "讲监控/复盘机制", "讲下一轮迭代的方向"], pit: ["答「上线就结束了」", "没有指标"], follow: ["如果上线后指标掉了一半呢？"] },
-    { id: "mj15", src: "面经", types: ["行为面"], dirs: ["综合/管培"], q: "你是如何说服那些原本难以配合的部门接受方案的？", kw: ["利益", "数据", "试点", "沟通", "上级", "妥协", "结果"], points: ["先弄清对方不配合的真实原因", "用数据/试点降低对方风险", "必要时借力机制与上级，但不告状式表达"], pit: ["靠压或靠人情", "没有给对方好处/台阶"], follow: ["如果对方依然不配合呢？"] },
-
-    // —— 采销 / 供应链（京东采销真题）——
-    { id: "mj20", src: "面经", co: "京东", types: ["专业面"], dirs: ["供应链/采购"], q: "作为采销，在保证毛利的情况下应该如何定价？如果和友商价格相比毫无优势怎么办？", kw: ["毛利", "价格带", "比价", "成本", "促销", "满减", "让利空间", "竞对"], points: ["先讲定价约束：毛利底线 + 目标价格带", "讲比价与调价空间（成本、返点、促销资源）", "价格无优势时：差异化卖点、组合促销、赠品而不是直接破价"], pit: ["只会说「降价」", "不区分满减与满赠的效果"], follow: ["是满减还是满赠？为什么？", "如果友商跟着降价，你的下一步是什么？"] },
-    { id: "mj21", src: "面经", co: "京东", types: ["专业面"], dirs: ["供应链/采购"], q: "采销岗位需要什么能力？你哪段经历能证明你具备？", kw: ["谈判", "数据", "选品", "成本", "供应商", "沟通", "结果"], points: ["先归纳 2–3 项核心能力（谈判/数据/选品）", "逐条对应自己的经历证据", "给一个真实数字"], pit: ["罗列一堆能力没有例子", "把岗位理解成「卖货」"], follow: ["你觉得采销最难的一项是什么？"] },
-    { id: "mj22", src: "面经", co: "SHEIN", types: ["专业面"], dirs: ["供应链/采购"], q: "需求预测里为什么用「建议供货量」而不是「销量」？某地区 Sell-in 增加，Sell-through 会怎么变？", kw: ["需求预测", "供货", "库存", "周转", "Sell-in", "Sell-through", "到货及时率", "OTA"], points: ["区分销售口径与供货口径（库存、在途、退货）", "理解 Sell-in/Sell-through 的关系与库存水位影响", "给出判断而不是背概念"], pit: ["概念混淆", "不敢建模只会说不知道"], follow: ["到货及时率（OTA）你会怎么拆解？"] },
-    { id: "mj23", src: "面经", types: ["专业面"], dirs: ["供应链/采购"], q: "你是国贸/其他专业，为什么来面供应链管培？和物流专业的候选人比，你的优劣势是什么？", kw: ["跨界", "迁移能力", "专业", "劣势", "补齐", "证据", "匹配"], points: ["承认专业差异但指出可迁移能力（数据/沟通/外语/业务理解）", "给出你为转岗做的准备", "把劣势转成可补齐项并给计划"], pit: ["硬说自己完全匹配", "劣势说不出来"], follow: ["入职后你打算多快补齐专业短板？"] },
-
-    // —— 快消 / 市场（宝洁、伊利、拼多多市场、古茗品牌）——
-    { id: "mj30", src: "面经", co: "宝洁", types: ["专业面"], dirs: ["市场品牌"], q: "（情景题）实习中你发现公司某些环节非常琐碎低效，你会怎么办？", kw: ["观察", "数据", "方案", "推动", "协作", "结果", "复盘"], points: ["先说怎么确认它真的低效（数据/时间成本）", "给出方案与推进方式，注意新人分寸", "给结果与沉淀"], pit: ["直接吐槽公司", "只提问题不给方案"], follow: ["如果没人支持你改呢？"] },
-    { id: "mj31", src: "面经", co: "宝洁", types: ["专业面"], dirs: ["市场品牌"], q: "（情景题）你手头三项任务已经饱和，其中一项交付时间突然提前一个月，你怎么应对？", kw: ["优先级", "沟通", "拆分", "资源", "交付", "取舍", "风险"], points: ["先评估影响面并与相关方同步", "重排优先级、拆分任务、争取资源", "给出取舍后的交付方案"], pit: ["说「加班硬扛」", "不告知风险"], follow: ["如果三件事都不能延，你砍哪一个？"] },
-    { id: "mj32", src: "面经", co: "伊利", types: ["专业面"], dirs: ["市场品牌"], q: "为什么选择加入伊利？你对伊利有哪些了解？你对市场管培生这个岗位的理解是什么？", kw: ["品牌", "产品", "渠道", "行业", "岗位理解", "匹配", "成长"], points: ["讲具体业务/产品/近期动作", "讲清市场管培生要做什么（品牌/渠道/营销）", "把岗位要求与自己的经历对应"], pit: ["泛泛夸公司大", "岗位理解停留在「做活动」"], follow: ["你平时怎么关注这个行业的变化？"] },
-    { id: "mj33", src: "面经", co: "拼多多", types: ["专业面"], dirs: ["市场品牌"], q: "拼多多为什么没有购物车？拼多多有竞争力的经济学原理是什么？怎么做它的市场营销？", kw: ["用户场景", "决策成本", "转化", "低价", "社交裂变", "渠道", "投放"], points: ["从用户决策链路解释产品选择（降低决策成本、直接支付）", "用供需/规模效应等原理说竞争力", "给出具体的市场动作与渠道判断"], pit: ["只评价好或不好", "脱离用户场景讲概念"], follow: ["你会把广告投在哪几个渠道？为什么？"] },
-
-    // —— 四大 / 财务（毕马威、安永、德勤、宁德财经）——
-    { id: "mj40", src: "面经", co: "毕马威", types: ["行为面"], dirs: ["职能（财务/人力/法务）"], q: "Why KPMG？为什么选这个城市？为什么想进这个行业？", kw: ["业务", "文化", "城市", "行业", "规划", "匹配", "了解"], points: ["业务/客户结构切入，说具体观察", "城市选择给理由（家人/资源/发展）", "表达长期投入"], pit: ["任何四大都能套用", "城市理由只有「离学校近」"], follow: ["我们还给了别人 offer，你凭什么？"] },
-    { id: "mj41", src: "面经", types: ["行为面"], dirs: ["职能（财务/人力/法务）"], q: "你最喜欢哪门课、为什么？请举例说明你提到的数据分析、抗压、团队能力，当时具体怎么做的。", kw: ["课程", "原因", "应用", "例子", "数据", "团队", "结果"], points: ["课程选择要与岗位相关并说应用", "每个能力都要配一个具体例子", "例子带数字与个人动作"], pit: ["说「都挺喜欢」", "举例只有结论没有过程"], follow: ["这门课的知识你后来在工作里用到过吗？"] },
-    { id: "mj42", src: "面经", types: ["专业面"], dirs: ["职能（财务/人力/法务）"], q: "税务/财务基础题：现行增值税税率有哪些？分别适用哪些税目？", kw: ["税率", "税目", "一般纳税人", "小规模", "进项", "销项", "适用"], points: ["先把税率与税目对应关系说清", "区分一般纳税人与小规模纳税人", "承认不确定的部分但不含糊"], pit: ["凭印象乱报税率", "与岗位无关时不会转移话题"], follow: ["进项税额不得抵扣的情形有哪些？"] },
-    { id: "mj43", src: "面经", types: ["行为面"], dirs: ["职能（财务/人力/法务）"], q: "周围老师和同学是怎么评价你的？当你与人沟通出现冲突时，你是怎么解决的？", kw: ["他人评价", "特点", "证据", "冲突", "沟通", "解决", "结果"], points: ["引用具体评价＋一个事例", "冲突回答落到目标与事实", "体现自我认知"], pit: ["只夸自己", "冲突例子推责任"], follow: ["有没有人说过你的缺点？"] },
-
-    // —— 互联网运营 / 数分（字节、美团）——
-    { id: "mj50", src: "面经", co: "字节跳动", types: ["专业面"], dirs: ["运营"], q: "这个岗位需要对接 200–300 家客户，你会怎么安排才能达成目标？如果一天要打七八十个电话，会有压力吗？", kw: ["分层", "SOP", "优先级", "话术", "转化", "效率", "抗压"], points: ["先做客户分层与优先级（头部/尾部/潜力）", "给效率手段：话术模板、批量动作、工具与数据看板", "坦诚谈压力并给出具体的调节方式"], pit: ["说「没问题，我能加班」", "只讲勤奋不讲方法"], follow: ["怎么判断哪些商家是高潜？"] },
-    { id: "mj51", src: "面经", types: ["专业面"], dirs: ["数据分析"], q: "（美团数分）如果让你分析某个业务指标下滑，你会怎么拆？需要哪些数据？", kw: ["指标口径", "拆解", "维度", "对比", "假设", "验证", "结论"], points: ["先确认口径与数据质量", "按维度拆（渠道/城市/人群/版本）并提出假设", "给验证方式与结论口径"], pit: ["直接给结论", "要不到关键数据也不问"], follow: ["如果数据拿不到怎么办？"] },
-    { id: "mj52", src: "面经", types: ["专业面"], dirs: ["技术研发"], q: "（研发面）请非常熟悉地讲清你项目里扮演的角色、解决的问题和遇到的难点。", kw: ["角色", "贡献", "难点", "方案", "取舍", "结果", "复盘"], points: ["面试官一定会顺着项目往下钻：准备「角色—难点—方案—结果」四段", "难点要具体到技术点而不是「沟通困难」", "准备一个失败/返工的细节"], pit: ["讲不清自己写的是哪部分", "难点说不具体"], follow: ["这个难点如果你当时不懂，是怎么学的？"] }
-  ];
-  MJ.forEach(function (q) { BANK.push(q); });
 
   // ============ 工具函数 ============
   function escAII(s) {
@@ -10054,7 +10032,7 @@ render();
 
   // ============ 评分引擎 ============
   var FILLER_RE = /(嗯+|啊+|呃+|那个|就是说|然后就|怎么说呢|其实吧)/g;
-  // 空话/口号式表达：AI 面试官遇到这种一定会追问「具体是什么事」
+  // 空话/口号式表达：面试官遇到这种一定会追问「具体是什么事」
   var VAGUE_RE = /(沟通能力(强|好|不错)|抗压能力(强|好)|学习能力(强|好)|执行力(强|好)|团队(合作|协作)(能力)?(强|好)|有责任心|认真负责|性格开朗|积极主动|吃苦耐劳|适应能力强|有较强的)/g;
   var STAR_RE = {
     S: /(背景|当时|那段时间|之前|上一个|在.{0,10}(实习|项目|课程|社团|比赛)|我们(组|团队|部门)|公司|学校)/,
@@ -10255,7 +10233,7 @@ render();
     if (content < 70) {
       var need = (jdkw.length && jdMiss.length ? jdMiss : miss).slice(0, 4);
       advice.push((jdkw.length ? "JD 匹配偏弱：" : "内容匹配偏弱：") + "这类题的核心词还差 " + need.length + " 个"
-        + (need.length ? "（" + need.join("、") + "）" : "") + "，作答时把岗位 JD 里的词主动说出来，AI 面试就是按关键词命中打分的。");
+        + (need.length ? "（" + need.join("、") + "）" : "") + "，作答时把岗位 JD 里的词主动说出来，内容分主要看这些岗位词的命中。");
     }
     if (structure < 70) {
       var names = q.w ? { S: "判断标准", T: "取舍与代价", A: "具体动作", R: "收口反思" }
@@ -10297,7 +10275,7 @@ render();
       else follow = (q.follow || []).slice(0, 1);
     }
     if (vagueHits.length) {
-      advice.unshift("检测到 " + vagueHits.length + " 处空话（「" + vagueHits.slice(0, 3).join("」「") + "」）：AI 面遇到这种词一定会追问，改成「具体做了什么 + 结果数字」。");
+      advice.unshift("检测到 " + vagueHits.length + " 处空话（「" + vagueHits.slice(0, 3).join("」「") + "」）：面试官听到这种词一定会追问，改成「具体做了什么 + 结果数字」。");
     }
 
     return {
@@ -10422,7 +10400,7 @@ render();
     for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
     return a;
   }
-  // 裁剪题目数量时，优先保留「公司专属面经题」「公司定制题」，先丢普通题
+  // 裁剪题目数量时，优先保留「公司定制题」，先丢普通题
   function trimKeep(list, keep) {
     var out = list.slice();
     for (var i = out.length - 1; i >= 0 && out.length > keep; i--) {
@@ -10433,8 +10411,7 @@ render();
   }
   // 出题：默认混入意外题 + 混搭方向 + 打乱顺序（更接近真实面试的「出其不意」）
   function pickQuestions(type, count, company, randomize) {
-    // 面经里的公司专属题（如京东采销定价题）只在选了该公司时才出现，避免跨岗位乱套
-    function coOk(q) { return !q.co || (company && company.indexOf(q.co) >= 0); }
+        function coOk() { return true; }  // 目前不做公司专属题，保留占位
     var normal = BANK.filter(function (q) {
       if (q.w) return false;
       if (!coOk(q)) return false;
@@ -10466,18 +10443,6 @@ render();
     } else {
       picked = shuffle(picked);
       if (companyQ) picked.unshift(companyQ);
-    }
-    // 公司专属面经题：最后强制插入（放在随机位置，且不会被上面的随机化丢掉）
-    if (company) {
-      var coQs = normal.filter(function (q) { return q.co && q.src === "面经"; });
-      if (coQs.length) {
-        var forced = shuffle(coQs).slice(0, Math.min(2, Math.max(1, Math.floor(count / 4))));
-        picked = picked.filter(function (q) { return forced.indexOf(q) < 0; });
-        var drop = Math.max(0, picked.length + forced.length - Math.max(count, forced.length));
-        if (drop) picked = picked.slice(0, picked.length - drop);
-        var pos = Math.floor(Math.random() * (picked.length + 1));
-        picked = picked.slice(0, pos).concat(forced).concat(picked.slice(pos));
-      }
     }
     return picked;
   }
@@ -10524,7 +10489,7 @@ render();
     S = cur; show("Interview"); renderQ();
   }
 
-  // ============ 对话流渲染（像真实视频面试 / 聊天式 AI 面）============
+  // ============ 对话流渲染（像真实视频面试）============
   function bubble(kind, inner) {
     var who = kind === "me" ? "我" : kind === "coach" ? "面试官点评" : "面试官 · 林澜";
     var cls = kind === "me" ? "me" : kind === "coach" ? "coach" : "";
@@ -10553,7 +10518,11 @@ render();
       if (!document.body.contains(el)) { clearInterval(t); return; }
       el.textContent = text.slice(0, ++i);
       var c = $("aiChat"); if (c) c.scrollTop = c.scrollHeight;
-      if (i >= text.length) clearInterval(t);
+      if (i >= text.length) {
+        clearInterval(t);
+        var box = $("aiAnswer");
+        if (box && !box.disabled) { try { box.focus(); } catch (e) {} }
+      }
     }, 24);
   }
   function scoreBars(r) {
@@ -10569,7 +10538,7 @@ render();
       + '<span class="ai-score" style="font-size:26px">' + r.total + '</span><span class="ai-grade">' + r.grade + "</span>"
       + '<span class="ai-note">' + Math.round(it.seconds) + "s ｜ " + r.len + " 字" + (r.cpm ? " ｜ 语速 " + r.cpm + " 字/分" : "") + " ｜ 口头禅 " + r.fillers + " 处</span></div>";
     if (S.limit > 0 && it.seconds > S.limit * 0.9) {
-      html += '<div class="ai-note" style="color:var(--amber-fg);margin-bottom:6px">⏱ 接近或超过限时（' + S.limit + "s）：AI 面试会硬切，练到限时的 70%–80%。</div>";
+      html += '<div class="ai-note" style="color:var(--amber-fg);margin-bottom:6px">⏱ 接近或超过限时（' + S.limit + "s）：面试会打断，练到限时的 70%–80%。</div>";
     }
     html += scoreBars(r);
     html += '<div style="margin-top:8px">' + starTags(r) + "</div>";
@@ -10656,6 +10625,10 @@ render();
     if (!it) { finish(); return; }
     $("aiProgress").textContent = (S.idx + 1) + " / " + S.items.length;
     $("aiDirTag").textContent = "方向：" + dirPick;
+    var wt = $("aiWinTitle");
+    if (wt) wt.textContent = "模拟面试" + (S.company ? " · " + S.company : "") + " · " + dirPick;
+    var ta2 = $("aiAnswer");
+    if (ta2) ta2.placeholder = S.type === "英文题" ? "Type your answer in English… (Enter to send)" : "在这里回答，可直接打字或点麦克风说（Enter 发送，Shift+Enter 换行）";
     $("aiAnswer").value = it.answer || "";
     $("aiIdeal").textContent = S.limit ? Math.round(S.limit * 0.7) + "–" + Math.round(S.limit * 0.8) + "s" : "不限时";
     startTimer();
@@ -10833,7 +10806,7 @@ render();
         + '<div class="ai-note">说明：这里只做亮度与肤色重心的近似判断（判断你是否在画面中间、环境是否过暗），不做人脸识别与表情识别；画面全程只在你的浏览器里处理，不录制、不上传。</div></div>';
     }
 
-    // 面试官视角总结（对应面经里"结束后给总结"的做法）
+    // 面试官视角总结
     var done = rep.items.filter(function (x) { return x.score; });
     if (done.length) {
       var byScore = done.slice().sort(function (a, b) { return a.score.total - b.score.total; });
@@ -11186,7 +11159,7 @@ render();
     return out;
   }
 
-  // JD × 简历匹配：把 JD 最看重的能力和你的经历对上（面经里高赞做法：先分析 JD，再指出哪些经历最值得讲）
+  // JD × 简历匹配：把 JD 最看重的能力和你的经历对上
   function jdResumePlan(jdKw, resumeText) {
     var entries = parseResume(resumeText || "");
     var rows = jdKw.slice(0, 8).map(function (k) {
@@ -11322,22 +11295,21 @@ render();
 
   // ============ 面试指导（教练内容）============
   var GUIDE = [
-    { t: "① AI 面试（机器初筛）：题目高度重合，考的是「一件事 + 三层追问」", b:
-      "<p>小红书上的 AI 面面经有一句共识：「AI 面了几家之后发现题目真的高度重合」。真实高频题就那几类：<b>最有成就感/最复杂的一件事、主动优化流程的经历、多任务怎么排、冲突怎么沟通、指标没达预期怎么调整</b>。</p>" +
-      "<p>它们的追问链几乎固定：<br>「当时是什么场景、什么促使你这么做？」→「你的难点在哪里？」→「你具体是怎么做的？」→「你是如何衡量结果的？」</p>" +
-      "<p>所以准备方式不是背答案，而是<b>准备 2 个项目故事，每个故事都能扛住这四连问</b>。每个故事至少包含：背景一句、难点一句、你的三个动作、一个数字结果、一句复盘。</p>" +
-      "<p>机器还在看：关键词命中（JD 里的词要主动说出来）、语速（约 180–260 字/分）、时长（限时的 70%–80%）。本工具的计时器和语音转写就是给你对齐这三项的。</p>", p: "AI面试" },
-    { t: "② 简历深挖：华为、宝洁面经反复强调的一件事", b:
-      "<p>华为面经原话：「一定要很熟悉自己的项目，最好回顾一下自己在项目中扮演的角色以及解决的问题。」宝洁面经：「面试前一定要把自己的经历反复打磨，每一段都能说出<b>目标、动作、结果</b>，还要提前想好<b>复盘和优化</b>的点。」</p>" +
+    { t: "① 结构化表达：先给结论，再给三段证据", b:
+      "<p>面试官平均只给你 60–90 秒注意力，判断顺序是：<b>你抓没抓住问题 → 有没有结构 → 有没有证据 → 有没有复盘</b>。</p>" +
+      "<p>可直接套用的句式：「这件事我的核心动作是 X。（结论）背景是……（1 句）我做了三件事：①…②…③…（每段一个动作）结果是 X 从 A 变成 B；如果重来，我会在 Y 上改进。」</p>" +
+      "<p>常见扣分：铺垫过长、只说「我们」、结果没有数字。</p>", p: "行为面" },
+    { t: "② 简历深挖：把每条经历拆成 5 张牌", b:
+      "<p>面试官问简历只有一层目的：验证这件事到底是不是你做的、做到什么程度。所以每段经历都要能说出<b>目标、动作、结果</b>，并提前想好<b>复盘和优化</b>的点。</p>" +
       "<p>这就是大厂深挖的标准四问：这段经历的目标是什么？你做了什么？结果如何衡量？如果重来你会改什么？</p>" +
       "<p>把每段经历拆成 5 张牌随时能抽：<br>1）<b>个人贡献牌</b>：我负责 X，团队负责 Y；<br>2）<b>数据牌</b>：基线 A → 结果 B，口径来源；<br>3）<b>取舍牌</b>：还有方案 M，因为成本/风险没选；<br>4）<b>阻力牌</b>：卡在 X，我用 Y 推动；<br>5）<b>复盘牌</b>：重来会改 Z，已沉淀成模板/流程。</p>" +
       "<p>被追问时的顺序：事实层 → 决策层 → 反思层。不要被追问就改口，也不要编不存在的细节。</p>", p: "简历深挖" },
     { t: "③ 岗位专属题必须贴 JD：京东采销的例子", b:
-      "<p>面经里京东采销的题是：「在保证毛利的情况下应该如何定价？」「跟竞对平台比较，友商是什么价格？」「是满减还是满赠？」「如果没有价格优势怎么办？」——这些题<b>只对采销有效</b>，套到运营或财务上就是胡来。</p>" +
+      "<p>举个岗位专属的例子：采购/采销岗会问「在保证毛利的情况下怎么定价」「友商价格是多少、你的调整空间有多大」——这类题<b>只对采购有效</b>，套到运营或财务上就是胡来。</p>" +
       "<p>所以正确做法是：<b>先读目标岗位 JD，把 JD 里的职责翻译成题目</b>。例：<br>JD 写「品类采购与供应商管理」→ 准备「你怎么选供应商、怎么谈价、怎么平衡账期与交付」；<br>JD 写「分析销售数据优化商品结构」→ 准备「用什么指标判断该汰换哪个 SKU」。</p>" +
       "<p>用本工具的「目标岗位 JD」输入框：贴进 JD 后，出题会按你的 JD 走，打分也按 JD 关键词命中率算——换岗位就换题，不会互相污染。</p>", p: "专业面" },
     { t: "④ 国企 / 央企结构化面试：直球问题 + 标准链条", b:
-      "<p>中核面经给的高频问题是「同学你挂过科吗？考研吗？高考成绩多少？四级多少分？为什么想来中核？」——国企面试更看稳定性和基本盘，问得直接，<b>如实回答</b>比包装重要（后面会核验）。</p>" +
+      "<p>国企/央企的结构化面试问得很直接：挂过科吗、考研吗、成绩多少、为什么选我们——更看稳定性和基本盘，<b>如实回答</b>比包装重要（后面会核验）。</p>" +
       "<p>国家电网类结构化面试的追问链条是固定的：<br>「当时是什么场景、什么促使你这么做？」→「采取了哪些措施降低风险？」→「最大的难点是什么、如何独立攻克？」→「如何收集各部门需求确保落地？」→「落地后如何评估稳定性并规划迭代？」→「如何说服难以配合的部门？」</p>" +
       "<p>准备方式：把项目按「背景 → 动机 → 措施 → 风险 → 结果 → 迭代」六段写一遍，几乎能覆盖所有追问。</p>", p: "行为面" },
     { t: "⑤ 量化改造：把「形容词」换成「数字」", b:
@@ -11349,9 +11321,9 @@ render();
     { t: "⑥ 压力面 / 连续追问怎么不崩", b:
       "<p>压力面考的不是答案，是<b>你在被质疑时的稳定性</b>。三个动作：</p>" +
       "<p>1）先接住再澄清：「你质疑的点我理解是 X，我确认一下是不是这个意思」；<br>2）用事实承接：「客观情况是 A 和 B，我的判断依据是 C」；<br>3）守住底线，不编细节：「这个细节我记不清了，但我可以讲清我的决策逻辑」。</p>" +
-      "<p>小红书 SHEIN 面经里出现过「你说这些你自己信吗？」这类压力测试：不要情绪化对撞，按上面三步走。<br>千万不要：和面试官争胜、慌乱改口、把责任推给队友或导师。</p>", p: "压力面" },
+      "<p>压力面里常出现「你说这些你自己信吗？」这类质疑：不要情绪化对撞，按上面三步走。<br>千万不要：和面试官争胜、慌乱改口、把责任推给队友或导师。</p>", p: "压力面" },
     { t: "⑦ 群面（四大/互联网）：时间管理和「用数据说话」", b:
-      "<p>安永群面面经的复盘原话：<b>「一定一定一定要注意时间」「最后一定要留时间给最后的英文 pre 准备，可以提前在纸上写一些英文句子」</b>；面试官给的建议是<b>「多关注案例中的表格数据，分析多用到表格数据会更好」</b>。</p>" +
+      "<p>群面的两个常见失分点：<b>没控制好时间</b>、<b>讲观点时不用案例里的数据</b>。留出时间给最后的总结陈述，讨论时主动把表格里的数字带进来。</p>" +
       "<p>落地成三个动作：<br>1）开场 2 分钟认领角色（时间管理/框架搭建/记录总结）并做实；<br>2）发言用「认同 + 补充 + 推进」结构，主动把表格里的数字带进讨论；<br>3）最后 5 分钟强制收口：结论 + 依据 + 风险，别让讨论烂尾。</p>", p: "案例面" },
     { t: "⑧ 反问环节：3 个高质量问题", b:
       "<p>反问是最后一次加分机会，问「能学到什么」等于没问。可以问：</p>" +
@@ -11609,19 +11581,6 @@ render();
     var centered = st.skinRatio > 0.03 && st.cx > 0.33 && st.cx < 0.67;
     if (centered) { m.centered++; m.offStreak = 0; } else { m.off++; m.offStreak = (m.offStreak || 0) + 1; }
     if (st.brightness < 55) { m.dark++; m.darkStreak = (m.darkStreak || 0) + 1; } else { m.darkStreak = 0; }
-    // 模拟真实 AI 面的"偏离提醒"：连续离位/过暗时弹一句提醒（15 秒最多一次）
-    var now = Date.now();
-    if (!m.alertedAt) m.alertedAt = 0;
-    if (now - m.alertedAt > 15000 && S && S.items[S.idx]) {
-      var why = "";
-      if ((m.offStreak || 0) >= 4) why = "你好像不在画面中间了——真实 AI 面会判定为分心，回到镜头正前方。";
-      else if ((m.darkStreak || 0) >= 5) why = "画面偏暗，面试官看不清你的表情——正面补光会更稳。";
-      if (why) {
-        m.alertedAt = now;
-        m.alerts = (m.alerts || 0) + 1;
-        chatPush(bubble("coach", '<div class="ai-note">⚠️ ' + escAII(why) + "</div>"));
-      }
-    }
     // 静止：与上一帧差异过小
     if (CAM.prev) {
       var diff = 0, cnt = 0;
@@ -11767,7 +11726,9 @@ render();
     };
     var ta = $("aiAnswer");
     if (ta) ta.addEventListener("keydown", function (e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); submit(); }
+      // 聊天式交互：Enter 发送，Shift+Enter 换行（Ctrl/Cmd+Enter 同样发送）
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); }
+      else if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); submit(); }
     });
   }
 
