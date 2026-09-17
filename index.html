@@ -1723,12 +1723,94 @@
   .ai-answer pre { white-space: pre-wrap; word-break: break-word; font-family: inherit; font-size: 13px; margin: 0 0 8px; }
   .ai-pill { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--gray-bg); color: var(--muted); margin-right: 6px; }
   .ai-rec { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  /* —— 数字人面试官 + 摄像头 —— */
+  .ai-video { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  /* —— 面试房间（聊天流 + 右侧视频位）—— */
+  .ai-room { display: grid; grid-template-columns: minmax(0, 1fr) 264px; gap: 12px; height: min(70vh, 600px); min-height: 460px; }
+  .ai-chat-wrap { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; border: 1px solid var(--line);
+    border-radius: 14px; background: linear-gradient(180deg, #fbfcff, #f5f7fb); overflow: hidden; }
+  .ai-chat-head { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line);
+    background: #fff; font-size: 12.5px; color: var(--navy); }
+  .ai-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 0 0 rgba(239,68,68,.6);
+    animation: ai-live 1.6s infinite; }
+  @keyframes ai-live { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,.55); } 70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+  .ai-chat { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 14px 14px 6px; display: flex; flex-direction: column; gap: 12px; }
+  .ai-msg { display: flex; gap: 8px; align-items: flex-start; max-width: 92%; }
+  .ai-msg.me { align-self: flex-end; flex-direction: row-reverse; }
+  .ai-avatar-mini { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 13px; background: linear-gradient(140deg, #1f3864, #3b82f6); color: #fff; }
+  .ai-avatar-mini.me { background: linear-gradient(140deg, #0f766e, #34d399); }
+  .ai-bubble { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px;
+    font-size: 13.5px; line-height: 1.75; box-shadow: 0 1px 2px rgba(15,23,42,.04); min-width: 0; }
+  .ai-msg { animation: ai-in .22s ease-out; }
+  @keyframes ai-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .ai-msg.me .ai-bubble { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .ai-msg.coach .ai-bubble { background: linear-gradient(180deg, #ffffff, #f7fbff); border-color: #bfdbfe; }
+  .ai-bubble .ai-bt { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .ai-bubble .ai-q-text { font-size: 14px; font-weight: 600; }
+  .ai-typing { display: inline-flex; gap: 4px; align-items: center; }
+  .ai-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--navy-2); opacity: .35; animation: ai-bounce 1s infinite; }
+  .ai-typing i:nth-child(2) { animation-delay: .15s; } .ai-typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes ai-bounce { 0%,60%,100% { transform: translateY(0); opacity: .35; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .ai-compose { flex: none; border-top: 1px solid var(--line); background: #fff; padding: 10px 12px 12px; }
+  .ai-compose textarea { width: 100%; min-height: 62px; max-height: 160px; border: 1px solid var(--line);
+    border-radius: 12px; padding: 9px 11px; font-size: 13.5px; font-family: inherit; line-height: 1.7; resize: vertical; }
+  .ai-compose textarea:focus { outline: 2px solid #bfdbfe; border-color: var(--navy-2); }
+  .ai-compose-bar { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .ai-grow { flex: 1; }
+  .ai-icon-btn { border: 1px solid var(--line); background: #fff; border-radius: 10px; width: 34px; height: 32px;
+    font-size: 15px; cursor: pointer; }
+  .ai-icon-btn:hover { border-color: var(--navy-2); }
+  .ai-wave { height: 0; display: flex; align-items: flex-end; gap: 2px; transition: height .2s; }
+  .ai-wave.on { height: 22px; margin-bottom: 6px; }
+  .ai-wave i { flex: 1; background: linear-gradient(180deg, #60a5fa, #1d4ed8); border-radius: 2px; height: 3px; }
+  .ai-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; height: 100%; }
+  .ai-nameplate { position: absolute; left: 8px; top: 8px; background: rgba(15,23,42,.6); color: #fff;
+    font-size: 11.5px; padding: 3px 9px; border-radius: 999px; display: flex; gap: 5px; align-items: center; }
+  /* 面试官旁边的浮动追问气泡（参考多面"智能追问"） */
+  .ai-float-bubble { position: absolute; left: 8px; right: 8px; bottom: 6px; background: linear-gradient(135deg, #6d5efc, #8b7bff);
+    color: #fff; font-size: 11px; line-height: 1.55; padding: 6px 9px; border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(80,70,220,.35); animation: ai-in .25s ease-out; }
+  .ai-stage-tag.tr { left: auto; right: 8px; top: 8px; bottom: auto; }
+  .ai-float-bubble b { display: inline-block; background: rgba(255,255,255,.22); border-radius: 999px;
+    padding: 0 6px; margin-right: 4px; font-size: 10.5px; }
+  .ai-aibadge { background: #3b82f6; color: #fff; border-radius: 5px; padding: 0 4px; font-size: 10px; font-weight: 700; }
+  .ai-side-ctl { flex: none; border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: #fff;
+    display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .ai-ring-wrap { position: relative; width: 72px; height: 72px; display: grid; place-items: center; }
+  .ai-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ai-ring circle { fill: none; stroke-width: 6; stroke-linecap: round; }
+  .ai-ring-bg { stroke: var(--line); }
+  .ai-ring-fg { stroke: #1d4ed8; stroke-dasharray: 188.5; stroke-dashoffset: 0; transition: stroke-dashoffset .4s linear, stroke .3s; }
+  .ai-ring-wrap .ai-timer { position: relative; font-size: 15px; }
+  .ai-side-btns { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .ai-side-btns .btn { width: 100%; }
+  .ai-stage { position: relative; border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    background: linear-gradient(160deg, #0f172a, #1f3864); flex: 1 1 0; min-height: 96px; }
+  .ai-stage canvas, .ai-stage video { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .ai-stage-tag { position: absolute; left: 8px; bottom: 8px; background: rgba(15,23,42,.62); color: #fff;
+    font-size: 11px; padding: 3px 8px; border-radius: 999px; }
+  .ai-stage.ai-self { background: #0b1220; }
+  .ai-self-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #cbd5e1; font-size: 12px; text-align: center; line-height: 1.7; padding: 10px; }
+  .ai-self-empty.hide { display: none; }
+  .ai-cam-badge { position: absolute; right: 8px; top: 8px; font-size: 11px; padding: 3px 8px; border-radius: 999px;
+    background: rgba(220,38,38,.85); color: #fff; }
+  .ai-dir-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .ai-dir-row input { flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; font-size: 12.5px; }
   .ai-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
   .ai-dot.live { background: var(--rose-fg); animation: ai-pulse 1s infinite; }
   @keyframes ai-pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
   @media (max-width: 720px) {
     .ai-panel { inset: 0; width: 100vw; max-height: 100vh; border-radius: 0; transform: none; }
     .ai-cols { grid-template-columns: 1fr; }
+    .ai-video { grid-template-columns: 1fr; }
+    .ai-room { grid-template-columns: 1fr; height: auto; }
+    .ai-chat { max-height: 46vh; }
+    .ai-side { flex-direction: row; flex-wrap: wrap; }
+    .ai-side { height: auto; }
+    .ai-side .ai-stage { min-height: 118px; flex: 1 1 46%; }
+    .ai-side-ctl { width: 100%; }
     .ai-bar { grid-template-columns: 62px 1fr 40px; }
   }
 /* AI-INTERVIEW:CSS:END */
@@ -2384,6 +2466,19 @@
         <div class="ai-field">
           <label>岗位方向</label>
           <div class="ai-chips" id="aiDirs"></div>
+          <div class="ai-actions" style="margin-top:8px">
+            <button class="btn" id="aiDirEdit" type="button">✎ 编辑岗位方向</button>
+            <span class="ai-note" id="aiDirHint"></span>
+          </div>
+          <div id="aiDirManager" hidden style="margin-top:8px">
+            <div class="ai-note" style="margin-bottom:6px">你可以把用不到的方向删掉、改名，或加上自己投的岗位（如「采销/买手」「审计」「供应链计划」）。保存在本机浏览器。</div>
+            <div id="aiDirList"></div>
+            <div class="ai-actions">
+              <input id="aiDirNew" type="text" placeholder="新增方向，如：采销/买手" style="flex:1;min-width:140px;border:1px solid var(--line);border-radius:9px;padding:7px 9px;font-size:13px">
+              <button class="btn" id="aiDirAdd" type="button">添加</button>
+              <button class="btn" id="aiDirReset" type="button">恢复默认</button>
+            </div>
+          </div>
         </div>
         <div class="ai-field">
           <label for="aiType">面试类型</label>
@@ -2448,9 +2543,11 @@
 · 带领 5 人团队策划校园推广，覆盖 800 人，获得校赛二等奖"></textarea>
         <div class="ai-actions">
           <button class="btn" id="aiAnalyzeResume" type="button">🔍 简历体检 + 生成追问清单</button>
+          <button class="btn" id="aiJdPlanBtn" type="button">🎯 JD×简历匹配分析</button>
           <span class="ai-note" id="aiResumeHint"></span>
         </div>
         <div id="aiResumeReport"></div>
+        <div id="aiJdPlan"></div>
       </div>
       <div class="ai-actions">
         <button class="btn primary" id="aiStart" type="button">开始面试</button>
@@ -2488,36 +2585,67 @@
 
     <!-- ============ 2. 面试 ============ -->
     <div class="ai-view" id="aiViewInterview">
-      <div class="ai-kpis">
-        <span class="ai-kpi">进度 <b id="aiProgress">1 / 8</b></span>
-        <span class="ai-kpi">本题用时 <b class="ai-timer" id="aiTimer">00:00</b></span>
-        <span class="ai-kpi">最佳区间 <b id="aiIdeal">60–70s</b></span>
-        <span class="ai-kpi" id="aiDirTag">方向：综合</span>
-      </div>
-      <div class="ai-meter"><i id="aiTimeBar"></i></div>
-      <div class="ai-q" style="margin-top:12px">
-        <div class="ai-qtag" id="aiQTag">行为面 · 第 1 题</div>
-        <h3 id="aiQText">题目加载中…</h3>
-        <div class="ai-note" id="aiQHint"></div>
-      </div>
-      <div class="ai-field">
-        <label for="aiAnswer">你的回答（可用语音转写，也可以直接打字）</label>
-        <textarea id="aiAnswer" placeholder="建议结构：背景/任务 → 我的行动 → 结果（带数字）→ 复盘收获"></textarea>
-        <div class="ai-rec" style="margin-top:8px">
-          <span class="ai-dot" id="aiRecDot"></span>
-          <span id="aiRecState">未开始</span>
-          <button class="btn" id="aiRead" type="button">🔊 朗读题目</button>
-          <button class="btn" id="aiVoice" type="button">🎙 语音作答</button>
-          <button class="btn" id="aiPlayback" type="button" hidden>▶ 回放录音</button>
-          <span class="ai-note" id="aiVoiceHint"></span>
+      <div class="ai-room">
+        <!-- 左：对话流 -->
+        <div class="ai-chat-wrap">
+          <div class="ai-chat-head">
+            <span class="ai-live-dot"></span>
+            <b>模拟面试进行中</b>
+            <span class="ai-note" id="aiDirTag">方向：综合</span>
+            <span class="ai-grow"></span>
+            <span class="ai-note"> 进度 <b id="aiProgress">1 / 8</b> ｜ 最佳区间 <b id="aiIdeal">60–70s</b></span>
+          </div>
+          <div class="ai-chat" id="aiChat" aria-live="polite"></div>
+          <div class="ai-compose">
+            <div class="ai-wave" id="aiWave" aria-hidden="true"></div>
+            <textarea id="aiAnswer" placeholder="在这里回答（可语音转写）… Ctrl+Enter 提交"></textarea>
+            <div class="ai-compose-bar">
+              <button class="ai-icon-btn" id="aiVoice" type="button" title="语音作答">🎙</button>
+              <button class="ai-icon-btn" id="aiRead" type="button" title="朗读题目">🔊</button>
+              <span class="ai-dot" id="aiRecDot"></span>
+              <span class="ai-note" id="aiRecState">未开始</span>
+              <button class="btn" id="aiPlayback" type="button" hidden>▶ 回放</button>
+              <span class="ai-grow"></span>
+              <span class="ai-note" id="aiVoiceHint"></span>
+              <button class="btn primary" id="aiSubmit" type="button">提交本题</button>
+            </div>
+          </div>
         </div>
+
+        <!-- 右：面试官 + 我 -->
+        <aside class="ai-side">
+          <div class="ai-stage">
+            <canvas id="aiAvatar" aria-label="数字人面试官"></canvas>
+            <div class="ai-nameplate">面试官 · 林澜 <span class="ai-aibadge">AI</span></div>
+            <div class="ai-stage-tag tr" id="aiAvatarState">等待开始</div>
+            <div class="ai-float-bubble" id="aiAvatarBubble" hidden></div>
+          </div>
+          <div class="ai-stage ai-self">
+            <video id="aiSelf" playsinline muted></video>
+            <canvas id="aiCamCanvas" width="64" height="48" hidden></canvas>
+            <div class="ai-self-empty" id="aiSelfEmpty">摄像头未开启<br><span style="font-size:11px">画面只在本地分析，不录制、不上传</span></div>
+            <div class="ai-stage-tag" id="aiCamState">摄像头：关闭</div>
+          </div>
+          <div class="ai-side-ctl">
+            <div class="ai-ring-wrap">
+              <svg class="ai-ring" viewBox="0 0 72 72" aria-hidden="true">
+                <circle class="ai-ring-bg" cx="36" cy="36" r="30"></circle>
+                <circle class="ai-ring-fg" id="aiTimeBar" cx="36" cy="36" r="30"></circle>
+              </svg>
+              <b class="ai-timer" id="aiTimer">00:00</b>
+            </div>
+            <div class="ai-side-btns">
+              <button class="btn" id="aiCamToggle" type="button">📷 摄像头</button>
+              <button class="btn" id="aiSkip" type="button">跳过本题</button>
+              <button class="btn" id="aiFinish" type="button">结束出报告</button>
+            </div>
+            <label class="ai-note" style="display:flex;gap:6px;align-items:center">
+              <input type="checkbox" id="aiCamAnalyze" checked> 分析镜头表现
+            </label>
+            <div class="ai-note" id="aiCamHint">开摄像头更接近真实 AI 面（本地近似估算，不做人脸识别比对）。</div>
+          </div>
+        </aside>
       </div>
-      <div class="ai-actions">
-        <button class="btn primary" id="aiSubmit" type="button">提交本题（Ctrl+Enter）</button>
-        <button class="btn" id="aiSkip" type="button">跳过</button>
-        <button class="btn" id="aiFinish" type="button">提前结束并出报告</button>
-      </div>
-      <div id="aiFeedback" style="margin-top:14px"></div>
     </div>
 
     <!-- ============ 3. 报告 ============ -->
@@ -9740,8 +9868,21 @@ render();
   var CFG_KEY = "qiuzhao_ai_interview_cfg_v1";
   var RESUME_KEY = "qiuzhao_ai_resume_v1";
 
-  var DIRS = ["综合/管培", "产品经理", "产品运营", "运营", "市场品牌", "数据分析", "供应链/采购",
+  var DIRS_DEFAULT = ["综合/管培", "产品经理", "产品运营", "运营", "市场品牌", "数据分析", "供应链/采购",
     "职能（财务/人力/法务）", "技术研发", "算法/AI", "销售/商务", "设计"];
+  var DIRS_KEY = "qiuzhao_ai_dirs_v1";
+  // 岗位方向可编辑：{name, base}；base 决定用哪套题库与词库（自定义方向可基于某个默认方向）
+  function dirsAll() {
+    var d = load(DIRS_KEY, null);
+    if (!d || !d.length) return DIRS_DEFAULT.map(function (n) { return { name: n, base: n }; });
+    return d;
+  }
+  function dirBase(name) {
+    var hit = dirsAll().filter(function (x) { return x.name === name; })[0];
+    return (hit && hit.base) || name;
+  }
+  function dirNames() { return dirsAll().map(function (x) { return x.name; }); }
+  var DIRS = DIRS_DEFAULT;   // 兼容旧引用（仅用于默认基准）
 
   // 岗位方向词库：命中即加分（内容匹配维度）
   var DIR_LEX = {
@@ -9913,6 +10054,8 @@ render();
 
   // ============ 评分引擎 ============
   var FILLER_RE = /(嗯+|啊+|呃+|那个|就是说|然后就|怎么说呢|其实吧)/g;
+  // 空话/口号式表达：AI 面试官遇到这种一定会追问「具体是什么事」
+  var VAGUE_RE = /(沟通能力(强|好|不错)|抗压能力(强|好)|学习能力(强|好)|执行力(强|好)|团队(合作|协作)(能力)?(强|好)|有责任心|认真负责|性格开朗|积极主动|吃苦耐劳|适应能力强|有较强的)/g;
   var STAR_RE = {
     S: /(背景|当时|那段时间|之前|上一个|在.{0,10}(实习|项目|课程|社团|比赛)|我们(组|团队|部门)|公司|学校)/,
     T: /(目标|任务|要求|负责|指标|KPI|需要|要解决|被要求|考核|目标值)/,
@@ -9954,12 +10097,74 @@ render();
     return false;
   }
 
+  // ============ 现场追问引擎：从候选人刚说出口的内容里抽取"可追问点" ============
+  // 真人面试官只会追这几类：事实核验 / 方法细节 / 数据口径 / 决策取舍 / 协作过程 / 复盘迁移
+  var NUM_TOKEN = /(\d+(\.\d+)?\s*(%|％|个百分点|倍|万|千|个|人|天|小时|分钟|元|次|单))/g;
+  var TOOL_TOKEN = /(Excel|SQL|Python|Tableau|Power ?BI|SPSS|Axure|Figma|PRD|Jira|飞书|钉钉|企业微信|剪映|Photoshop|PS|AI|大模型|爬虫|看板|埋点|AB ?测试|AB实验)/gi;
+  var ACT_TOKEN = /我(负责|主导|牵头|设计|搭建|实现|推动|组织|协调|优化|完成|跟进|参与)([\u4e00-\u9fa5A-Za-z0-9]{2,12})/g;
+  var COLLAB_TOKEN = /(和|跟|与)([\u4e00-\u9fa5]{2,6})(部门|团队|同学|同事|老师|供应商|客户|技术|产品|研发|运营|设计)/g;
+  var TIME_TOKEN = /(\d{4}\s*年|\d{1,2}\s*月|两周|三天|一个月|半年|上个?学期|实习期间|项目初期|上线前|上线后)/g;
+
+  function uniqPush(arr, v, max) {
+    v = (v || "").trim();
+    if (!v || v.length < 2) return;
+    if (arr.indexOf(v) >= 0) return;
+    if (max && arr.length >= max) return;
+    arr.push(v);
+  }
+  function extractSpans(text) {
+    var out = { nums: [], tools: [], acts: [], collabs: [], times: [] };
+    var m;
+    NUM_TOKEN.lastIndex = 0; while ((m = NUM_TOKEN.exec(text))) uniqPush(out.nums, m[1].replace(/\s+/g, ""), 4);
+    TOOL_TOKEN.lastIndex = 0; while ((m = TOOL_TOKEN.exec(text))) uniqPush(out.tools, m[1], 4);
+    ACT_TOKEN.lastIndex = 0; while ((m = ACT_TOKEN.exec(text))) uniqPush(out.acts, m[1] + m[2], 3);
+    COLLAB_TOKEN.lastIndex = 0; while ((m = COLLAB_TOKEN.exec(text))) uniqPush(out.collabs, m[2] + m[3], 2);
+    TIME_TOKEN.lastIndex = 0; while ((m = TIME_TOKEN.exec(text))) uniqPush(out.times, m[1], 2);
+    return out;
+  }
+
+  // 生成针对"这一条回答"的追问，而不是题库里的固定追问
+  function dynamicFollowUps(text, q, r) {
+    var sp = extractSpans(text);
+    var out = [];
+    // 1) 数据口径（面试官最爱追）
+    if (sp.nums.length && !/(口径|来源|统计|后台|报表|怎么算|怎么统计)/.test(text)) {
+      out.push("你提到「" + sp.nums[0] + "」——这个数原来是多少、现在是多少？又是在哪儿看到 / 怎么算出来的？");
+    } else if (!sp.nums.length && text.length > 60) {
+      out.push("这段经历最后有没有一个具体数字？比如原来多少、后来变成多少，哪怕是大概区间也行。");
+    }
+    // 2) 方法细节（提到动作就追怎么做）
+    if (sp.acts.length) {
+      out.push("你说「" + sp.acts[0] + "」——具体是怎么做的？分哪几步？");
+    } else if (sp.tools.length) {
+      out.push("你用了「" + sp.tools[0] + "」，当时为什么选它？还有别的做法吗？");
+    }
+    // 3) 协作/个人贡献（出现团队就分清贡献）
+    if (sp.collabs.length || /(我们|团队|小组)/.test(text)) {
+      var who = sp.collabs.length ? sp.collabs[0] : "团队";
+      out.push("你提到和「" + who + "」配合——这件事里哪些是你独立完成的？他们负责什么？");
+    }
+    // 4) 决策取舍（有动作但没讲原因）
+    if (!/(因为|原因是|考虑到|对比|取舍|评估后|所以选)/.test(text) && text.length > 80) {
+      out.push("当时为什么这么做，而不是另一种做法？你权衡了哪些因素？");
+    }
+    // 5) 复盘迁移
+    if (!/(复盘|反思|总结|学到|下次|如果重来)/.test(text) && sp.times.length) {
+      out.push("这件事之后你复盘出什么？后来在别的场景复用了吗？");
+    }
+    // 6) 数据有、方法有、原因也有 → 追问更深一层（压力/边界）
+    if (out.length < 2 && sp.nums.length && sp.acts.length) {
+      out.push("如果同样的目标给你一半的资源/时间，你会砍掉哪一部分？");
+    }
+    return out.slice(0, 3);
+  }
+
   function analyze(text, q, ctx) {
     text = (text || "").trim();
     ctx = ctx || {};
     var len = text.length;
     var qkw = q.kw || [];
-    var dkw = DIR_LEX[ctx.dir] || [];
+    var dkw = DIR_LEX[dirBase(ctx.dir)] || [];
     var jdkw = ctx.jdKw || [];
     var kws = qkw.concat(jdkw).concat(dkw);
     var hits = [], miss = [];
@@ -9983,6 +10188,10 @@ render();
 
     // —— 表达流畅 ——
     var fillers = (text.match(FILLER_RE) || []).length;
+    var vagueHits = [];
+    var vm;
+    VAGUE_RE.lastIndex = 0;
+    while ((vm = VAGUE_RE.exec(text))) { if (vagueHits.indexOf(vm[1]) < 0) vagueHits.push(vm[1]); }
     var sentences = text.split(/[。！？；\n]/).map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 1; });
     var avgSent = sentences.length ? len / sentences.length : len;
     var delivery = 100, dNotes = [];
@@ -10076,13 +10285,26 @@ render();
     }
 
     var follow = [];
-    if (total < 72 || starCount <= 2 || len < 120) follow = (q.follow || []).slice(0, 2);
-    else follow = (q.follow || []).slice(0, 1);
+    // 现场追问：优先根据"你刚说出口的内容"生成，而不是题库里的固定追问（这是和模板产品最大的区别）
+    follow = dynamicFollowUps(text, q).slice(0, 2);
+    // 空话优先：真实面试官听到「沟通能力强」会立刻追问具体事
+    if (vagueHits.length && !QUANT_RE.test(text)) {
+      follow = ["你刚才说「" + vagueHits[0] + "」——具体是什么事情？你做了什么？结果是多少？"].concat(follow).slice(0, 2);
+    }
+    // 兜底：现场问不出新东西时，再用题库自带的深挖问题
+    if (!follow.length) {
+      if (total < 72 || starCount <= 2 || len < 120) follow = (q.follow || []).slice(0, 2);
+      else follow = (q.follow || []).slice(0, 1);
+    }
+    if (vagueHits.length) {
+      advice.unshift("检测到 " + vagueHits.length + " 处空话（「" + vagueHits.slice(0, 3).join("」「") + "」）：AI 面遇到这种词一定会追问，改成「具体做了什么 + 结果数字」。");
+    }
 
     return {
       content: content, structure: structure, delivery: delivery, depth: depth, total: total, grade: grade,
       hits: hits, miss: miss, star: star, starCount: starCount, hasBullet: hasBullet, leadFirst: leadFirst,
       fillers: fillers, cpm: round(cpm), avgSent: round(avgSent), len: len, advice: advice, follow: follow
+      , vague: vagueHits
     };
   }
 
@@ -10128,6 +10350,7 @@ render();
   function closePanel() {
     stopTimer(); stopRec();
     stopSpeak();
+    camStop(); avatarStop();
     $("aiMask").classList.remove("open"); $("aiPanel").classList.remove("open");
     setTimeout(function () { $("aiMask").hidden = true; $("aiPanel").hidden = true; }, 160);
   }
@@ -10141,9 +10364,39 @@ render();
     } catch (e) {}
   }
   function buildDirChips() {
-    $("aiDirs").innerHTML = DIRS.map(function (d) {
+    var names = dirNames();
+    if (names.indexOf(dirPick) < 0) dirPick = names[0] || "综合/管培";
+    $("aiDirs").innerHTML = names.map(function (d) {
       return '<button class="ai-chip" type="button" data-dir="' + escAII(d) + '" aria-pressed="' + (d === dirPick) + '">' + escAII(d) + "</button>";
     }).join("");
+  }
+
+  function renderDirManager() {
+    var list = dirsAll();
+    $("aiDirList").innerHTML = list.map(function (d, i) {
+      return '<div class="ai-dir-row"><input type="text" value="' + escAII(d.name) + '" data-dirname="' + i + '" aria-label="方向名称">'
+        + '<span class="ai-note" style="white-space:nowrap">题库：' + escAII(d.base === d.name ? "自身" : d.base) + "</span>"
+        + '<button class="btn" type="button" data-dirdel="' + i + '">删除</button></div>';
+    }).join("") + '<div class="ai-actions"><select id="aiDirBase" style="border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:12.5px">'
+      + DIRS_DEFAULT.map(function (n) { return '<option value="' + escAII(n) + '">基于：' + escAII(n) + "</option>"; }).join("")
+      + "</select><span class=\"ai-note\">新增方向时选一个「题库基准」，这样自定义岗位也能出对题（例如「采销/买手」基于「供应链/采购」）。</span></div>";
+    document.querySelectorAll("[data-dirdel]").forEach(function (b) {
+      b.onclick = function () {
+        var arr = dirsAll(); arr.splice(Number(b.getAttribute("data-dirdel")), 1);
+        store(DIRS_KEY, arr); renderDirManager(); buildDirChips();
+      };
+    });
+    document.querySelectorAll("[data-dirname]").forEach(function (inp) {
+      inp.onchange = function () {
+        var arr = dirsAll(), i = Number(inp.getAttribute("data-dirname"));
+        var v = (inp.value || "").trim();
+        if (!v) return;
+        if (arr.some(function (x, j) { return j !== i && x.name === v; })) { alert("已有同名方向"); renderDirManager(); return; }
+        if (arr[i].name === dirPick) dirPick = v;
+        arr[i].name = v;
+        store(DIRS_KEY, arr); renderDirManager(); buildDirChips();
+      };
+    });
   }
 
   function companyCat(name) {
@@ -10169,6 +10422,15 @@ render();
     for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
     return a;
   }
+  // 裁剪题目数量时，优先保留「公司专属面经题」「公司定制题」，先丢普通题
+  function trimKeep(list, keep) {
+    var out = list.slice();
+    for (var i = out.length - 1; i >= 0 && out.length > keep; i--) {
+      var q = out[i];
+      if (!q.co && q.id !== "comp") out.splice(i, 1);
+    }
+    return out.slice(0, Math.max(keep, out.filter(function (q) { return q.co || q.id === "comp"; }).length));
+  }
   // 出题：默认混入意外题 + 混搭方向 + 打乱顺序（更接近真实面试的「出其不意」）
   function pickQuestions(type, count, company, randomize) {
     // 面经里的公司专属题（如京东采销定价题）只在选了该公司时才出现，避免跨岗位乱套
@@ -10177,32 +10439,25 @@ render();
       if (q.w) return false;
       if (!coOk(q)) return false;
       if (q.types.indexOf(type) < 0) return false;
-      if (dirPick === "综合/管培") return true;
-      return q.dirs.indexOf(dirPick) >= 0 || q.dirs.indexOf("综合/管培") >= 0;
+      var base = dirBase(dirPick);
+      if (base === "综合/管培") return true;
+      return q.dirs.indexOf(base) >= 0 || q.dirs.indexOf("综合/管培") >= 0;
     });
     if (normal.length < count) {
-      normal = BANK.filter(function (q) { return !q.w && coOk(q) && (q.types.indexOf(type) >= 0 || q.dirs.indexOf(dirPick) >= 0); });
+      var b2 = dirBase(dirPick);
+      normal = BANK.filter(function (q) { return !q.w && coOk(q) && (q.types.indexOf(type) >= 0 || q.dirs.indexOf(b2) >= 0); });
     }
     var picked = shuffle(normal.slice()).slice(0, count);
     var companyQ = company ? makeCompanyQuestion(company) : null;
-
-    // 选了公司：优先带 1–2 道该公司真实面经题（来自公开面经，岗位对得上才出现）
-    if (company) {
-      var coQs = normal.filter(function (q) { return q.co && q.src === "面经"; });
-      if (coQs.length) {
-        var forced = shuffle(coQs).slice(0, Math.min(2, Math.max(1, Math.floor(count / 4))));
-        picked = forced.concat(picked.filter(function (q) { return forced.indexOf(q) < 0; })).slice(0, count);
-      }
-    }
 
     if (randomize) {
       var wildCount = count >= 8 ? 2 : 1;
       var wilds = shuffle(BANK.filter(function (q) { return q.w; })).slice(0, wildCount);
       picked = picked.slice(0, Math.max(1, count - wildCount)).concat(wilds);
       // 混搭方向：即使选了方向，也混入少量其他方向/综合题（真实面试会突然问别的）
-      if (dirPick !== "综合/管培") {
+      if (dirBase(dirPick) !== "综合/管培") {
         var mixCount = Math.max(1, Math.round(count * 0.25));
-        var mix = shuffle(BANK.filter(function (q) { return !q.w && q.dirs.indexOf(dirPick) < 0; })).slice(0, mixCount);
+        var mix = shuffle(BANK.filter(function (q) { return !q.w && coOk(q) && q.dirs.indexOf(dirBase(dirPick)) < 0; })).slice(0, mixCount);
         picked = picked.slice(0, Math.max(1, picked.length - mixCount)).concat(mix);
       }
       // 公司题不一定有、也不一定第一题
@@ -10211,6 +10466,18 @@ render();
     } else {
       picked = shuffle(picked);
       if (companyQ) picked.unshift(companyQ);
+    }
+    // 公司专属面经题：最后强制插入（放在随机位置，且不会被上面的随机化丢掉）
+    if (company) {
+      var coQs = normal.filter(function (q) { return q.co && q.src === "面经"; });
+      if (coQs.length) {
+        var forced = shuffle(coQs).slice(0, Math.min(2, Math.max(1, Math.floor(count / 4))));
+        picked = picked.filter(function (q) { return forced.indexOf(q) < 0; });
+        var drop = Math.max(0, picked.length + forced.length - Math.max(count, forced.length));
+        if (drop) picked = picked.slice(0, picked.length - drop);
+        var pos = Math.floor(Math.random() * (picked.length + 1));
+        picked = picked.slice(0, pos).concat(forced).concat(picked.slice(pos));
+      }
     }
     return picked;
   }
@@ -10229,8 +10496,7 @@ render();
       store(RESUME_KEY, resumeText);
       var entries = parseResume(resumeText);
       var rq = makeResumeQuestions(entries, rnd ? 3 : 2);
-      var keep = Math.max(2, qs.length - rq.length);
-      qs = shuffle(qs.slice(0, keep).concat(rq));
+      qs = shuffle(trimKeep(qs, Math.max(2, qs.length - rq.length)).concat(rq));
     } else if (resumeText) {
       store(RESUME_KEY, resumeText);
     }
@@ -10240,8 +10506,7 @@ render();
     if (jdKw.length) {
       store("qiuzhao_ai_jd_v1", jdText);
       var jq = makeJDQuestions(jdKw, company, rnd ? 3 : 2);
-      var keep2 = Math.max(2, qs.length - jq.length);
-      qs = shuffle(qs.slice(0, keep2).concat(jq));
+      qs = shuffle(trimKeep(qs, Math.max(2, qs.length - jq.length)).concat(jq));
     }
     S = {
       id: "s" + Date.now(), created: new Date().toISOString(), company: company, dir: dirPick, type: type,
@@ -10259,21 +10524,146 @@ render();
     S = cur; show("Interview"); renderQ();
   }
 
+  // ============ 对话流渲染（像真实视频面试 / 聊天式 AI 面）============
+  function bubble(kind, inner) {
+    var who = kind === "me" ? "我" : kind === "coach" ? "面试官点评" : "面试官 · 林澜";
+    var cls = kind === "me" ? "me" : kind === "coach" ? "coach" : "";
+    var av = kind === "me" ? "me" : "ai";
+    return '<div class="ai-msg ' + cls + '">'
+      + '<div class="ai-avatar-mini ' + av + '">' + (kind === "me" ? "我" : "AI") + "</div>"
+      + '<div class="ai-bubble"><div class="ai-bt">' + who + "</div>" + inner + "</div></div>";
+  }
+  function chatPush(html) {
+    var c = $("aiChat"); if (!c) return;
+    c.insertAdjacentHTML("beforeend", html);
+    c.scrollTop = c.scrollHeight;
+  }
+  function chatClear() { var c = $("aiChat"); if (c) c.innerHTML = ""; }
+  function hintFor(q) {
+    if (q.w) return "提示：这类题考临场判断——先给判断标准，再说取舍与代价，最后收口给结论（不用硬套 STAR）。";
+    if (q.id === "comp") return "提示：说具体业务与数据，别说「平台大、有发展」这类套话。";
+    if (q.types && q.types.indexOf("简历深挖") >= 0) return "提示：这是顺着你简历的追问，重点是个人贡献 + 数据 + 复盘。";
+    if (q.types && q.types.indexOf("JD 匹配") >= 0) return "提示：把 JD 要求翻译成你自己的经历，结果尽量带数字。";
+    return "提示：按「背景→任务→行动→结果」回答，结果尽量带数字。";
+  }
+  function typeInto(el, text) {
+    if (!el) return;
+    var i = 0; el.textContent = "";
+    var t = setInterval(function () {
+      if (!document.body.contains(el)) { clearInterval(t); return; }
+      el.textContent = text.slice(0, ++i);
+      var c = $("aiChat"); if (c) c.scrollTop = c.scrollHeight;
+      if (i >= text.length) clearInterval(t);
+    }, 24);
+  }
+  function scoreBars(r) {
+    return bar("内容匹配", r.content, "linear-gradient(90deg,#1d4ed8,#60a5fa)")
+      + bar("结构逻辑", r.structure, "linear-gradient(90deg,#7e22ce,#c084fc)")
+      + bar("表达流畅", r.delivery, "linear-gradient(90deg,#0f766e,#34d399)")
+      + bar("深度亮点", r.depth, "linear-gradient(90deg,#b45309,#fbbf24)");
+  }
+  function feedbackHtml(it, r) {
+    var kws = (it.q.kw || []).concat(S.jdKw || []).concat(DIR_LEX[dirBase(S.dir)] || []);
+    var html = "";
+    html += '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">'
+      + '<span class="ai-score" style="font-size:26px">' + r.total + '</span><span class="ai-grade">' + r.grade + "</span>"
+      + '<span class="ai-note">' + Math.round(it.seconds) + "s ｜ " + r.len + " 字" + (r.cpm ? " ｜ 语速 " + r.cpm + " 字/分" : "") + " ｜ 口头禅 " + r.fillers + " 处</span></div>";
+    if (S.limit > 0 && it.seconds > S.limit * 0.9) {
+      html += '<div class="ai-note" style="color:var(--amber-fg);margin-bottom:6px">⏱ 接近或超过限时（' + S.limit + "s）：AI 面试会硬切，练到限时的 70%–80%。</div>";
+    }
+    html += scoreBars(r);
+    html += '<div style="margin-top:8px">' + starTags(r) + "</div>";
+    html += '<div style="margin-top:10px"><b style="font-size:12.5px;color:var(--navy)">关键词命中 ' + r.hits.length + "/" + kws.length + "</b>"
+      + '<div class="ai-note" style="line-height:2;margin-top:4px">' + highlight(it.answer + (it.follow ? " " + it.follow : ""), kws) + "</div></div>";
+    html += '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--navy);font-weight:600">参考答案要点 / 常见扣分点</summary>'
+      + '<ul class="ai-list" style="margin-top:6px">' + (it.q.points || []).map(function (p) { return "<li>" + escAII(p) + "</li>"; }).join("") + "</ul>"
+      + '<div class="ai-note" style="margin:4px 0">常见扣分点</div><ul class="ai-list">' + (it.q.pit || []).map(function (p) { return "<li>" + escAII(p) + "</li>"; }).join("") + "</ul></details>";
+    html += '<div style="margin-top:10px"><b style="font-size:12.5px;color:var(--navy)">改进建议</b><ul class="ai-list">'
+      + r.advice.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul></div>";
+    if (r.follow && r.follow.length) {
+      html += '<div style="margin-top:10px;border-top:1px dashed var(--line);padding-top:8px">'
+        + '<b style="font-size:12.5px;color:var(--navy)">面试官追问</b><ul class="ai-list" style="margin-top:4px">'
+        + r.follow.map(function (f) { return "<li>" + escAII(f) + "</li>"; }).join("") + "</ul>"
+        + '<textarea id="aiFollowInput" style="width:100%;min-height:56px;margin-top:6px;border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:13px;font-family:inherit" placeholder="补充一句具体动作或数字即可显著提分（可留空）"></textarea>'
+        + '<div class="ai-actions"><button class="btn" id="aiFollowBtn" type="button">提交补充并重新评分</button></div></div>';
+    }
+    var cfgNow = load(CFG_KEY, {});
+    html += '<div class="ai-actions" style="margin-top:10px">'
+      + '<button class="btn primary" id="aiNext" type="button">' + (S.idx + 1 >= S.items.length ? "查看面试报告" : "下一题") + "</button>"
+      + '<button class="btn" id="aiRetry" type="button">重答本题</button>'
+      + '<button class="btn" id="aiPrompt" type="button">📋 复制点评提示词</button>'
+      + (cfgNow.key ? '<button class="btn" id="aiDeep" type="button">✨ AI 深度点评</button>' : "")
+      + "</div>";
+    return html;
+  }
+  function bindFeedback(it, r) {
+    var nb = $("aiNext"); if (nb) nb.onclick = next;
+    var rb = $("aiRetry"); if (rb) rb.onclick = function () {
+      it.answer = ""; it.score = null; it.follow = ""; it.followIdx = 0;
+      $("aiAnswer").value = ""; startTimer(); renderChat();
+    };
+    var ab = $("aiFollowBtn");
+    if (ab) ab.onclick = function () {
+      var inp = $("aiFollowInput");
+      var extra = (inp && inp.value || "").trim();
+      if (!extra) { alert("先写一句补充内容再提交"); return; }
+      it.follow = (it.follow ? it.follow + " " : "") + extra;
+      it.followIdx = (it.followIdx || 0) + 1;
+      var r2 = analyze(it.answer + " " + it.follow, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
+      var chain = it.q.follow || [];
+      r2.follow = it.followIdx < 2 ? chain.slice(it.followIdx, it.followIdx + 1) : [];
+      it.score = r2;
+      store(CUR_KEY, S);
+      renderChat();
+    };
+    var pb2 = $("aiPrompt"); if (pb2) pb2.onclick = function () { copyPrompt(buildPrompt(it, r)); };
+    var db = $("aiDeep"); if (db) db.onclick = deepReview;
+  }
+  function renderChat() {
+    chatClear();
+    var cur = S.items[S.idx];
+    S.items.slice(0, S.idx + 1).forEach(function (x, i) {
+      var isCur = x === cur;
+      if (isCur && !x.score && !x.answer) {
+        // 当前题：打字机式提问 + 等待回答
+        var h = bubble("ai", '<div class="ai-q-text"></div><div class="ai-note" style="margin-top:6px">' + escAII(hintFor(x.q)) + "</div>");
+        chatPush(h);
+        var els = document.querySelectorAll("#aiChat .ai-q-text");
+        typeInto(els[els.length - 1], x.q.q);
+        setTimeout(function () {
+          if (S && S.items[S.idx] === x && !x.score) {
+            chatPush('<div class="ai-msg" style="padding-left:36px"><span class="ai-typing"><i></i><i></i><i></i></span>'
+              + '<span class="ai-note" style="margin-left:8px">等待你的回答…</span></div>');
+          }
+        }, Math.min(1600, x.q.q.length * 24 + 200));
+        return;
+      }
+      chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.q.q) + '</div><div class="ai-note" style="margin-top:6px">' + escAII(hintFor(x.q)) + "</div>"));
+      if (x.answer) chatPush(bubble("me", escAII(x.answer)));
+      if (x.follow) chatPush(bubble("me", '<span class="ai-note">补充回答：</span>' + escAII(x.follow)));
+      if (x.score) { chatPush(bubble("coach", feedbackHtml(x, x.score))); bindFeedback(x, x.score); }
+    });
+    // 面试官会"接着说"：有追问时在数字人旁边浮出气泡
+    if (cur && cur.score && cur.score.follow && cur.score.follow.length) {
+      avatarState("AI 面试官 · 追问中", "speaking");
+      avatarSay(cur.score.follow[0], "智能追问");
+    }
+    var c = $("aiChat"); if (c) c.scrollTop = c.scrollHeight;
+  }
+
   function renderQ() {
     var it = S.items[S.idx];
     if (!it) { finish(); return; }
     $("aiProgress").textContent = (S.idx + 1) + " / " + S.items.length;
-    $("aiQTag").textContent = it.q.types.join("/") + (it.q.w ? " · 🎲 意外题（没有标准答案）" : "")
-      + (it.q.id === "comp" ? " · 公司定制题" : "") + " · 第 " + (S.idx + 1) + " 题";
-    $("aiQText").textContent = it.q.q;
     $("aiDirTag").textContent = "方向：" + dirPick;
-    $("aiQHint").textContent = it.q.w
-      ? "提示：这类题考临场判断——先给判断标准，再说取舍与代价，最后收口给结论（不用硬套 STAR）。"
-      : it.q.id === "comp" ? "提示：说具体业务与数据，别说「平台大、有发展」这类套话。" : "提示：按「背景→任务→行动→结果」回答，结果尽量带数字。";
     $("aiAnswer").value = it.answer || "";
-    $("aiFeedback").innerHTML = "";
     $("aiIdeal").textContent = S.limit ? Math.round(S.limit * 0.7) + "–" + Math.round(S.limit * 0.8) + "s" : "不限时";
     startTimer();
+    avatarStart();
+    avatarState("AI 面试官 · 提问中", "speaking");
+    avatarSay(it.q.q, it.q.id === "comp" ? "公司定制题" : it.q.w ? "即兴题" : "提问");
+    camReset();
+    renderChat();
     var autoRead = $("aiAutoRead");
     if (autoRead && autoRead.checked) setTimeout(function () { if (S && S.items[S.idx] === it) readCurrent(); }, 350);
   }
@@ -10289,15 +10679,18 @@ render();
   function updateTimer() {
     var sec = elapsed();
     var t = $("aiTimer");
-    t.textContent = fmtTime(sec);
-    t.classList.toggle("warn", S.limit > 0 && sec > S.limit * 0.8 && sec <= S.limit);
-    t.classList.toggle("over", S.limit > 0 && sec > S.limit);
-    var bar = $("aiTimeBar");
-    if (S.limit > 0) {
-      bar.style.width = clamp(sec / S.limit * 100, 0, 100) + "%";
-      if (sec > S.limit) bar.style.background = "linear-gradient(90deg,#f59e0b,#b91c1c)";
-    } else {
-      bar.style.width = clamp(sec / 180 * 100, 0, 100) + "%";
+    if (t) {
+      t.textContent = fmtTime(sec);
+      t.classList.toggle("warn", S.limit > 0 && sec > S.limit * 0.8 && sec <= S.limit);
+      t.classList.toggle("over", S.limit > 0 && sec > S.limit);
+    }
+    var ring = $("aiTimeBar");
+    if (ring) {
+      var frac = clamp(sec / (S.limit > 0 ? S.limit : 180), 0, 1);
+      var C = 2 * Math.PI * 30;
+      ring.setAttribute("stroke-dasharray", C.toFixed(1));
+      ring.setAttribute("stroke-dashoffset", (C * frac).toFixed(1));
+      ring.style.stroke = frac > 0.92 ? "#b91c1c" : frac > 0.78 ? "#b45309" : "#1d4ed8";
     }
   }
 
@@ -10310,16 +10703,20 @@ render();
     var sec = elapsed();
     it.answer = txt;
     it.seconds = Math.max(it.seconds, sec);
+    it.cam = camSummary(CAM.metrics);
+    camReset();
     if (it.follow) txt = txt + " " + it.follow;
     if (!txt) {
-      $("aiFeedback").innerHTML = '<div class="ai-card"><h4>还没有回答</h4><div class="ai-note">可以先说 30 秒思路，或点「跳过」跳到下一题。</div></div>';
+      chatPush(bubble("coach", '<div class="ai-note">还没有听到你的回答：可以先说 30 秒思路，或点「跳过本题」。</div>'));
       return;
     }
     stopTimer();
     var r = analyze(txt, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
     it.score = r;
     store(CUR_KEY, S);
-    renderFeedback(it, r);
+    renderChat();
+    var box = $("aiAnswer"); if (box) box.value = "";
+    avatarState("AI 面试官 · 追问中", "speaking");
   }
 
   function bar(label, val, color) {
@@ -10344,75 +10741,11 @@ render();
       + '<span class="ai-tag ' + (r.leadFirst ? "ok" : "no") + '">' + (r.leadFirst ? "✓ 结论先行" : "✗ 结论先行") + "</span>";
   }
 
-  function renderFeedback(it, r) {
-    var kws = (it.q.kw || []).concat(S.jdKw || []).concat(DIR_LEX[S.dir] || []);
-    var html = "";
-    html += '<div class="ai-card"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">'
-      + '<span class="ai-score">' + r.total + '</span><span class="ai-grade">等级 ' + r.grade + "</span>"
-      + '<span class="ai-note">用时 ' + Math.round(it.seconds) + "s ｜ " + r.len + " 字" + (r.cpm ? " ｜ 语速 " + r.cpm + " 字/分" : "") + " ｜ 口头禅 " + r.fillers + " 处</span></div>";
-    html += bar("内容匹配", r.content, "linear-gradient(90deg,#1d4ed8,#60a5fa)");
-    html += bar("结构逻辑", r.structure, "linear-gradient(90deg,#7e22ce,#c084fc)");
-    html += bar("表达流畅", r.delivery, "linear-gradient(90deg,#0f766e,#34d399)");
-    html += bar("深度亮点", r.depth, "linear-gradient(90deg,#b45309,#fbbf24)");
-    html += '<div style="margin-top:8px">' + starTags(r) + "</div></div>";
-
-    html += '<div class="ai-cols" style="margin-top:12px">';
-    html += '<div class="ai-card"><h4>你回答里的关键词命中（' + r.hits.length + "/" + kws.length + "）</h4><div class=\"ai-note\" style=\"line-height:2\">" + highlight(it.answer + (it.follow ? " " + it.follow : ""), kws) + "</div></div>";
-    html += '<div class="ai-card"><h4>' + (it.q.w ? "高分思路（这类题没有标准答案）" : "参考答案要点") + "</h4>"
-      + (it.q.w ? '<div class="ai-note" style="margin-bottom:6px">意外题按「判断标准 → 取舍代价 → 具体动作 → 收口反思」看，不套 STAR；这里列的是高分答法，不是唯一答案。</div>' : "")
-      + '<ul class="ai-list">' + (it.q.points || []).map(function (p) { return "<li>" + escAII(p) + "</li>"; }).join("") + "</ul>"
-      + '<h4 style="margin-top:10px">常见扣分点</h4><ul class="ai-list">' + (it.q.pit || []).map(function (p) { return "<li>" + escAII(p) + "</li>"; }).join("") + "</ul></div>";
-    html += "</div>";
-
-    html += '<div class="ai-card" style="margin-top:12px"><h4>改进建议</h4><ul class="ai-list">' + r.advice.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul></div>";
-
-    if (r.follow && r.follow.length) {
-      html += '<div class="ai-card" style="margin-top:12px"><h4>AI 面试官追问（答得浅会被追问，建议补答）</h4><ul class="ai-list">'
-        + r.follow.map(function (f) { return "<li>" + escAII(f) + "</li>"; }).join("") + "</ul>"
-        + '<div class="ai-field" style="margin-top:8px"><label for="aiFollowInput">补充回答追问（可留空跳过）</label>'
-        + '<textarea id="aiFollowInput" style="min-height:70px" placeholder="补一句具体的动作或数字即可显著提分"></textarea></div>'
-        + '<div class="ai-actions"><button class="btn" id="aiFollowBtn" type="button">提交补充并重新评分</button></div></div>';
-    }
-
-    var cfgNow = load(CFG_KEY, {});
-    html += '<div class="ai-actions"><button class="btn primary" id="aiNext" type="button">' + (S.idx + 1 >= S.items.length ? "查看面试报告" : "下一题") + "</button>"
-      + '<button class="btn" id="aiRetry" type="button">重答本题</button>'
-      + '<button class="btn" id="aiPrompt" type="button">📋 复制 AI 点评提示词</button>'
-      + (cfgNow.key ? '<button class="btn" id="aiDeep" type="button">✨ AI 深度点评</button>' : "")
-      + '<button class="btn" id="aiFinish2" type="button">提前结束并出报告</button></div>';
-    $("aiFeedback").innerHTML = html;
-
-    var nb = $("aiNext"); if (nb) nb.onclick = next;
-    var rb = $("aiRetry"); if (rb) rb.onclick = function () { $("aiFeedback").innerHTML = ""; $("aiAnswer").value = ""; startTimer(); };
-    var fb = $("aiFinish2"); if (fb) fb.onclick = finish;
-    var ab = $("aiFollowBtn");
-    if (ab) ab.onclick = function () {
-      var extra = ($("aiFollowInput").value || "").trim();
-      if (!extra) { alert("先写一句补充内容再提交"); return; }
-      it.follow = (it.follow ? it.follow + " " : "") + extra;
-      it.followIdx = (it.followIdx || 0) + 1;
-      var r2 = analyze(it.answer + " " + it.follow, it.q, { dir: S.dir, company: S.company, seconds: it.seconds });
-      // 追问链：真实面试官会连着追 2 层，第 2 层之后才收手
-      var chain = it.q.follow || [];
-      r2.follow = it.followIdx < 2 ? chain.slice(it.followIdx, it.followIdx + 1) : [];
-      it.score = r2;
-      renderFeedback(it, r2);
-    };
-    var pb2 = $("aiPrompt");
-    if (pb2) pb2.onclick = function () { copyPrompt(buildPrompt(it, r)); };
-    var db = $("aiDeep");
-    if (db) db.onclick = deepReview;
-    if (S.limit > 0 && it.seconds > S.limit * 0.9) {
-      $("aiFeedback").insertAdjacentHTML("afterbegin", '<div class="ai-card" style="border-color:var(--amber-fg)"><div class="ai-note">⏱ 本题用时 ' + Math.round(it.seconds) + "s，接近或超过限时（" + S.limit + "s）。AI 面试超时会被硬切，练习时把答案压到限时的 70%–80%。</div></div>");
-    }
-  }
-
   function next() {
     if (!S) return;
     stopSpeak();
     if (S.idx + 1 >= S.items.length) { finish(); return; }
     S.idx++; store(CUR_KEY, S);
-    $("aiFeedback").innerHTML = "";
     renderQ();
   }
 
@@ -10480,6 +10813,51 @@ render();
       + "<li>第 1 天：把本次得分最低的 2 道题重答一遍，每题写到 200 字以上并带 1 个数字。</li>"
       + "<li>第 2 天：开「语音作答 + 限时」，把语速练到 180–260 字/分、口头禅 ≤3 处。</li>"
       + "<li>第 3 天：换一个岗位方向或开「压力面」，重点练被追问后不慌、能补出细节。</li></ul></div>";
+
+    // 镜头表现（本地近似）
+    var cams = rep.items.filter(function (x) { return x.cam && x.cam.samples; }).map(function (x) { return x.cam; });
+    if (cams.length) {
+      var cr = Math.round(cams.reduce(function (a, b) { return a + b.centerRate; }, 0) / cams.length);
+      var off = Math.round(cams.reduce(function (a, b) { return a + b.offRate; }, 0) / cams.length);
+      var dark = Math.round(cams.reduce(function (a, b) { return a + b.darkRate; }, 0) / cams.length);
+      var adv = [];
+      if (cr < 70) adv.push("居中率只有 " + cr + "%：把摄像头放到屏幕上边缘、视线高度，答题时看镜头而不是看自己画面。");
+      if (off >= 25) adv.push("有 " + off + "% 的采样点你不在画面中央：调整坐姿与椅子距离，别中途离开镜头。");
+      if (dark >= 25) adv.push("画面偏暗（" + dark + "% 时间偏暗）：正面补光，光线从镜头方向来，背光会被判低互动。");
+      if (!adv.length) adv.push("镜头表现不错：保持看镜头、正面光、坐姿稳定即可。");
+      h += '<div class="ai-card" style="margin-top:12px"><h4>镜头表现（本地近似估算，仅供参考）</h4>'
+        + bar("居中率", cr, "linear-gradient(90deg,#1d4ed8,#60a5fa)")
+        + bar("离位率", off, "linear-gradient(90deg,#b45309,#fbbf24)")
+        + bar("偏暗率", dark, "linear-gradient(90deg,#7e22ce,#c084fc)")
+        + '<ul class="ai-list">' + adv.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul>"
+        + '<div class="ai-note">说明：这里只做亮度与肤色重心的近似判断（判断你是否在画面中间、环境是否过暗），不做人脸识别与表情识别；画面全程只在你的浏览器里处理，不录制、不上传。</div></div>';
+    }
+
+    // 面试官视角总结（对应面经里"结束后给总结"的做法）
+    var done = rep.items.filter(function (x) { return x.score; });
+    if (done.length) {
+      var byScore = done.slice().sort(function (a, b) { return a.score.total - b.score.total; });
+      var weakest = byScore.slice(0, 3);
+      var strongest = byScore.slice(-2).reverse();
+      var vagueCount = done.reduce(function (a, b) { return a + ((b.score.vague || []).length ? 1 : 0); }, 0);
+      var noNum = done.filter(function (x) { return x.score && !/\d/.test(x.answer || ""); }).length;
+      var dimNames = { content: "内容匹配", structure: "结构逻辑", delivery: "表达流畅", depth: "深度亮点" };
+      var lowest = Object.keys(rep.dims).sort(function (a, b) { return rep.dims[a] - rep.dims[b]; })[0];
+      h += '<div class="ai-card" style="margin-top:12px"><h4>面试官视角总结</h4><ul class="ai-list">'
+        + "<li><b>最容易被淘汰的 " + weakest.length + " 个回答</b>：" + weakest.map(function (x, i) { return "第 " + (rep.items.indexOf(x) + 1) + " 题（" + x.score.total + " 分）"; }).join("、") + "</li>"
+        + "<li><b>最有竞争力的回答</b>：" + strongest.map(function (x) { return "第 " + (rep.items.indexOf(x) + 1) + " 题（" + x.score.total + " 分）"; }).join("、") + " —— 这几个故事要保持熟练，面试时优先拿出来讲。</li>"
+        + "<li><b>面试官可能的疑虑</b>：" + (function () {
+          var arr = [];
+          if (rep.dims[lowest] < 70) arr.push(dimNames[lowest] + "偏弱（" + rep.dims[lowest] + "）");
+          if (vagueCount) arr.push(vagueCount + " 个回答出现空话（比如「沟通能力强」），会被追问到说不出细节");
+          if (noNum) arr.push(noNum + " 个回答没有任何数字，可信度打折");
+          var cams2 = rep.items.filter(function (x) { return x.cam && x.cam.samples; });
+          if (cams2.length && cams2.reduce(function (a, b) { return a + b.centerRate; }, 0) / cams2.length < 70) arr.push("镜头前居中率偏低");
+          return arr.length ? arr.join("；") + "。" : "暂无明显硬伤，继续保持。";
+        })() + "</li>"
+        + "<li><b>最需要补强</b>：" + dimNames[lowest] + "（" + rep.dims[lowest] + " 分）—— 按下面的建议逐条改，隔天重答同一题验证。</li>"
+        + "</ul></div>";
+    }
     $("aiReportBody").innerHTML = h;
   }
 
@@ -10551,7 +10929,11 @@ render();
       var u = new SpeechSynthesisUtterance(text);
       u.lang = "zh-CN"; u.rate = 1.0; u.pitch = 1.0;
       var v = pickVoice(); if (v) u.voice = v;
-      u.onend = function () { var b = $("aiRead"); if (b) b.textContent = "🔊 朗读题目"; };
+      avatarState("AI 面试官 · 正在提问", "speaking");
+      u.onend = function () {
+        var b = $("aiRead"); if (b) b.textContent = "🔊 朗读题目";
+        avatarState("AI 面试官 · 聆听中", "listening");
+      };
       window.speechSynthesis.speak(u);
       var b2 = $("aiRead"); if (b2) b2.textContent = "⏹ 停止朗读";
       return true;
@@ -10560,6 +10942,7 @@ render();
   function stopSpeak() {
     try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
     var b = $("aiRead"); if (b) b.textContent = "🔊 朗读题目";
+    if (S) avatarState("AI 面试官 · 聆听中", "listening");
   }
   function readCurrent() {
     var it = S && S.items[S.idx];
@@ -10570,6 +10953,7 @@ render();
   }
 
   function stopRec() {
+    waveStop();
     if (recognition && recActive) { try { recognition.stop(); } catch (e) {} }
     recActive = false;
     if (mediaRec) { try { mediaRec.stop(); } catch (e) {} mediaRec = null; }
@@ -10623,9 +11007,47 @@ render();
             } catch (e) {}
           };
           mediaRec.start();
+          waveStart(stream);
         }).catch(function () {});
       }
     } catch (e) {}
+  }
+
+  // ============ 麦克风波形（录音时的动态音量条）============
+  var WAVE = { ctx: null, raf: null, analyser: null, data: null };
+  function waveStart(stream) {
+    try {
+      WAVE.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var src = WAVE.ctx.createMediaStreamSource(stream);
+      WAVE.analyser = WAVE.ctx.createAnalyser();
+      WAVE.analyser.fftSize = 128;
+      src.connect(WAVE.analyser);
+      WAVE.data = new Uint8Array(WAVE.analyser.frequencyBinCount);
+      var w = $("aiWave");
+      if (w) {
+        w.innerHTML = new Array(30).fill("<i></i>").join("");
+        w.classList.add("on");
+      }
+      var loop = function () {
+        WAVE.raf = requestAnimationFrame(loop);
+        if (!WAVE.analyser || !WAVE.data) return;
+        WAVE.analyser.getByteFrequencyData(WAVE.data);
+        var bars = document.querySelectorAll("#aiWave i");
+        var n = bars.length || 1;
+        for (var i = 0; i < n; i++) {
+          var idx = Math.floor(i / n * WAVE.data.length);
+          var v = WAVE.data[idx] / 255;
+          bars[i].style.height = Math.max(3, Math.round(v * 22)) + "px";
+        }
+      };
+      loop();
+    } catch (e) {}
+  }
+  function waveStop() {
+    if (WAVE.raf) { cancelAnimationFrame(WAVE.raf); WAVE.raf = null; }
+    try { if (WAVE.ctx) WAVE.ctx.close(); } catch (e) {}
+    WAVE.ctx = null; WAVE.analyser = null;
+    var w = $("aiWave"); if (w) w.classList.remove("on");
   }
 
   // ============ 可选：BYO API 深度点评 ============
@@ -10703,7 +11125,7 @@ render();
       });
       var j = await resp.json();
       var txt = j && j.choices && j.choices[0] && j.choices[0].message ? j.choices[0].message.content : JSON.stringify(j).slice(0, 400);
-      $("aiFeedback").insertAdjacentHTML("beforeend", '<div class="ai-card" style="margin-top:12px;border-color:var(--blue-fg)"><h4>AI 深度点评（大模型）</h4><div class="ai-note" style="white-space:pre-wrap">' + escAII(txt) + "</div></div>");
+      chatPush(bubble("coach", '<b style="font-size:12.5px;color:var(--navy)">AI 深度点评（大模型）</b><div class="ai-note" style="white-space:pre-wrap;margin-top:4px">' + escAII(txt) + "</div>"));
     } catch (e) {
       alert("调用失败：" + e.message + "\n（可能是网络、跨域或 Key 无效，本地评分不受影响）");
     }
@@ -10762,6 +11184,39 @@ render();
       });
     }
     return out;
+  }
+
+  // JD × 简历匹配：把 JD 最看重的能力和你的经历对上（面经里高赞做法：先分析 JD，再指出哪些经历最值得讲）
+  function jdResumePlan(jdKw, resumeText) {
+    var entries = parseResume(resumeText || "");
+    var rows = jdKw.slice(0, 8).map(function (k) {
+      var hit = entries.filter(function (e) {
+        var t = e.title + " " + e.points.join(" ");
+        return t.indexOf(k) >= 0 || (k.length >= 2 && t.indexOf(k.slice(0, 2)) >= 0 && t.indexOf(k.slice(-2)) >= 0);
+      }).map(function (e) { return e.title.slice(0, 28); });
+      return { kw: k, entries: hit };
+    });
+    return {
+      rows: rows,
+      covered: rows.filter(function (r) { return r.entries.length; }).length,
+      missing: rows.filter(function (r) { return !r.entries.length; }).map(function (r) { return r.kw; })
+    };
+  }
+  function renderJdResumePlan() {
+    var box = $("aiJdPlan");
+    if (!box) return;
+    var jdKw = parseJD($("aiJD") ? $("aiJD").value : "");
+    var resumeText = $("aiResume") ? $("aiResume").value : "";
+    if (!jdKw.length) { box.innerHTML = ""; return; }
+    var plan = jdResumePlan(jdKw, resumeText);
+    var h = '<div class="ai-card" style="margin-top:10px"><h4>JD 最看重的能力 × 你的经历</h4>';
+    h += '<div class="ai-note" style="margin-bottom:6px">JD 里提取到 ' + jdKw.length + " 项关键词，其中 " + plan.covered + " 项能在你的简历里找到对应经历。</div>";
+    h += '<ul class="ai-list">' + plan.rows.map(function (r) {
+      return "<li><b>" + escAII(r.kw) + "</b>：" + (r.entries.length ? "对应经历 → " + escAII(r.entries.join("、")) : '<span style="color:var(--rose-fg)">简历里没找到对应经历，面试很容易被问到</span>') + "</li>";
+    }).join("") + "</ul>";
+    if (plan.missing.length) h += '<div class="ai-note" style="margin-top:6px">优先补强：' + escAII(plan.missing.slice(0, 4).join("、")) + " —— 没经历就准备「我怎么快速补齐」的说法，别硬编。</div>";
+    h += "</div>";
+    box.innerHTML = h;
   }
 
   function parseResume(text) {
@@ -10906,7 +11361,13 @@ render();
     { t: "⑨ 复盘方法：把短板变成 3 天训练计划", b:
       "<p>每次模拟后按这个循环走：<b>找出最低维度 → 定位到具体句子 → 改写一遍 → 隔天重答验证</b>。</p>" +
       "<p>示例：表达流畅 58 分 → 回放发现语速 320 字/分、口头禅 11 处 → 把答案写成 6 句话的脚本，练两遍并录音 → 隔天重答同一题，看分数是否回到 75+。</p>" +
-      "<p>本工具的「历史报告」会保存每次成绩，用来验证进步。</p>", p: "行为面" }
+      "<p>本工具的「历史报告」会保存每次成绩，用来验证进步。</p>", p: "行为面" },
+    { t: "⑩ 面试黑话速查：基线、口径、量化到底是什么", b:
+      "<p>被追问数据时最常出现的三个词，用大白话讲：</p>" +
+      "<p><b>基线</b>：你动手之前的原始数字。例：\"库存周转从 45 天降到 31 天\"——45 天就是基线。说清基线，面试官才知道你的提升有多大。</p>" +
+      "<p><b>口径</b>：这个数字怎么算出来的、算的是谁。例：\"留存 40%\"——是次日留存还是 7 日留存？分母是新用户还是全部用户？统计的是哪个时间段、哪个渠道？这就是口径。口径说不清，数据就会被怀疑。</p>" +
+      "<p><b>量化</b>：把\"提升很多\"换成\"从 A 到 B\"。没精确数字时给量级（约 200 人）、给区间（3–5 天）、给对比（比之前快一倍），并说明是你估计的。</p>" +
+      "<p>面试官为什么连问这三件事：判断这件事<b>是不是你做的</b>、数据<b>真不真实</b>、你<b>懂不懂业务</b>。准备方式很简单——每段经历写下「原来 X → 之后 Y，数据来自 Z（后台/报表/自己统计）」，被追问时就不慌。</p>", p: "简历深挖" }
   ];
 
   function renderGuide() {
@@ -10927,6 +11388,297 @@ render();
       };
     });
     show("Guide");
+  }
+
+  // ============ 数字人面试官（Canvas 动画，配合浏览器 TTS 朗读题目）============
+  var AV = { speaking: false, listening: false, t: 0, blink: 0, blinkT: 2, raf: null };
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function avatarDraw() {
+    var c = $("aiAvatar");
+    if (!c) return;
+    var ctx = c.getContext("2d"), w = c.width, h = c.height, k = Math.min(w / 320, h / 240);
+    AV.t += 1 / 60;
+    AV.blinkT -= 1 / 60;
+    if (AV.blinkT <= 0) { AV.blink = 1; AV.blinkT = 2.2 + Math.random() * 3.2; }
+    AV.blink = Math.max(0, AV.blink - 0.14);
+    var breath = Math.sin(AV.t * 1.1) * 0.006;
+    var nod = (AV.listening ? Math.sin(AV.t * 1.6) * 3 : 0) + Math.sin(AV.t * 0.8) * 0.8;
+
+    // —— 房间背景（虚化办公室 + 光斑）——
+    var g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, "#0b1526"); g.addColorStop(0.5, "#16294a"); g.addColorStop(1, "#24406b");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    ctx.save();
+    ctx.globalAlpha = 0.5; ctx.filter = "blur(" + (6 * k).toFixed(1) + "px)";
+    [[0.12, 0.16, 0.06], [0.86, 0.12, 0.05], [0.7, 0.24, 0.035], [0.3, 0.1, 0.04]].forEach(function (b) {
+      ctx.fillStyle = "rgba(147,197,253,.5)";
+      ctx.beginPath(); ctx.arc(w * b[0], h * b[1], Math.max(4, w * b[2]), 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.restore();
+    ctx.fillStyle = "rgba(255,255,255,.045)";
+    ctx.fillRect(0, h * 0.72, w, h * 0.02);
+    ctx.fillStyle = "rgba(255,255,255,.03)";
+    ctx.fillRect(0, h * 0.62, w * 0.18, h * 0.14);
+    ctx.fillRect(w * 0.82, h * 0.58, w * 0.18, h * 0.18);
+
+    ctx.save();
+    ctx.translate(w / 2, h / 2 + nod);
+    ctx.scale(1 + breath, 1 + breath);
+    ctx.translate(-w / 2, -h / 2);
+
+    var cx = w / 2, cy = h * 0.36;
+
+    // —— 肩/西装 ——
+    var suit = ctx.createLinearGradient(0, h * 0.72, 0, h);
+    suit.addColorStop(0, "#2f4f86"); suit.addColorStop(1, "#1d3054");
+    ctx.fillStyle = suit;
+    roundRect(ctx, w * 0.17, h * 0.74, w * 0.66, h * 0.42, 26 * k); ctx.fill();
+    // 衬衫 V 领
+    ctx.fillStyle = "#eef4ff";
+    ctx.beginPath(); ctx.moveTo(w * 0.42, h * 0.75); ctx.lineTo(w * 0.5, h * 0.92); ctx.lineTo(w * 0.58, h * 0.75); ctx.closePath(); ctx.fill();
+    // 西装翻领
+    ctx.fillStyle = "#24406f";
+    ctx.beginPath(); ctx.moveTo(w * 0.38, h * 0.75); ctx.lineTo(w * 0.47, h * 0.98); ctx.lineTo(w * 0.30, h * 0.98); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(w * 0.62, h * 0.75); ctx.lineTo(w * 0.70, h * 0.98); ctx.lineTo(w * 0.53, h * 0.98); ctx.closePath(); ctx.fill();
+    // 脖子 + 阴影
+    var neck = ctx.createLinearGradient(0, h * 0.66, 0, h * 0.78);
+    neck.addColorStop(0, "#d9a98d"); neck.addColorStop(1, "#c08c72");
+    ctx.fillStyle = neck;
+    roundRect(ctx, cx - w * 0.045, h * 0.655, w * 0.09, h * 0.1, 8 * k); ctx.fill();
+    // 脸
+    var faceGrad = ctx.createRadialGradient(cx - w * 0.05, cy - h * 0.06, w * 0.02, cx, cy + h * 0.01, w * 0.17);
+    faceGrad.addColorStop(0, "#fde6d6"); faceGrad.addColorStop(0.65, "#f3d0b7"); faceGrad.addColorStop(1, "#e0b393");
+    ctx.fillStyle = faceGrad;
+    ctx.beginPath(); ctx.ellipse(cx, cy, w * 0.142, h * 0.182, 0, 0, Math.PI * 2); ctx.fill();
+    // 耳朵
+    ctx.fillStyle = "#e8bfa2";
+    ctx.beginPath(); ctx.ellipse(cx - w * 0.143, cy + h * 0.006, w * 0.018, h * 0.03, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx + w * 0.143, cy + h * 0.006, w * 0.018, h * 0.03, 0, 0, Math.PI * 2); ctx.fill();
+    // 头发（顶部 + 两侧）
+    var hair = ctx.createLinearGradient(cx, cy - h * 0.2, cx, cy + h * 0.02);
+    hair.addColorStop(0, "#3a3330"); hair.addColorStop(1, "#221d1b");
+    ctx.fillStyle = hair;
+    ctx.beginPath(); ctx.ellipse(cx, cy - h * 0.075, w * 0.152, h * 0.115, 0, Math.PI * 1.02, Math.PI * 1.98); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx - w * 0.128, cy + h * 0.005, w * 0.036, h * 0.105, 0.18, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx + w * 0.128, cy + h * 0.005, w * 0.036, h * 0.105, -0.18, 0, Math.PI * 2); ctx.fill();
+    // 头发高光
+    ctx.strokeStyle = "rgba(255,255,255,.16)"; ctx.lineWidth = Math.max(1, w * 0.004);
+    ctx.beginPath(); ctx.arc(cx - w * 0.03, cy - h * 0.09, w * 0.09, Math.PI * 1.15, Math.PI * 1.7); ctx.stroke();
+    // 眉毛
+    var brow = AV.speaking ? -h * 0.01 : 0;
+    ctx.strokeStyle = "#3a2f2b"; ctx.lineWidth = Math.max(1.6, w * 0.0075); ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(cx - w * 0.082, cy - h * 0.045 + brow); ctx.quadraticCurveTo(cx - w * 0.055, cy - h * 0.06 + brow, cx - w * 0.028, cy - h * 0.048 + brow); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + w * 0.028, cy - h * 0.048 + brow); ctx.quadraticCurveTo(cx + w * 0.055, cy - h * 0.06 + brow, cx + w * 0.082, cy - h * 0.045 + brow); ctx.stroke();
+    // 眼睛
+    var eyeH = Math.max(0.6, h * 0.022 * (1 - AV.blink * 0.93));
+    [-1, 1].forEach(function (s) {
+      var ex = cx + s * w * 0.055, ey = cy - h * 0.012;
+      ctx.fillStyle = "#fdfbfa";
+      ctx.beginPath(); ctx.ellipse(ex, ey, w * 0.026, eyeH, 0, 0, Math.PI * 2); ctx.fill();
+      if (AV.blink < 0.6) {
+        ctx.fillStyle = "#4a3a2c";
+        ctx.beginPath(); ctx.ellipse(ex, ey, w * 0.0125, eyeH * 0.92, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#171310";
+        ctx.beginPath(); ctx.ellipse(ex, ey, w * 0.006, eyeH * 0.7, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,.92)";
+        ctx.beginPath(); ctx.arc(ex - w * 0.005, ey - eyeH * 0.35, Math.max(0.8, w * 0.0035), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.strokeStyle = "rgba(60,45,38,.55)"; ctx.lineWidth = Math.max(1, w * 0.0035);
+      ctx.beginPath(); ctx.ellipse(ex, ey - eyeH * 0.55, w * 0.026, eyeH * 0.35, 0, Math.PI, Math.PI * 2); ctx.stroke();
+    });
+    // 鼻
+    ctx.fillStyle = "rgba(190,130,100,.35)";
+    ctx.beginPath(); ctx.ellipse(cx, cy + h * 0.028, w * 0.011, h * 0.008, 0, 0, Math.PI * 2); ctx.fill();
+    // 腮红
+    [-1, 1].forEach(function (s) {
+      var bg2 = ctx.createRadialGradient(cx + s * w * 0.075, cy + h * 0.032, 1, cx + s * w * 0.075, cy + h * 0.032, w * 0.045);
+      bg2.addColorStop(0, "rgba(228,140,130,.22)"); bg2.addColorStop(1, "rgba(228,140,130,0)");
+      ctx.fillStyle = bg2;
+      ctx.beginPath(); ctx.arc(cx + s * w * 0.075, cy + h * 0.032, w * 0.045, 0, Math.PI * 2); ctx.fill();
+    });
+    // 嘴（说话开合）
+    var open = AV.speaking ? (0.35 + 0.65 * Math.abs(Math.sin(AV.t * 11))) * h * 0.045 : h * 0.006;
+    ctx.fillStyle = "#b8636f";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + h * 0.072, w * 0.034, Math.max(1.6, open / 2 + h * 0.006), 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.35)";
+    ctx.beginPath(); ctx.ellipse(cx, cy + h * 0.062, w * 0.03, h * 0.004, 0, 0, Math.PI * 2); ctx.fill();
+    // 左侧轮廓光（打光感）
+    ctx.strokeStyle = "rgba(147,197,253,.35)"; ctx.lineWidth = Math.max(1.5, w * 0.006);
+    ctx.beginPath(); ctx.ellipse(cx, cy, w * 0.142, h * 0.182, 0, Math.PI * 0.72, Math.PI * 1.28); ctx.stroke();
+    ctx.restore();
+
+    // 状态角标
+    ctx.fillStyle = "rgba(255,255,255,.92)"; ctx.font = Math.round(12 * k) + "px system-ui"; ctx.textAlign = "left";
+    ctx.fillText(AV.speaking ? "● 正在提问" : AV.listening ? "● 聆听中" : "● 等待", 12 * k, h - 12 * k);
+  }
+
+  function avatarLoop() {
+    avatarDraw();
+    AV.raf = requestAnimationFrame(avatarLoop);
+  }
+  function avatarStart() {
+    // 按实际显示尺寸设置画布分辨率，避免被拉伸变形
+    var c = $("aiAvatar");
+    if (c) {
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      var cw = Math.max(180, Math.round(c.clientWidth || 320));
+      var ch = Math.max(150, Math.round(c.clientHeight || 240));
+      if (c.width !== Math.round(cw * dpr) || c.height !== Math.round(ch * dpr)) {
+        c.width = Math.round(cw * dpr);
+        c.height = Math.round(ch * dpr);
+      }
+      c.style.height = c.clientHeight ? "" : "100%";
+    }
+    if (!AV.raf) avatarLoop();
+    if (!AV.resizeHooked) {
+      AV.resizeHooked = true;
+      window.addEventListener("resize", function () {
+        var cv = $("aiAvatar");
+        if (cv) { cv.width = 0; cv.height = 0; avatarStart(); }
+      });
+    }
+  }
+  function avatarStop() { if (AV.raf) { cancelAnimationFrame(AV.raf); AV.raf = null; } }
+  function avatarState(text, mode) {
+    var t = $("aiAvatarState"); if (t) t.textContent = text;
+    AV.speaking = mode === "speaking";
+    AV.listening = mode === "listening";
+  }
+  // 面试官旁边的浮动气泡：显示当前问题或追问（像真人面试官在说话）
+  var bubbleTimer = null;
+  function avatarSay(text, tag) {
+    var b = $("aiAvatarBubble");
+    if (!b || !text) return;
+    b.innerHTML = (tag ? "<b>" + escAII(tag) + "</b>" : "") + escAII(text.length > 46 ? text.slice(0, 46) + "…" : text);
+    b.hidden = false;
+    if (bubbleTimer) clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(function () { b.hidden = true; }, 7000);
+  }
+
+  // ============ 摄像头模拟（本地分析，不录制、不上传）============
+  var CAM = { stream: null, timer: null, prev: null, metrics: null, detector: null, on: false };
+
+  function camReset() {
+    CAM.metrics = { n: 0, centered: 0, off: 0, dark: 0, still: 0, alerts: 0, offStreak: 0, darkStreak: 0, alertedAt: 0 };
+    CAM.prev = null;
+  }
+  // 纯函数：从一帧像素算亮度、肤色占比与重心（便于测试）
+  function frameStats(data, w, h) {
+    var sum = 0, skin = 0, sx = 0, sy = 0, n = 0;
+    for (var y = 0; y < h; y += 2) {
+      for (var x = 0; x < w; x += 2) {
+        var i = (y * w + x) * 4, r = data[i], g = data[i + 1], b = data[i + 2];
+        var lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        sum += lum; n++;
+        if (r > 95 && g > 40 && b > 20 && r > g && r > b && (Math.max(r, g, b) - Math.min(r, g, b)) > 15) {
+          skin++; sx += x; sy += y;
+        }
+      }
+    }
+    var bright = n ? sum / n : 0;
+    var skinRatio = n ? skin / n : 0;
+    return {
+      brightness: Math.round(bright),
+      skinRatio: skinRatio,
+      cx: skin ? (sx / skin) / w : 0.5,
+      cy: skin ? (sy / skin) / h : 0.5
+    };
+  }
+  function camTick() {
+    var v = $("aiSelf"), c = $("aiCamCanvas");
+    if (!v || !c || !v.videoWidth || !CAM.metrics) return;
+    var ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(v, 0, 0, c.width, c.height);
+    var st;
+    try { st = frameStats(ctx.getImageData(0, 0, c.width, c.height).data, c.width, c.height); } catch (e) { return; }
+    var m = CAM.metrics;
+    m.n++;
+    // 居中：肤色重心在中间 1/3 区域
+    var centered = st.skinRatio > 0.03 && st.cx > 0.33 && st.cx < 0.67;
+    if (centered) { m.centered++; m.offStreak = 0; } else { m.off++; m.offStreak = (m.offStreak || 0) + 1; }
+    if (st.brightness < 55) { m.dark++; m.darkStreak = (m.darkStreak || 0) + 1; } else { m.darkStreak = 0; }
+    // 模拟真实 AI 面的"偏离提醒"：连续离位/过暗时弹一句提醒（15 秒最多一次）
+    var now = Date.now();
+    if (!m.alertedAt) m.alertedAt = 0;
+    if (now - m.alertedAt > 15000 && S && S.items[S.idx]) {
+      var why = "";
+      if ((m.offStreak || 0) >= 4) why = "你好像不在画面中间了——真实 AI 面会判定为分心，回到镜头正前方。";
+      else if ((m.darkStreak || 0) >= 5) why = "画面偏暗，面试官看不清你的表情——正面补光会更稳。";
+      if (why) {
+        m.alertedAt = now;
+        m.alerts = (m.alerts || 0) + 1;
+        chatPush(bubble("coach", '<div class="ai-note">⚠️ ' + escAII(why) + "</div>"));
+      }
+    }
+    // 静止：与上一帧差异过小
+    if (CAM.prev) {
+      var diff = 0, cnt = 0;
+      for (var i = 0; i < st.brightness + 1; i++) { break; }
+      diff = Math.abs(st.cx - CAM.prev.cx) + Math.abs(st.cy - CAM.prev.cy) + Math.abs(st.brightness - CAM.prev.brightness) / 255;
+      if (diff < 0.012) m.still++;
+      cnt++;
+    }
+    CAM.prev = st;
+    var badge = $("aiCamState");
+    if (badge) {
+      var centerRate = m.n ? Math.round(m.centered / m.n * 100) : 0;
+      badge.textContent = "摄像头：开启 · 居中 " + centerRate + "% · 亮度 " + st.brightness;
+    }
+  }
+  async function camStart() {
+    if (CAM.on) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      $("aiCamHint").textContent = "当前环境不支持摄像头（或非 https/本地文件），可以先只用语音练习。";
+      return;
+    }
+    try {
+      CAM.stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
+      var v = $("aiSelf");
+      v.srcObject = CAM.stream;
+      await v.play().catch(function () {});
+      $("aiSelfEmpty").classList.add("hide");
+      $("aiCamToggle").textContent = "⏹ 关闭摄像头";
+      $("aiCamState").textContent = "摄像头：开启";
+      $("aiCamHint").textContent = "画面只在本机分析（居中率/离位/亮度），不录制、不上传；浏览器标签页会显示红点属于正常现象。";
+      CAM.on = true;
+      camReset();
+      CAM.timer = setInterval(camTick, 420);
+    } catch (e) {
+      $("aiCamHint").textContent = "摄像头开启失败（" + (e.name || e.message) + "）：可以先用语音/文字练习。";
+    }
+  }
+  function camStop() {
+    if (CAM.timer) { clearInterval(CAM.timer); CAM.timer = null; }
+    if (CAM.stream) { CAM.stream.getTracks().forEach(function (t) { t.stop(); }); CAM.stream = null; }
+    CAM.on = false;
+    var v = $("aiSelf"); if (v) v.srcObject = null;
+    var e = $("aiSelfEmpty"); if (e) e.classList.remove("hide");
+    var b = $("aiCamToggle"); if (b) b.textContent = "📷 开启摄像头模拟";
+    var s = $("aiCamState"); if (s) s.textContent = "摄像头：关闭";
+  }
+  function camSummary(metrics) {
+    if (!metrics || !metrics.n) return null;
+    var m = metrics;
+    return {
+      samples: m.n,
+      centerRate: Math.round(m.centered / m.n * 100),
+      offRate: Math.round(m.off / m.n * 100),
+      darkRate: Math.round(m.dark / m.n * 100),
+      stillRate: Math.round(m.still / m.n * 100)
+      , alerts: m.alerts || 0
+    };
   }
 
   // ============ 绑定 ============
@@ -10952,12 +11704,35 @@ render();
     var gb = $("aiGuideBtn"); if (gb) gb.onclick = renderGuide;
     var gback = $("aiGuideBack"); if (gback) gback.onclick = function () { show("Setup"); };
     var ar = $("aiAnalyzeResume"); if (ar) ar.onclick = renderResumeReport;
+    var jp = $("aiJdPlanBtn"); if (jp) jp.onclick = renderJdResumePlan;
     var hback = $("aiHistoryBack"); if (hback) hback.onclick = function () { show("Setup"); };
     var sb = $("aiSubmit"); if (sb) sb.onclick = submit;
     var sk = $("aiSkip"); if (sk) sk.onclick = function () { next(); };
     var fn = $("aiFinish"); if (fn) fn.onclick = finish;
     var vb = $("aiVoice"); if (vb) vb.onclick = toggleVoice;
     var rb2 = $("aiRead"); if (rb2) rb2.onclick = readCurrent;
+    var ct = $("aiCamToggle"); if (ct) ct.onclick = function () { if (CAM.on) camStop(); else camStart(); };
+    var de = $("aiDirEdit"); if (de) de.onclick = function () {
+      var box = $("aiDirManager");
+      box.hidden = !box.hidden;
+      if (!box.hidden) renderDirManager();
+    };
+    var da = $("aiDirAdd"); if (da) da.onclick = function () {
+      var v = ($("aiDirNew").value || "").trim();
+      if (!v) { alert("先填写要新增的岗位方向"); return; }
+      var arr = dirsAll();
+      if (arr.some(function (x) { return x.name === v; })) { alert("已有同名方向"); return; }
+      var base = ($("aiDirBase") && $("aiDirBase").value) || "综合/管培";
+      arr.push({ name: v, base: base });
+      store(DIRS_KEY, arr);
+      $("aiDirNew").value = "";
+      renderDirManager(); buildDirChips();
+    };
+    var dr2 = $("aiDirReset"); if (dr2) dr2.onclick = function () {
+      if (!confirm("恢复默认的 12 个岗位方向？自定义的方向会被删除。")) return;
+      localStorage.removeItem(DIRS_KEY);
+      renderDirManager(); buildDirChips();
+    };
     var again = $("aiAgain"); if (again) again.onclick = function () { show("Setup"); };
     var pa = $("aiPromptAll"); if (pa) pa.onclick = function () {
       var his = load(HIS_KEY, []); if (!his.length) return;
@@ -11003,6 +11778,7 @@ render();
   window.AIInterview = {
     analyze: analyze, bank: BANK, dirs: DIRS,
     open: openPanel, start: start, submit: submit, report: buildReport,
+    dirsAll: dirsAll, frameStats: frameStats, avatar: AV, cam: CAM,
     _state: function () { return S; }
   };
 })();
