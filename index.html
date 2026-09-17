@@ -10543,8 +10543,8 @@ render();
     var rnd = $("aiRandom") ? !!$("aiRandom").checked : true;
     var qs = pickQuestions(type, count, company, rnd);
     // 简历深挖：把用户简历拆成条目后生成追问链，混进本次面试
-    var resumeOn = $("aiResumeMode") ? !!$("aiResumeMode").checked : false;
     var resumeText = $("aiResume") ? ($("aiResume").value || "").trim() : "";
+    var resumeOn = (($("aiResumeMode") && $("aiResumeMode").checked) || !!resumeText);   // 有简历就一定问简历
     if (resumeOn && resumeText) {
       store(RESUME_KEY, resumeText);
       var entries = parseResume(resumeText);
@@ -10561,6 +10561,7 @@ render();
       var jq = makeJDQuestions(jdKw, company, rnd ? 3 : 2);
       qs = shuffle(trimKeep(qs, Math.max(2, qs.length - jq.length)).concat(jq));
     }
+    qs = qs.concat([makeFanwenQuestion()]);   // 真实面试最后一定有反问环节
     S = {
       id: "s" + Date.now(), created: new Date().toISOString(), company: company, dir: dirPick, type: type,
       limit: limit, random: rnd, idx: 0, jdKw: jdKw,
@@ -10649,11 +10650,18 @@ render();
               + '<span class="ai-note" style="margin-left:8px">等待你的回答…</span></div>');
           }
         }, Math.min(1600, x.q.q.length * 24 + 200));
+        // 反问环节：给一个可展开的"建议问题"入口
+        if (x.q.id === "fanwen") {
+          chatPush(bubble("ai", '<div class="ai-note">不知道问什么？<a href="#" data-fanwen="1">点这里看建议问题（按面试轮次）</a></div><div id="aiFanwenList" hidden></div>'));
+        }
         return;
       }
       // 主问题 + 我的回答
       chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.q.q) + "</div>"));
       if (x.answer) chatPush(bubble("me", escAII(x.answer)));
+      if (x.q.id === "fanwen" && !x.answer) {
+        chatPush(bubble("ai", '<div class="ai-note">不知道问什么？<a href="#" data-fanwen="1">点这里看建议问题（按面试轮次）</a></div><div id="aiFanwenList" hidden></div>'));
+      }
       // 追问链
       (x.turns || []).forEach(function (t) {
         chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(t.q) + '</div><div class="ai-note" style="margin-top:4px">追问 · ' + escAII(t.tag || "") + "</div>"));
@@ -10675,6 +10683,19 @@ render();
         chatPush(bubble("ai", ctl));
       }
     });
+    var fwb = document.querySelector("#aiChat [data-fanwen]");
+    if (fwb) fwb.onclick = function (e) {
+      e.preventDefault();
+      var box = document.getElementById("aiFanwenList");
+      if (!box) return;
+      box.hidden = !box.hidden;
+      if (!box.hidden && !box.innerHTML) {
+        box.innerHTML = FANWEN_SUGGEST.map(function (g) {
+          return '<div style="margin-top:6px"><b style="font-size:12px;color:var(--navy)">' + escAII(g.t) + "</b><ul class=\"ai-list\">"
+            + g.qs.map(function (q) { return "<li>" + escAII(q) + "</li>"; }).join("") + "</ul></div>";
+        }).join("") + '<div class="ai-note" style="margin-top:4px">不要问：' + escAII(FANWEN_AVOID.join("；")) + "</div>";
+      }
+    };
     document.querySelectorAll("#aiChat [data-next]").forEach(function (b) { b.onclick = next; });
     document.querySelectorAll("#aiChat [data-skipfollow]").forEach(function (b) { b.onclick = skipFollow; });
     document.querySelectorAll("#aiChat [data-focus]").forEach(function (b) {
@@ -10932,6 +10953,21 @@ render();
             return "<li><b>" + escAII(it.t) + "</b>：" + escAII(it.d) + ' <a href="' + it.src + '" target="_blank" rel="noopener">来源</a></li>';
           }).join("") + "</ul>"
           + '<div class="ai-note" style="margin-top:6px">补强顺序建议：官方 JD 弄清职责 → 记住 4 个产品（抖音来客 / 巨量本地推 / POI+团购 / 小程序核销工具）→ 背熟核销率、核销 GMV、动销门店数等指标口径 → 用本工具把「怎么提升核销率」这类题练到 90 秒能讲完。</div></div>';
+      }
+    } catch (e) {}
+
+    // 反问环节点评（单独一段，不并入四维总分）
+    try {
+      var fwItems = rep.items.filter(function (x) { return x.id === "fanwen"; });
+      if (fwItems.length) {
+        var fl = evaluateFanwen(fwItems[0].answer || "");
+        h += '<div class="ai-card" style="margin-top:12px"><h4>反问环节点评</h4>'
+          + '<div class="ai-note" style="margin-bottom:6px">面试官最后问「你有什么想问我的吗」是加分项，这一项单独看，不计入上面的四维总分。</div>'
+          + (fwItems[0].answer ? '<pre style="color:var(--muted)">你问的是：' + escAII(fwItems[0].answer.slice(0, 300)) + "</pre>" : '<div class="ai-note">这场你没有问问题。</div>')
+          + '<ul class="ai-list">' + fl.advice.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul>"
+          + '<div class="ai-note" style="margin-top:6px"><b>下次可以直接问：</b>'
+          + escAII(FANWEN_SUGGEST[0].qs[0] + "；" + FANWEN_SUGGEST[0].qs[2] + "；" + FANWEN_SUGGEST[1].qs[1]) + "</div>"
+          + '<div class="ai-note" style="margin-top:4px"><b>不要问：</b>' + escAII(FANWEN_AVOID.join("；")) + "</div></div>";
       }
     } catch (e) {}
 
@@ -11540,20 +11576,130 @@ render();
       pit: ["说「没什么可改的」", "只说「我会更努力」"], follow: ["这个改动你后来实践过吗？效果怎么样？"] }
   ];
 
-  function makeResumeQuestions(entries, max) {
-    var out = [];
-    entries.slice(0, Math.max(1, max)).forEach(function (e) {
-      var n = 2 + Math.floor(Math.random() * 2);
-      shuffle(RESUME_TPL.slice()).slice(0, n).forEach(function (t) {
-        out.push({
-          id: "r" + Math.random().toString(36).slice(2, 7), types: ["简历深挖"], dirs: [dirPick],
-          q: t.q.replace("{t}", e.title.slice(0, 30)), kw: t.kw, points: t.points, pit: t.pit, follow: t.follow,
-          resumeTag: t.tag
-        });
-      });
+  // 从简历原文里"找料"：时间、数字、工具、空档，然后像真面试官那样就着你的原话问
+  function resumeDateRange(title) {
+    var s = title + " ";
+    var m = s.match(/(\d{4})\s*[.\-\/年]\s*(\d{1,2})?\s*(?:-|–|~|—|至|到)\s*(?:(\d{4})\s*[.\-\/年]\s*(\d{1,2})?|至今|现在|present|now)/i);
+    if (!m) return null;
+    var y1 = Number(m[1]), mo1 = Number(m[2] || 1);
+    var now = new Date();
+    var y2 = m[3] ? Number(m[3]) : now.getFullYear();
+    var mo2 = m[4] ? Number(m[4]) : (m[3] ? 12 : now.getMonth() + 1);
+    if (m[3] === undefined) mo2 = now.getMonth() + 1;
+    return { s: y1 * 12 + mo1, e: y2 * 12 + mo2, text: m[0] };
+  }
+  function resumeToolHits(text) {
+    var hit = [];
+    ["Excel", "SQL", "Python", "Tableau", "Power BI", "PPT", "Axure", "Figma", "PS", "Photoshop", "剪映",
+      "飞书", "钉钉", "企业微信", "codex", "Codex", "GPT", "AI", "大模型", "爬虫", "看板", "埋点", "千川",
+      "本地推", "巨量", "抖音", "小红书", "公众号", "视频号", "直播", "CRM", "SAP"].forEach(function (t) {
+      if (text.indexOf(t) >= 0 && hit.indexOf(t) < 0) hit.push(t);
     });
+    return hit;
+  }
+  function resumeNumberSpans(text) {
+    var out = [];
+    var re = /(\d+(?:\.\d+)?\s*(?:%|％|倍|万|千|人|场|次|天|小时|分钟|元|个|条|篇))/g, m;
+    while ((m = re.exec(text))) {
+      // 取紧邻数字的那半句（遇到标点就断开），引用起来才像人话
+      var before = text.slice(Math.max(0, m.index - 24), m.index);
+      var cut = Math.max(before.lastIndexOf("。"), before.lastIndexOf("，"), before.lastIndexOf(","),
+        before.lastIndexOf("；"), before.lastIndexOf("\n"), before.lastIndexOf(" "));
+      if (cut >= 0) before = before.slice(cut + 1);
+      var frag = (before + m[1]).replace(/\s+/g, " ").trim();
+      if (frag.length > 20) frag = frag.slice(-20);
+      if (frag.length >= 6 && out.indexOf(frag) < 0) out.push(frag);
+      if (out.length >= 6) break;
+    }
     return out;
   }
+
+  function makeResumeQuestions(entries, max) {
+    var out = [];
+    var full = entries.map(function (e) { return e.title + " " + (e.points || []).join(" "); }).join("\n");
+    var lines = [];
+
+    // ① 就着具体条目问（引用标题原文）
+    entries.slice(0, max).forEach(function (e) {
+      var t = e.title.replace(/^[·•\-\*\s]+/, "").slice(0, 34);
+      lines.push({
+        tag: "这段经历", q: "你简历里写「" + t + "」，这段具体做了什么？你负责哪一部分？",
+        intent: "面试官在读你的简历，想知道这段经历的真实含量和你的角色。",
+        kw: ["我负责", "具体", "背景", "目标", "结果", "团队"],
+        points: ["先说清这段经历的背景与你的角色", "用 2–3 个动作展开，落到结果", "分清个人贡献与团队"],
+        pit: ["照念简历原文", "只说「参与了」不说自己做了什么"],
+        follow: ["这段里最花你时间的一件事是什么？"]
+      });
+    });
+
+    // ② 就着简历里的数字问（引用数字原文）
+    var nums = resumeNumberSpans(full);
+    nums.slice(0, 2).forEach(function (frag) {
+      lines.push({
+        tag: "数据口径", q: "你简历里写到「" + frag + "」，这个数字是怎么得出来的？当时是多少、后来变成多少？",
+        intent: "面试官在核对你写的数字是不是真的、口径清不清楚。",
+        kw: ["基线", "口径", "统计", "来源", "怎么算", "结果"],
+        points: ["给出基线与结果两个数字", "说清数据来源与口径", "说明你在其中的作用"],
+        pit: ["只说「大概提升了很多」", "数字来源说不清"],
+        follow: ["如果这个口径换成另一个算法，结论还成立吗？"]
+      });
+    });
+
+    // ③ 就着工具问
+    var tools = resumeToolHits(full);
+    tools.slice(0, 1).forEach(function (t) {
+      lines.push({
+        tag: "工具用法", q: "你简历里提到「" + t + "」，具体拿它做了什么？做到什么程度？",
+        intent: "看你是真用过，还是只是写在简历上。",
+        kw: [t, "具体", "做法", "产出", "效果"],
+        points: ["讲一个具体用它解决的问题", "说清使用深度与产出", "给效果或数据"],
+        pit: ["只说「熟练使用」", "讲不出具体场景"],
+        follow: ["还有没有别的工具能替代它？你为什么选它？"]
+      });
+    });
+
+    // ④ 时间空档问（真面试官会注意）
+    var ranges = entries.map(function (e) { return { e: e, r: resumeDateRange(e.title) }; })
+      .filter(function (x) { return x.r; })
+      .sort(function (a, b) { return a.r.s - b.r.s; });
+    for (var i = 1; i < ranges.length; i++) {
+      var gap = ranges[i].r.s - ranges[i - 1].r.e;
+      if (gap >= 4 && gap <= 24) {
+        lines.push({
+          tag: "时间空档", q: "我注意到你简历上从「" + ranges[i - 1].e.title.slice(0, 12) + "」到「" + ranges[i].e.title.slice(0, 12) + "」之间有一段间隔，这段时间在做什么？",
+          intent: "面试官在核对你经历时间线的连续性，正常说明就好，不用紧张。",
+          kw: ["时间", "安排", "学习", "准备", "原因"],
+          points: ["如实说明这段时间的安排", "如果有学习/项目/备考，讲清产出", "把话题拉回与岗位的关系"],
+          pit: ["含糊其辞", "编一段不存在的经历"],
+          follow: ["这段经历对你后来找工作有什么影响？"]
+        });
+        break;
+      }
+    }
+
+    // ⑤ 跨经历：哪段最相关（面试官常用来收口）
+    if (entries.length >= 2) {
+      lines.push({
+        tag: "经历取舍", q: "你简历上有这几段经历，哪一段最接近我们这个岗位？为什么？",
+        intent: "看你能不能基于岗位要求做取舍，而不是把经历全讲一遍。",
+        kw: ["匹配", "取舍", "岗位", "能力", "证据"],
+        points: ["明确指出一段并说明理由（对应岗位的哪项要求）", "给出这段的证据与结果", "其他经历一句话带过"],
+        pit: ["说「都相关」", "理由与岗位要求对不上"],
+        follow: ["如果要砍掉一段，你会写哪一段？"]
+      });
+    }
+
+    // 包装成标准题目对象（带 types/dirs，才能走统一的出题与评分流程）
+    return lines.map(function (l, i) {
+      return {
+        id: "rz" + i + Math.random().toString(36).slice(2, 6),
+        types: ["简历深挖"], dirs: [dirPick],
+        q: l.q, intent: l.intent, kw: l.kw, points: l.points, pit: l.pit, follow: l.follow,
+        resumeTag: l.tag
+      };
+    });
+  }
+
 
   function renderResumeReport() {
     var text = $("aiResume").value || "";
@@ -11575,6 +11721,50 @@ render();
       $("aiResumePreview").innerHTML = '<ul class="ai-list">' + qs.map(function (q) { return "<li>" + escAII(q.q) + "</li>"; }).join("") + "</ul>";
     };
   }
+
+  // ============ 反问环节（最后"你有什么想问我的"）============
+  // 策略来自公开面经帖：一面问团队业务/岗位内容/看重的能力；二面问团队定位/当前卡点/对校招生期待；
+  // HR 面问培养体系/文化氛围。忌讳：问我表现如何、我能不能过、只问薪资加班。
+  var FANWEN_GOOD = ["业务", "团队", "岗位", "内容", "看重", "能力", "挑战", "卡点", "定位", "期待", "成长",
+    "培养", "体系", "文化", "氛围", "协作", "评价标准", "考核", "规划", "业务线", "客户", "行业"];
+  var FANWEN_BAD = ["工资", "薪资", "多少钱", "加班", "几点下班", "双休", "放假", "转正", "我表现", "我能过",
+    "符合要求", "能不能给我 offer", "我怎么样"];
+  var FANWEN_SUGGEST = [
+    { t: "一面（直属上级 / mentor）", qs: ["这个岗位入职后每天具体做哪些事？和我理解的有什么不同？", "团队现在有多少人、怎么分工，我主要和哪些角色协作？", "这个岗位最看重哪一两项能力？做到什么程度算优秀？"] },
+    { t: "二面（业务负责人 / +2）", qs: ["团队在部门里的定位是什么？主要产出什么价值？", "团队现在最头疼或者最需要解决的问题是什么？", "您对校招生一年内的期待是什么？"] },
+    { t: "HR 面", qs: ["公司对校招生的培养路径是怎样的？有没有轮岗或导师制？", "团队的文化和协作方式是什么样的？", "入职后前三个月，一般会怎么安排？"] },
+    { t: "兜底（实在没想好）", qs: ["如果我现在就开始准备入职，您建议我先补哪一块？", "您觉得在这个岗位上做得好的同学，通常做对了哪几件事？"] }
+  ];
+  var FANWEN_AVOID = ["我今天的表现怎么样？我能过吗？（面试官通常不能直接答，可能反而扣分）",
+    "只问薪资、加班、双休、转正比例（显得只关心待遇）",
+    "长篇大论证明自己（面试官已疲惫，容易讲乱）"];
+
+  function makeFanwenQuestion() {
+    return {
+      id: "fanwen", src: "反问", types: ["反问"], dirs: [dirPick],
+      q: "我这边问题问得差不多了。你有什么想问我的吗？",
+      intent: "反问是最后的加分项：问业务、团队、成长；别问「我表现怎么样」，也别只问薪资加班。",
+      kw: FANWEN_GOOD,
+      points: ["问业务与岗位的真实工作内容", "问团队定位、协作方式、当前挑战", "问评价标准或培养路径"],
+      pit: ["说「没什么想问的」", "问「我表现怎么样」「能不能过」", "只问薪资/加班"],
+      follow: []
+    };
+  }
+  // 给反问打分（不并入四维总分，单独在报告里点评）
+  function evaluateFanwen(text) {
+    text = text || "";
+    var good = [], bad = [], advice = [];
+    FANWEN_GOOD.forEach(function (k) { if (text.indexOf(k) >= 0 && good.indexOf(k) < 0) good.push(k); });
+    FANWEN_BAD.forEach(function (k) { if (text.indexOf(k) >= 0 && bad.indexOf(k) < 0) bad.push(k); });
+    var score = 60 + Math.min(30, good.length * 8) - bad.length * 15;
+    if (text.trim().length < 6) { score = 20; advice.push("没有问任何问题：反问是最后一次展示思考的机会，至少准备 3 个问题。"); }
+    if (!good.length && text.trim().length >= 6) advice.push("这次的问题偏「待遇类」，下次优先问业务、团队、成长这三类。");
+    if (good.length) advice.push("问到点上了（" + good.slice(0, 4).join("、") + "），保持这种问法。");
+    if (bad.length) advice.push("尽量避开：" + bad.slice(0, 3).join("、") + " 这类问题（可放到 offer 后再谈）。");
+    if (!advice.length) advice.push("反问可以再具体一点：落到「这个岗位/这个团队」上更显得你做过功课。");
+    return { score: Math.max(0, Math.min(100, score)), good: good, bad: bad, advice: advice };
+  }
+
 
   // ============ 岗位知识卡：字节生活服务（生服）/游玩 KA ============
   // 内容依据：字节官方校招 JD（大客户销售-抖音生活服务/休闲娱乐）、巨量引擎官方百科（巨量本地推）、
@@ -11917,6 +12107,14 @@ render();
       "<p>每次模拟后按这个循环走：<b>找出最低维度 → 定位到具体句子 → 改写一遍 → 隔天重答验证</b>。</p>" +
       "<p>示例：表达流畅 58 分 → 回放发现语速 320 字/分、口头禅 11 处 → 把答案写成 6 句话的脚本，练两遍并录音 → 隔天重答同一题，看分数是否回到 75+。</p>" +
       "<p>本工具的「历史报告」会保存每次成绩，用来验证进步。</p>", p: "行为面" },
+    { t: "⑪ 反问环节：怎么问才加分（面试官最后必问）", b:
+      "<p>面试官最后问「你有什么想问我的吗」，这不是客套，是最后的加分项。原则：<b>按面试你的那个人是谁来决定问什么</b>。</p>" +
+      "<p><b>一面（直属上级/mentor）</b>：① 这个岗位入职后每天具体做哪些事？和 JD 上写的有差别吗？② 团队多少人、怎么分工，我主要和谁协作？③ 这个岗位最看重哪一两项能力，做到什么程度算优秀？</p>" +
+      "<p><b>二面（业务负责人/+2）</b>：① 团队在部门里的定位是什么、主要产出什么价值？② 团队现在最头疼或者最需要解决的问题是什么？③ 您对校招生一年内的期待是什么？④ 结合一面了解的业务，问一个更深入的问题（例：某条业务线现在的增长来自哪里）。</p>" +
+      "<p><b>HR 面</b>：① 公司对校招生的培养路径（导师制/轮岗/培养体系）？② 团队的文化和协作方式？③ 入职前三个月一般怎么安排？</p>" +
+      "<p><b>不要问</b>：我今天的表现怎么样/我能不能过（面试官通常不能直接答，甚至反感）；只问薪资、加班、双休、转正比例（显得只关心待遇，可以等 offer 阶段再谈）；长篇大论证明自己（面试官已经很累）。</p>" +
+      "<p>实在没想好，就用兜底两句：① 如果我现在开始准备入职，您建议我先补哪一块？② 在这个岗位上做得好的同学，通常做对了哪几件事？</p>" +
+      "<p>本工具每场面试最后都会真的问你一次，并在报告里给你「反问环节点评」＋可直接用的下一场问题清单。</p>", p: "行为面" },
     { t: "⑩ 面试黑话速查：基线、口径、量化到底是什么", b:
       "<p>被追问数据时最常出现的三个词，用大白话讲：</p>" +
       "<p><b>基线</b>：你动手之前的原始数字。例：\"库存周转从 45 天降到 31 天\"——45 天就是基线。说清基线，面试官才知道你的提升有多大。</p>" +
