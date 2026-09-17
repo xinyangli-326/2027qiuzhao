@@ -11700,6 +11700,51 @@ render();
     }
     return texts.join(" ").replace(/\s{2,}/g, " ").trim();
   }
+  // ============ PDF 解析：优先用 pdf.js（首次联网加载 ~1MB，之后走缓存）============
+  var PDFJS_CDNS = [
+    "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs",
+    "https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.min.mjs",
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs"
+  ];
+  var _pdfjsLib = null;
+  async function loadPdfJs() {
+    if (_pdfjsLib) return _pdfjsLib;
+    for (var i = 0; i < PDFJS_CDNS.length; i++) {
+      try {
+        var lib = await import(/* webpackIgnore: true */ PDFJS_CDNS[i]);
+        try { lib.GlobalWorkerOptions.workerSrc = PDFJS_CDNS[i].replace("pdf.min.mjs", "pdf.worker.min.mjs"); } catch (e) {}
+        _pdfjsLib = lib;
+        return lib;
+      } catch (e) {}
+    }
+    return null;
+  }
+  // 按 y 坐标把文字块还原成行，简历结构才留得住
+  function itemsToLines(items) {
+    var rows = {}, order = [];
+    (items || []).forEach(function (it) {
+      var s = it.str;
+      if (!s) return;
+      var y = Math.round((it.transform && it.transform[5]) || 0);
+      if (!rows[y]) { rows[y] = []; order.push(y); }
+      rows[y].push(s);
+    });
+    order.sort(function (a, b) { return b - a; });
+    return order.map(function (y) { return rows[y].join("").replace(/\s{2,}/g, " ").trim(); }).filter(Boolean).join("\n");
+  }
+  async function pdfTextViaPdfJs(buf) {
+    var lib = await loadPdfJs();
+    if (!lib) return "";
+    var doc = await lib.getDocument({ data: new Uint8Array(buf) }).promise;
+    var pages = [];
+    for (var i = 1; i <= doc.numPages; i++) {
+      var pg = await doc.getPage(i);
+      var tc = await pg.getTextContent();
+      pages.push(itemsToLines(tc.items));
+    }
+    return pages.join("\n").trim();
+  }
+
   async function handleResumeFile(file) {
     var name = file.name || "resume";
     var ext = (name.split(".").pop() || "").toLowerCase();
@@ -11711,7 +11756,12 @@ render();
       } else if (ext === "docx") {
         text = stripXml(await unzipEntry(await file.arrayBuffer(), "word/document.xml"));
       } else if (ext === "pdf") {
-        text = await pdfText(await file.arrayBuffer());
+        var pbuf = await file.arrayBuffer();
+        text = await pdfText(pbuf.slice(0));                 // 先试本地轻量解析（离线可用）
+        if ((text || "").replace(/\s/g, "").length < 40) {
+          resumeHint("正在用 PDF 组件解析 <b>" + escAII(name) + "</b>…（首次需要联网加载约 1MB，之后走缓存）");
+          try { text = await pdfTextViaPdfJs(pbuf); } catch (e2) { text = text || ""; }
+        }
       } else if (/^(jpg|jpeg|png|webp|heic|bmp)$/.test(ext)) {
         resumeHint("图片简历没法在本地识别文字：用手机或系统自带的「提取文字」转成文本后，粘贴到下面即可。");
         return;
@@ -11724,7 +11774,7 @@ render();
     }
     text = (text || "").replace(/\u0000/g, "").replace(/[ \t]+\n/g, "\n").trim();
     if (text.length < 40) {
-      resumeHint("这个文件没解析出文字（可能是扫描版 PDF 或图片型简历）：请把简历文字粘贴到下面，一样能用。");
+      resumeHint("这份 PDF 没解析出可复制的文字（多半是扫描件/图片版，或加密 PDF）：把简历文字粘贴到下面一样能用。");
       return;
     }
     var box = $("aiResume");
