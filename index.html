@@ -2611,7 +2611,15 @@
             想省钱/免 Key：接口地址可填本地 Ollama（<code>http://localhost:11434/v1</code>，模型如 <code>qwen2.5:7b</code>），
             或用 DeepSeek（<code>https://api.deepseek.com/v1</code>，模型 <code>deepseek-chat</code>）；也可以完全不填，用下面的「复制 AI 点评提示词」把题目和你的回答贴到任意聊天工具里点评。
           </div>
-          <div class="ai-actions"><button class="btn" id="aiSaveKey" type="button">保存设置</button></div>
+          <div class="ai-actions" style="margin-top:8px;flex-wrap:wrap">
+            <select id="aiPreset" style="border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:12.5px"></select>
+            <button class="btn" id="aiApplyPreset" type="button">用这个服务商</button>
+            <button class="btn primary" id="aiSaveKey" type="button">保存设置</button>
+          </div>
+          <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:600;color:var(--navy)">
+            <input type="checkbox" id="aiUseLlm" checked> 面试官用大模型生成追问与点评（配好 Key 后生效；失败自动回退本地规则）
+          </label>
+          <div class="ai-note" id="aiLlmState" style="margin-top:4px"></div>
         </div>
       </div>
       <div class="ai-note" style="margin-top:12px">
@@ -10752,7 +10760,7 @@ render();
     if (t) t.textContent = fmtTime(sec);   // 只显示用了多久，不限时、不变色、不提醒
   }
 
-  function submit() {
+  async function submit() {
     var it = S.items[S.idx];
     if (!it) return;
     stopRec();
@@ -10770,7 +10778,20 @@ render();
       it.turns[it.pendingIndex].a = txt;
       it.pendingIndex = -1;
       rescore(it);
-      askNextFollow(it);          // 答完一层，基于新内容决定要不要继续追
+      if (llmReady() && it.answer) {
+        try {
+          var llm2 = await llmInterviewTurn(it.q.q, it.answer + " " + it.follow, (it.asked || []));
+          if (llm2 && llm2.followups && llm2.followups.length && (it.turns || []).length < 3) {
+            it.asked = (it.asked || []).concat([llm2.followups[0]]);
+            it.turns.push({ q: llm2.followups[0], a: "", tag: "追问（大模型）" });
+            it.pendingIndex = it.turns.length - 1;
+          } else {
+            askNextFollow(it);
+          }
+        } catch (e) { askNextFollow(it); }
+      } else {
+        askNextFollow(it);          // 答完一层，基于新内容决定要不要继续追
+      }
       $("aiAnswer").value = "";
       store(CUR_KEY, S);
       renderChat();
@@ -10787,7 +10808,42 @@ render();
     rescore(it);
     it.turns = [];
     it.asked = [];
-    askNextFollow(it);            // 真实面试官：答完一定追问
+    // 配了 Key：让大模型针对这段回答出手（打分 + 引用你原话的追问）
+    if (llmReady()) {
+      var box2 = $("aiAnswer"); if (box2) box2.placeholder = "面试官正在想下一个问题…";
+      avatarState("AI 面试官 · 思考中", "speaking");
+      try {
+        var llm = await llmInterviewTurn(it.q.q, it.answer, (it.asked || []));
+        if (llm) {
+          it.llm = llm;
+          if (llm.score) {
+            ["content", "structure", "delivery", "depth"].forEach(function (k) {
+              if (typeof llm.score[k] === "number") it.score[k] = Math.max(0, Math.min(100, Math.round(llm.score[k])));
+            });
+            it.score.total = Math.round(0.35 * it.score.content + 0.25 * it.score.structure + 0.2 * it.score.delivery + 0.22 * it.score.depth);
+            it.score.grade = it.score.total >= 85 ? "A" : it.score.total >= 70 ? "B" : it.score.total >= 55 ? "C" : "D";
+          }
+          if (llm.advice && llm.advice.length) it.score.advice = llm.advice.concat(it.score.advice).slice(0, 4);
+          if (llm.comment) it.score.advice.unshift(llm.comment);
+          if (llm.followups && llm.followups.length) {
+            it.asked = (it.asked || []).concat([llm.followups[0]]);
+            it.turns = it.turns || [];
+            it.turns.push({ q: llm.followups[0], a: "", tag: "追问（大模型）" });
+            it.pendingIndex = it.turns.length - 1;
+          } else {
+            askNextFollow(it);
+          }
+        } else {
+          askNextFollow(it);
+        }
+      } catch (e) {
+        it.llmError = e.message || String(e);
+        askNextFollow(it);
+        chatPush(bubble("ai", '<div class="ai-note">大模型调用失败（' + escAII(it.llmError.slice(0, 60)) + "），已回退到本地追问规则。</div>"));
+      }
+    } else {
+      askNextFollow(it);
+    }
     $("aiAnswer").value = "";
     store(CUR_KEY, S);
     renderChat();
@@ -10897,7 +10953,7 @@ render();
     };
   }
 
-  function renderReport(rep) {
+  async function renderReport(rep) {
     var h = "";
     h += '<div class="ai-card"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">'
       + '<span class="ai-score">' + rep.total + '</span><span class="ai-grade">等级 ' + rep.grade + "</span>"
@@ -10965,6 +11021,26 @@ render();
           + '<div class="ai-note" style="margin-top:6px">补强顺序建议：官方 JD 弄清职责 → 记住 4 个产品（抖音来客 / 巨量本地推 / POI+团购 / 小程序核销工具）→ 背熟核销率、核销 GMV、动销门店数等指标口径 → 用本工具把「怎么提升核销率」这类题练到 90 秒能讲完。</div></div>';
       }
     } catch (e) {}
+
+    // 大模型提升方案（配了 Key 才有）
+    if (llmReady() && rep.items.some(function (x) { return x.score; })) {
+      try {
+        var plan = await llmReportPlan(rep);
+        if (plan) {
+          h += '<div class="ai-card" style="margin-top:12px;border-color:#bfdbfe">'
+            + '<h4>大模型给出的提升方案（基于你这场回答生成）</h4>'
+            + (plan.image ? '<div class="ai-note" style="margin-bottom:6px"><b>面试画像：</b>' + escAII(plan.image) + "</div>" : "")
+            + (plan.top3 && plan.top3.length ? '<div class="ai-note"><b>最容易被淘汰的问题</b></div><ul class="ai-list">' + plan.top3.map(function (t) { return "<li>" + escAII(t) + "</li>"; }).join("") + "</ul>" : "")
+            + (plan.strength3 && plan.strength3.length ? '<div class="ai-note" style="margin-top:6px"><b>你的竞争力在哪</b></div><ul class="ai-list">' + plan.strength3.map(function (t) { return "<li>" + escAII(t) + "</li>"; }).join("") + "</ul>" : "")
+            + (plan.doubt ? '<div class="ai-note" style="margin-top:6px"><b>面试官可能的疑虑：</b>' + escAII(plan.doubt) + "</div>" : "")
+            + (plan.plan3 && plan.plan3.length ? '<div class="ai-note" style="margin-top:6px"><b>下一步怎么练</b></div><ul class="ai-list">' + plan.plan3.map(function (p) { return "<li><b>" + escAII(p.day || "") + "</b>：" + escAII(p.task || "") + "</li>"; }).join("") + "</ul>" : "")
+            + (plan.answers && plan.answers.length ? '<div class="ai-note" style="margin-top:6px"><b>高频问题 + 你的最佳回答思路</b></div><ul class="ai-list">' + plan.answers.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul>" : "")
+            + '<div class="ai-note" style="margin-top:6px">以上由你配置的大模型基于本场问答生成，本地不保存任何对话记录。</div></div>';
+        }
+      } catch (e) {
+        h += '<div class="ai-card" style="margin-top:12px"><div class="ai-note">大模型方案生成失败（' + escAII((e.message || "").slice(0, 60)) + "），先看上面的本地评分与建议。</div></div>";
+      }
+    }
 
     // 反问环节点评（单独一段，不并入四维总分）
     try {
@@ -11739,6 +11815,136 @@ render();
     };
   }
 
+  // ============ 外接大模型：面试官用大模型生成追问与点评 ============
+  // 只发送"题目 + 你的回答 + 岗位/JD/简历摘要"，不发送音频、不上传文件。
+  var LLM_PRESETS = [
+    { name: "DeepSeek（国内，便宜）", base: "https://api.deepseek.com/v1", model: "deepseek-chat" },
+    { name: "OpenAI", base: "https://api.openai.com/v1", model: "gpt-4o-mini" },
+    { name: "智谱 GLM", base: "https://open.bigmodel.cn/api/paas/v4", model: "glm-4-flash" },
+    { name: "月之暗面 Kimi", base: "https://api.moonshot.cn/v1", model: "moonshot-v1-8k" },
+    { name: "阿里通义（DashScope 兼容）", base: "https://dashscope.aliyuncs.com/compatible-mode/v1", model: "qwen-plus" },
+    { name: "本地 Ollama（免费/离线）", base: "http://localhost:11434/v1", model: "qwen2.5:7b" }
+  ];
+
+  function llmCfg() { return load(CFG_KEY, {}); }
+  function renderLlmState() {
+    var box = $("aiLlmState");
+    if (!box) return;
+    var c = llmCfg();
+    if (llmReady()) {
+      box.innerHTML = "已启用：面试官会用 <b>" + escAII(c.model || "模型") + "</b> 生成追问与点评（只发送题目与你的回答文本）。";
+    } else if (c.key) {
+      box.textContent = "已填 Key，但开关没打开：勾选上面的复选框即可让大模型生成追问。";
+    } else {
+      box.textContent = "还没配 Key：现在用本地规则追问。配好 Key 后，追问与点评会由大模型根据你的实际回答生成。";
+    }
+  }
+  function llmReady() {
+    var c = llmCfg();
+    var cb = $("aiUseLlm");
+    var on = cb ? !!cb.checked : true;
+    return !!(c.key && on);
+  }
+  function llmContextText() {
+    var parts = [];
+    if (S && S.company) parts.push("目标公司：" + S.company);
+    if (S && S.dir) parts.push("面试方向：" + S.dir);
+    if (S && S.jdKw && S.jdKw.length) parts.push("岗位关键词：" + S.jdKw.join("、"));
+    var jd = load("qiuzhao_ai_jd_v1", "");
+    if (jd) parts.push("岗位 JD（节选）：" + jd.slice(0, 600));
+    var rv = load(RESUME_KEY, "");
+    if (rv) parts.push("候选人简历（节选）：" + rv.slice(0, 900));
+    return parts.join("\n");
+  }
+  async function llmChat(messages, opts) {
+    var c = llmCfg();
+    var base = (c.base || "https://api.deepseek.com/v1").replace(/\/$/, "");
+    var body = {
+      model: c.model || "deepseek-chat",
+      temperature: (opts && opts.temperature) != null ? opts.temperature : 0.4,
+      messages: messages
+    };
+    if (opts && opts.json) body.response_format = { type: "json_object" };
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, (opts && opts.timeout) || 25000);
+    try {
+      var resp = await fetch(base + "/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + c.key },
+        body: JSON.stringify(body),
+        signal: ctrl.signal
+      });
+      var j = await resp.json();
+      if (j && j.error) throw new Error(j.error.message || "接口返回错误");
+      var txt = j && j.choices && j.choices[0] && j.choices[0].message ? j.choices[0].message.content : "";
+      if (!txt) throw new Error("模型没有返回内容");
+      return txt;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  function parseJsonLoose(txt) {
+    if (!txt) return null;
+    var t = txt.trim().replace(/^```json\s*/i, "").replace(/^```/, "").replace(/```$/, "").trim();
+    try { return JSON.parse(t); } catch (e) {}
+    var i = t.indexOf("{"), j = t.lastIndexOf("}");
+    if (i >= 0 && j > i) { try { return JSON.parse(t.slice(i, j + 1)); } catch (e) {} }
+    return null;
+  }
+
+  // 面试官回合：让模型针对"这次回答"出手——打分、追问、建议
+  async function llmInterviewTurn(q, answer, askedList) {
+    var sys = [
+      "你是一位大厂（字节跳动生活服务/商业化）的资深面试官，正在面试一位校招候选人。",
+      "你的风格：说话口语、简洁，一次只问一个问题；会顺着候选人刚说的话追问，而不是背题库。",
+      "追问只追这六类：事实核验、方法细节、数据口径、个人贡献、决策取舍、复盘迁移。追问必须引用候选人原话里的具体内容（如他提到的数字、动作、工具、协作对象）。",
+      "如果候选人说的是空话（如「沟通能力强」），直接要求他讲具体事情。",
+      "评分标准：内容匹配 35%（是否答到考点）、结构逻辑 25%（STAR/条理）、表达流畅 20%（口语化程度、是否有信息量）、深度亮点 20%（量化结果、复盘、方法细节）。",
+      "只输出 JSON，不要任何多余文字。"
+    ].join("\n");
+    var user = [
+      llmContextText(),
+      "【本轮题目】" + q,
+      "【候选人回答】" + answer,
+      askedList && askedList.length ? "【已经追问过】" + askedList.join("；") : "",
+      "",
+      "请输出 JSON：{",
+      '  "score": {"content": 0-100, "structure": 0-100, "delivery": 0-100, "depth": 0-100},',
+      '  "comment": "两句话点评，指出最要紧的问题",',
+      '  "followups": ["1-2 条追问，必须引用候选人原话里的具体内容"],',
+      '  "advice": ["2-3 条具体改进建议，落到「把那句话改成什么」"],',
+      '  "basis": "你追问所依据的候选人原话片段"',
+      "}"
+    ].filter(Boolean).join("\n");
+    var txt = await llmChat([{ role: "system", content: sys }, { role: "user", content: user }], { json: true });
+    return parseJsonLoose(txt);
+  }
+
+  // 报告总结：让模型给一份"下一步怎么练"的方案
+  async function llmReportPlan(report) {
+    var sys = "你是一位校招面试教练。请基于这场模拟面试的记录，给出可执行的提升方案。只输出 JSON。";
+    var items = (report.items || []).filter(function (x) { return x.score; }).map(function (x, i) {
+      return "第" + (i + 1) + "题：" + x.q + "\n我的回答：" + (x.answer || "") +
+        (x.score ? "\n本地评分：总分 " + x.score.total + "（内容" + x.score.content + " 结构" + x.score.structure + " 表达" + x.score.delivery + " 深度" + x.score.depth + "）" : "");
+    }).join("\n\n");
+    var user = [
+      llmContextText(),
+      "【本次模拟面试记录】", items.slice(0, 6000),
+      "",
+      "请输出 JSON：{",
+      '  "image": "一句话面试画像（适合什么类型的岗位/风格）",',
+      '  "top3": ["最容易被淘汰的 3 个问题（引用题目+原因）"],',
+      '  "strength3": ["最有竞争力的 3 段经历（引用原话）"],',
+      '  "doubt": "面试官最可能对我产生的疑虑",',
+      '  "plan3": [{"day": "第1天", "task": "具体练什么、练到什么程度"}, ...],',
+      '  "answers": ["高频问题 + 我的最佳回答思路（3-5 条）"]',
+      "}"
+    ].join("\n");
+    var txt = await llmChat([{ role: "system", content: sys }, { role: "user", content: user }], { json: true, temperature: 0.3 });
+    return parseJsonLoose(txt);
+  }
+
+
   // ============ 反问环节（最后"你有什么想问我的"）============
   // 策略来自公开面经帖：一面问团队业务/岗位内容/看重的能力；二面问团队定位/当前卡点/对校招生期待；
   // HR 面问培养体系/文化氛围。忌讳：问我表现如何、我能不能过、只问薪资加班。
@@ -12463,6 +12669,7 @@ render();
     var ar = $("aiAnalyzeResume"); if (ar) ar.onclick = renderResumeReport;
     var jp = $("aiJdPlanBtn"); if (jp) jp.onclick = renderJdResumePlan;
     bindResumeUpload();
+    renderLlmState();
     var ib = $("aiImportBtn"); if (ib) ib.onclick = doImport;
     var um = $("aiUseMj"); if (um) { um.checked = load(MJ_USE_KEY, false); um.onchange = toggleBuiltinMj; }
     renderImportState();
@@ -12521,9 +12728,34 @@ render();
         $("aiKey").value = cfg.key || ""; $("aiBase").value = cfg.base || ""; $("aiModel").value = cfg.model || "";
       }
     };
+    // 模型服务商预设
+    var ps = $("aiPreset");
+    if (ps && ps.options.length === 0) {
+      LLM_PRESETS.forEach(function (pp, i) {
+        var o = document.createElement("option");
+        o.value = String(i); o.textContent = pp.name;
+        ps.appendChild(o);
+      });
+    }
+    var ap = $("aiApplyPreset");
+    if (ap) ap.onclick = function () {
+      var idx = Number(($("aiPreset") || {}).value || 0);
+      var pp = LLM_PRESETS[idx];
+      if (!pp) return;
+      $("aiBase").value = pp.base;
+      $("aiModel").value = pp.model;
+      alert("已填入 " + pp.name + " 的接口地址与模型名，把 Key 粘到上面的输入框，再点「保存设置」。");
+    };
+    var ul = $("aiUseLlm");
+    if (ul) {
+      ul.checked = load("qiuzhao_ai_use_llm_v1", true);
+      ul.onchange = function () { store("qiuzhao_ai_use_llm_v1", ul.checked); renderLlmState(); };
+    }
     var sk2 = $("aiSaveKey"); if (sk2) sk2.onclick = function () {
       store(CFG_KEY, { key: $("aiKey").value.trim(), base: $("aiBase").value.trim(), model: $("aiModel").value.trim() });
-      alert("已保存到本机浏览器（不会上传）");
+      $("aiSettings").hidden = true;
+      renderLlmState();
+      alert(llmReady() ? "已保存：接下来面试官会用大模型生成追问与点评（调用失败会自动回退本地规则）。" : "已保存。填好 Key 并勾选「面试官用大模型生成追问与点评」后生效。");
       $("aiSettings").hidden = true;
     };
     // 作答框：随输入自动增高，可一键放大（写长答案不憋屈）
