@@ -1814,6 +1814,11 @@
     background: rgba(220,38,38,.85); color: #fff; }
   .ai-dir-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
   .ai-dir-row input { flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; font-size: 12.5px; }
+  /* 简历上传区 */
+  .ai-drop { border: 1.5px dashed #b9c6dd; border-radius: 12px; padding: 12px; text-align: center;
+    background: linear-gradient(180deg, #fbfdff, #f4f7fc); cursor: pointer; transition: border-color .15s, background .15s; }
+  .ai-drop:hover, .ai-drop.over { border-color: var(--navy-2); background: #eef4ff; }
+  .ai-drop-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
   .ai-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
   .ai-dot.live { background: var(--rose-fg); animation: ai-pulse 1s infinite; }
   @keyframes ai-pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
@@ -2545,12 +2550,31 @@
       </div>
 
       <div class="ai-field" style="margin-top:12px">
+        <label for="aiImportText">📥 面经导入（可选）：把小红书/牛客上的面经原文整段粘进来，我给你抽成练习题</label>
+        <textarea id="aiImportText" style="min-height:80px" placeholder="粘贴面经原文，例如：
+面试官问：如果客户 ROI 从 2.5 掉到 1.3，想缩减预算转投小红书，你怎么挽留？
+二面：你怎么理解货找人和人找货的区别？"></textarea>
+        <div class="ai-actions">
+          <button class="btn" id="aiImportBtn" type="button">从这段面经里抽题</button>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--navy)">
+            <input type="checkbox" id="aiUseMj"> 启用内置面经题集（字节 KA／商业化／游戏，22 题）
+          </label>
+          <span class="ai-note" id="aiImportState"></span>
+        </div>
+        <div class="ai-note" style="margin-top:6px">题目只在你的目标岗位/方向下出现，练的时候仍然是真实场景：答完立刻追问，整场答完再统一评分。</div>
+      </div>
+
+      <div class="ai-field" style="margin-top:12px">
         <label style="display:flex;align-items:center;gap:6px">
           <input type="checkbox" id="aiResumeMode"> 📄 简历深挖模式（大厂最爱做的事：顺着简历往下钻）
         </label>
-        <div class="ai-note" style="margin:6px 0 8px">
-          粘贴你的简历/项目经历（一段也行），我会自动拆成条目，生成「你负责哪部分？数据多少？为什么这么做？如果重做？」这类追问链。
-          内容只存在你自己的浏览器里。
+        <div class="ai-drop" id="aiResumeDrop">
+          <input type="file" id="aiResumeFile" accept=".txt,.md,.markdown,.csv,.json,.docx,.pdf,.rtf" hidden>
+          <div class="ai-drop-title">📄 上传简历（点这里选文件，或把文件拖进来）</div>
+          <div class="ai-note">支持 Word（.docx）、PDF、txt/md；也可以直接把简历文字粘贴到下面。简历只在你本机解析，不会上传。</div>
+        </div>
+        <div class="ai-note" id="aiResumeHint" style="margin:6px 0 8px">
+          粘贴或上传后会自动拆成经历条目，生成「你负责哪部分？数据多少？为什么这么做？如果重做？」这类追问链。
         </div>
         <textarea id="aiResume" style="min-height:110px" placeholder="示例：
 2026.03-2026.06  XX公司 运营实习
@@ -10018,6 +10042,33 @@ render();
   ];
 
 
+  // ============ 内置面经题集：字节 KA / 商业化 / 游戏（来自公开面经，仅在用户勾选时使用）============
+  var MJ_BANK = [
+    { id: "ka01", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "一个美妆品牌客户月预算 50 万，在抖音投了三个月，ROI 从 2.5 掉到 1.3，客户想缩减预算转投小红书，你怎么挽留？", kw: ["ROI", "归因", "素材", "人群包", "转化链路", "预算分配", "测算", "竞品"], points: ["先拆 ROI 下滑原因：是流量成本涨、素材衰退、还是转化链路/客单价变了", "给数据方案：分计划、分素材、分人群复盘，找出可优化的部分", "给客户一个可验证的小额试投方案，而不是空口保证"], pit: ["直接承诺能做到多少 ROI", "只会说「我们流量比小红书大」"], follow: ["如果客户坚持只留 20 万预算，你怎么分配？", "你怎么在一个月内证明效果回升？"] },
+    { id: "ka02", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "你负责的 SMB 客户连续两个月消耗下滑 15%，客户反馈效果越来越差，你怎么排查和应对？", kw: ["消耗", "拆维度", "账户结构", "转化", "素材", "出价", "竞对", "复盘"], points: ["先分类：是所有客户还是某些行业/账户在掉", "再定位：出价、素材、审核、竞品抢量、行业淡季", "给出动作和跟进节奏，并跟客户同步结论"], pit: ["只看总消耗不看结构", "把原因归于平台不作分析"], follow: ["如果查完发现是客户自己的产品转化问题呢？"] },
+    { id: "ka03", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "如果让你去开拓一个你从未接触过的行业（比如宠物经济），你会怎么快速找到商业化机会并拿下客户？", kw: ["行业研究", "标杆", "链路", "痛点", "预算", "试点", "决策链", "ROI"], points: ["先做行业扫描：规模、集中度、投放现状、标杆案例", "找可复制打法与切入品类，锁定 2–3 个目标客户", "先小预算试点拿数据，再谈预算放大"], pit: ["只谈热情没有方法论", "不区分行业头部和长尾打法"], follow: ["你没有这个行业资源，怎么接触到决策人？"] },
+    { id: "ka04", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "客户说「美团的核销率比抖音高，投抖音不如投美团」，你怎么回应？", kw: ["核销率", "场景", "种收一体", "人群", "归因", "对比口径", "组合投放"], points: ["先认可对方的指标，再指出口径差异（人找货 vs 货找人）", "讲清两个平台在决策链路的位置，给组合投放方案", "用同客户/同品类的实测数据说话"], pit: ["贬低竞品", "回避指标只讲平台优势"], follow: ["如果要在一个月内验证哪个平台更划算，你设计什么实验？"] },
+    { id: "ka05", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "一个 KA 客户要求你给比代理商更低的折扣，否则就把预算转到腾讯广告，你怎么处理？", kw: ["价格体系", "折扣", "政策", "交换条件", "资源位", "增量", "长期"], points: ["先讲平台价格体系与规矩，不能开口子", "把谈判换成交换：预算量级、合作周期、案例授权、联合活动", "给客户替代方案（资源位、服务支持、试点）"], pit: ["直接答应破价", "硬顶客户不谈方案"], follow: ["如果客户是头部客户，能带来的标杆价值很大呢？"] },
+    { id: "ka06", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "你怎么理解抖音「货找人」和美团「人找货」的底层逻辑差异？这对销售策略有什么影响？", kw: ["人找货", "货找人", "决策链路", "主动搜索", "兴趣推荐", "转化周期", "组合"], points: ["说清两个平台的流量分发逻辑与用户心智", "讲对应的投放目标差异（种草/拉新 vs 收口/转化）", "落到销售策略：怎么给客户排预算和节奏"], pit: ["只会喊口号式对比", "说不清对客户预算分配的影响"], follow: ["如果一个客户预算只够一个平台，你怎么建议？"] },
+    { id: "ka07", src: "面经", co: "字节", types: ["专业面"], dirs: ["市场品牌"], q: "像品牌形象这种不好衡量的指标，你会用什么方式量化？", kw: ["品牌指标", "搜索指数", "声量", "互动", "人群资产", "长尾", "基线"], points: ["拆成可观测代理指标：搜索量、5A 人群资产、自然流量、内容互动、复购", "给基线和对比（自身历史、竞品、行业）", "说明不同阶段看不同指标"], pit: ["只回答「看曝光量」", "不提基线与对比"], follow: ["如果老板只认销售数字，你怎么说服他做品牌投放？"] },
+    { id: "ka08", src: "面经", co: "字节", types: ["专业面"], dirs: ["市场品牌"], q: "宣发前期要打造一个爆点，你会怎么做？", kw: ["目标", "人群", "钩子", "内容", "达人", "节奏", "承接", "复盘"], points: ["先定人群与目标（曝光/种草/转化）", "设计钩子与内容矩阵，安排预热—爆发—长尾节奏", "承接必须想好：落地页、客服、库存、二次传播"], pit: ["只讲创意不讲承接", "没有节奏与预算分配"], follow: ["爆点没起来，你的 B 计划是什么？"] },
+    { id: "ka09", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "如何说服客户增加预算？", kw: ["数据", "增量机会", "实验", "ROI", "竞品", "节奏", "风险"], points: ["用既有数据证明可放量空间（放量实验、边际 ROI）", "给增量机会与时间窗口（行业旺季、竞品动作）", "给风险控制（分批放量、止损线）"], pit: ["只靠关系要预算", "承诺无法兑现的增长"], follow: ["如果客户说「我先看看」，你怎么推进？"] },
+    { id: "ka10", src: "面经", co: "字节", types: ["行为面"], dirs: ["销售/商务"], q: "你觉得自己做销售的优势在哪？", kw: ["优势", "证据", "客户视角", "抗压", "学习", "结果"], points: ["给出 1–2 个优势 + 具体证据（数字/案例）", "把优势对到岗位要求（客户经营、需求挖掘）", "承认短板并说明补法"], pit: ["空喊「我沟通能力强」", "优势与岗位无关"], follow: ["举一个你被客户拒绝后仍推进成功的例子。"] },
+    { id: "ka11", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "说一个你在团队中推动跨部门协作达成目标的案例，过程中遇到了什么困难？", kw: ["背景", "目标", "阻力", "沟通", "机制", "结果", "复盘"], points: ["讲清各方目标差异", "你的推动动作（对齐目标、拆任务、设节点）", "结果与复盘"], pit: ["只讲困难不讲解决", "把功劳全归自己"], follow: ["如果对方部门始终不配合呢？"] },
+    { id: "ka12", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "你怎么理解大客户销售（KA）这个岗位？和普通销售有什么区别？", kw: ["客户经营", "决策链", "方案", "资源协调", "长期", "指标"], points: ["讲 KA 是经营客户而非单次成交（决策链长、需求复杂）", "讲你的角色：需求翻译、方案整合、内部资源协调", "落到能力要求与自己的匹配"], pit: ["说成「跑客户、拿单」", "不了解岗位真实工作内容"], follow: ["你觉得做 KA 最难的是什么？"] },
+    { id: "ka13", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "（群面）每人 1 分钟自我介绍、40 分钟自由讨论、3–5 分钟总结汇报；讨论后请回答：刚才谁表现最好，为什么？", kw: ["结构", "推进", "倾听", "贡献", "时间", "总结", "客观"], points: ["有观点、有结构、推动讨论前进", "主动控时与收敛结论", "评价别人要具体、客观、不贬低"], pit: ["抢话不给别人空间", "总结时才发现自己没有贡献观点"], follow: ["如果让你重新组织这场讨论，你会怎么安排？"] },
+    { id: "ka14", src: "面经", co: "字节", types: ["案例面"], dirs: ["综合/管培"], q: "（群面）给一个行业场景题，2 分钟读题、30 分钟讨论、5 分钟总结汇报，你会怎么组织这场讨论？", kw: ["拆题", "框架", "分工", "优先级", "时间盒", "结论"], points: ["开场 2 分钟定框架与分工", "中间用时间盒推进，避免跑题", "最后 5 分钟强制收口：结论+依据+风险"], pit: ["上来就抢观点不分框架", "临结束还在补充细节"], follow: ["如果组里有人一直在抢话，你怎么处理？"] },
+    { id: "ka15", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "你为什么想从原来的方向转到商业化/大客户销售？", kw: ["动机", "匹配", "能力迁移", "了解", "长期"], points: ["讲清转岗的真实触发点", "讲能力迁移与已做的准备", "表达长期投入"], pit: ["只说「想做大厂」", "动机是短期收入"], follow: ["如果前几个月业绩压力很大，你会怎么撑过去？"] },
+    { id: "ka16", src: "面经", co: "字节", types: ["专业面"], dirs: ["游戏/文娱"], q: "（游戏岗）你玩得最多的品类有哪些？讲一个你玩得最深的游戏，它为什么吸引你？", kw: ["品类", "机制", "留存点", "付费点", "设计", "对比"], points: ["讲清游戏机制与体验循环", "能对比同类产品差异", "把理解对到岗位（策划/运营/发行）"], pit: ["只说好玩不好玩", "没有机制层面的分析"], follow: ["如果让你改这个游戏的一个系统，你改什么？"] },
+    { id: "ka17", src: "面经", co: "字节", types: ["专业面"], dirs: ["游戏/文娱"], q: "（游戏岗）上一个项目/实习里你具体做了什么？是框架设计还是具体数值？数值是你定的吗？", kw: ["个人贡献", "框架", "数值", "验证", "迭代", "数据"], points: ["分清自己与团队的分工", "讲设计意图与验证方式（测试数据/玩家反馈）", "讲迭代过程"], pit: ["含糊说「都有参与」", "把别人的产出说成自己的"], follow: ["当时那版数值上线后效果如何？你改了什么？"] },
+    { id: "ka18", src: "面经", co: "字节", types: ["专业面"], dirs: ["游戏/文娱"], q: "（游戏岗）给《黑神话：悟空》设计一个隐藏 Boss：说清设定、形象和具体招式逻辑。", kw: ["设定", "形象", "招式", "节奏", "难度曲线", "叙事"], points: ["先定叙事定位与主题契合", "招式要有节奏与破解方式（不只是难）", "考虑难度曲线与奖励设计"], pit: ["只堆设定故事", "招式没有可读性与破解空间"], follow: ["怎么保证玩家能学会而不是被劝退？"] },
+    { id: "ka19", src: "面经", co: "字节", types: ["专业面"], dirs: ["游戏/文娱"], q: "（游戏岗）你的游戏媒体/内容实习主要做剪辑吗？产出过什么数据？", kw: ["内容", "数据", "完播", "涨粉", "选题", "迭代"], points: ["讲清内容类型与产出节奏", "给数据（播放/完播/涨粉/转化）", "讲选题与迭代方法"], pit: ["只说「负责剪辑」", "没有数据与迭代"], follow: ["哪条内容表现最好？你觉得为什么？"] },
+    { id: "ka20", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "你有什么想问我的？", kw: ["业务", "团队", "成长", "评价标准", "具体"], points: ["问业务与团队的真实问题（现在最头疼什么、新人能参与多少）", "问评价标准（做得好的人做对了什么）", "避免问能查到的基础信息"], pit: ["说「没什么想问的」", "只问薪资和加班"], follow: ["如果我说这个问题我答不上来呢？"] },
+    { id: "ka21", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "如果这次面试没通过，你觉得最可能的原因是什么？", kw: ["自省", "短板", "改进", "证据", "匹配"], points: ["敢说真实短板", "给出正在补的动作", "不自我贬低也不狡辩"], pit: ["说「我觉得我没什么问题」", "把原因归于运气"], follow: ["那你今天为什么不现场补一下这个短板？"] },
+    { id: "ka22", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "面试前你会怎么准备这个岗位？你从 HR 那里问到了哪些关键信息？", kw: ["岗位理解", "业务", "面试官", "准备", "问题清单"], points: ["讲清你的准备路径（业务、岗位、面试官背景）", "主动向 HR 确认岗位聚焦点", "准备 3–5 个问题清单"], pit: ["只准备自我介绍", "不确认岗位具体职责"], follow: ["你怎么判断自己的准备是有效的？"] }
+  ];
+
+
   // ============ 工具函数 ============
   function escAII(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -10446,6 +10497,18 @@ render();
       var b2 = dirBase(dirPick);
       normal = BANK.filter(function (q) { return !q.w && coOk(q) && (q.types.indexOf(type) >= 0 || q.dirs.indexOf(b2) >= 0); });
     }
+    // 面经题（内置题集 / 自己导入的）——只有勾选才参与
+    var mjPool = [];
+    if (mjEnabled()) {
+      var coOk2 = function (q) { return !q.co || (company && company.indexOf(q.co) >= 0); };
+      var base2 = dirBase(dirPick);
+      mjPool = MJ_BANK.filter(function (q) {
+        if (!coOk2(q)) return false;
+        if (q.types.indexOf(type) < 0) return false;
+        if (base2 === "综合/管培") return true;
+        return q.dirs.indexOf(base2) >= 0 || q.dirs.indexOf("综合/管培") >= 0;
+      }).concat(importedQuestions());
+    }
     var picked = shuffle(normal.slice()).slice(0, count);
     var companyQ = company ? makeCompanyQuestion(company) : null;
 
@@ -10458,6 +10521,16 @@ render();
         var mixCount = Math.max(1, Math.round(count * 0.25));
         var mix = shuffle(BANK.filter(function (q) { return !q.w && coOk(q) && q.dirs.indexOf(dirBase(dirPick)) < 0; })).slice(0, mixCount);
         picked = picked.slice(0, Math.max(1, picked.length - mixCount)).concat(mix);
+      }
+      // 面经题：优先安排 1–3 道（这是你最该练的真题）
+      if (mjPool.length) {
+        // 目标很明确时（如字节生活服务/游玩 KA），优先出对应行业的题
+        var hotMj = mjPool.filter(function (q) { return /^sf/.test(q.id); });
+        var pickN = Math.min(3, Math.max(1, Math.round(count / 3)));
+        var mjPick = (hotMj.length && company && company.indexOf("字节") >= 0)
+          ? shuffle(hotMj.slice()).slice(0, pickN)
+          : shuffle(mjPool.slice()).slice(0, pickN);
+        picked = picked.slice(0, Math.max(1, picked.length - mjPick.length)).concat(mjPick);
       }
       // 公司题不一定有、也不一定第一题
       if (companyQ && Math.random() < 0.6) picked = picked.concat([companyQ]);
@@ -10866,6 +10939,20 @@ render();
         + '<ul class="ai-list">' + adv.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul>"
         + '<div class="ai-note">说明：这里只做亮度与肤色重心的近似判断（判断你是否在画面中间、环境是否过暗），不做人脸识别与表情识别；画面全程只在你的浏览器里处理，不录制、不上传。</div></div>';
     }
+
+    // 岗位知识与补强清单（内容有公开来源，不空编）
+    try {
+      var wantKB = (S.company && S.company.indexOf("字节") >= 0) || dirBase(S.dir) === "销售/商务" || dirBase(S.dir) === "运营";
+      if (wantKB && typeof KB_JOB !== "undefined" && KB_JOB.length) {
+        var kbj = KB_JOB[0];
+        h += '<div class="ai-card" style="margin-top:12px"><h4>岗位知识与补强清单 · ' + escAII(kbj.job) + "</h4>"
+          + '<div class="ai-note" style="margin-bottom:6px">内容来自公开资料（字节官方 JD、巨量引擎官方百科、抖音开放平台文档、公开案例文章），每条附来源，点开即可对照准备。</div>'
+          + '<ul class="ai-list">' + kbj.items.map(function (it) {
+            return "<li><b>" + escAII(it.t) + "</b>：" + escAII(it.d) + ' <a href="' + it.src + '" target="_blank" rel="noopener">来源</a></li>';
+          }).join("") + "</ul>"
+          + '<div class="ai-note" style="margin-top:6px">补强顺序建议：官方 JD 弄清职责 → 记住 4 个产品（抖音来客 / 巨量本地推 / POI+团购 / 小程序核销工具）→ 背熟核销率、核销 GMV、动销门店数等指标口径 → 用本工具把「怎么提升核销率」这类题练到 90 秒能讲完。</div></div>';
+      }
+    } catch (e) {}
 
     // 面试官视角总结
     var done = rep.items.filter(function (x) { return x.score; });
@@ -11415,6 +11502,256 @@ render();
     };
   }
 
+  // ============ 岗位知识卡：字节生活服务（生服）/游玩 KA ============
+  // 内容依据：字节官方校招 JD（大客户销售-抖音生活服务/休闲娱乐）、巨量引擎官方百科（巨量本地推）、
+  // 抖音开放平台《景区团购（在线预约）解决方案》、抖音小程序核销工具公开资料。
+  var KB_JOB = [{
+    job: "字节生活服务 · 游玩/休闲娱乐 KA",
+    items: [
+      { t: "这个岗位到底做什么（官方 JD 原文要点）",
+        d: "① 负责餐饮、游玩、服务、零售行业的大客户销售；② 品牌商家在本地生活的商务事宜：商务谈判、资源投入发掘与分配、提升抖音生活服务份额占比，并与关联部门协作确保广告及时投放；③ 全国连锁品牌的市场规划、策略制定与实施，挖掘增长机会点和重大项目；④ 用数据分析客户需求，提供咨询、产品培训、优化投放、数据分析等营销策略，整合大促/数据协同/门店赋能等资源。",
+        src: "https://jobs.bytedance.com/campus/position/7666755120239757621/detail" },
+      { t: "你卖的产品是什么（核心记住这几件）",
+        d: "① 抖音来客 = 商家的经营后台（上团购商品、管 POI 门店、看核销与经营数据）；② 巨量本地推 = 生活服务的一站式投放平台，三大营销目标：短视频推门店、短视频推商品、直播推商品，可锁定门店周边人群；③ POI（门店/景区页面）+ 团购商品（券/次卡/套餐）；④ 达人探店与商家直播；⑤ 抖音小程序核销工具、景区在线预约能力；⑥ 文旅专项「心动目的地」。",
+        src: "https://www.oceanengine.com/baike/jlbdt.html" },
+      { t: "游玩/景区行业的链路（面试讲案例就按这条讲）",
+        d: "POI 建页上架商品 → 内容供给（达人探店/商家短视频/直播）→ 投流放大（本地推三种目标 + 周边定向）→ 用户买券 → 预约/核销到店 → 复购与会员。景区场景特殊：常用「团购在线预约（半直连）」，要对接日历价库、预售券在线预约、退款与取消预约流程——答这类题时提到「价库实时性、接待能力、预约分流」会很加分。",
+        src: "https://developer.open-douyin.com/m/docs/resource/zh-CN/local-life/solution/scenic-area-solution/scenic-group-buy" },
+      { t: "必须会讲的核心指标",
+        d: "GMV、核销率（到店核销，生服最看重）、核销 GMV、动销门店数、客单价、团购转化率、POI 访问量、内容供给量（达人视频/直播场次）、投流 ROI 与到店成本、负向三率（投诉/差评/退款）。面试被问「怎么提升核销率」时，指标口径要能立刻说出来。",
+        src: "https://juejin.cn/post/7239206188163481661" },
+      { t: "提升核销率的抓手（面经与公开资料里反复出现）",
+        d: "① 商品结构：低价引流款拉新 + 高毛利款承接，别只堆低价；② 内容与提醒：购后触达、到期提醒、二次内容种草；③ 核销工具：抖音小程序核销（线上选座/选规格/看排队/预约时段），公开案例里核销率有明确提升；④ 预约能力：分时预约缓解排班与接待压力；⑤ 接待能力：卖爆要做数据熔断（限量/分时段/加库存），否则差评与退款反噬；⑥ 门店侧执行：员工培训、核销动线、到店体验。",
+        src: "https://juejin.cn/post/7239206188163481661" },
+      { t: "游玩行业的节点打法（能给客户提案的那种）",
+        d: "按节点排：暑期、国庆、春节、周末短途、冰雪季/赏花季；组合拳＝达人矩阵（头部造势+腰尾部铺量）+ 商家直播（门票/套餐专场）+ 本地推投流（推门店+推商品）+ 大促资源位 + 线下联动。提案必须带：目标（GMV/核销率/新客占比）、预算分配、内容排期、复盘口径。",
+        src: "https://travel.tom.com/202606/4025702371.html" },
+      { t: "KA 面试常问的产品理解题",
+        d: "「本地推和巨量广告有什么区别？」「客户门店很多但核销差，你怎么诊断？」「景区客户不愿上低价团购怎么办？」「客户说美团核销率更高怎么回应？」——回答时先给判断（口径/场景差异），再给动作（内容、投放、核销工具、接待能力），最后给可验证指标。",
+        src: "https://www.oceanengine.com/baike/jlbdt.html" }
+    ]
+  }];
+
+  // ============ 生服/游玩 KA 专项真题（来自公开面经 + 官方资料整理）============
+  var MJ_SF = [
+    { id: "sf01", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "客户说「抖音团购核销率只有 57%，美团有 90%，投抖音不划算」，你怎么回应并给出提升方案？", kw: ["核销率", "口径", "场景差异", "商品结构", "内容供给", "核销工具", "接待能力", "复购"], points: ["先说口径：两个平台人群与消费场景不同（种收一体 vs 明确到店意图），不能只比一个数", "再给诊断路径：商品结构/内容供给/门店执行/预约与接待", "给动作与指标：小程序核销工具+预约分流+到期提醒，目标把核销率抬到 X%"], pit: ["直接贬低美团", "只承诺提升不给方法"], follow: ["如果客户只愿意给一个月时间，你先动哪一环？", "你怎么证明核销率提升是你的功劳？"] },
+    { id: "sf02", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "游玩类客户（景区/乐园）想上抖音做团购，你会怎么设计从 0 到 1 的经营链路？", kw: ["POI", "商品", "内容", "达人", "直播", "本地推", "核销", "预约", "复购"], points: ["按链路讲：POI 建页 → 商品上架（含在线预约/日历价库）→ 内容供给 → 本地推投流 → 核销到店 → 复购", "指出景区特殊性：价库实时性、接待能力、分时预约", "给出阶段目标与指标（曝光→购券→核销→复购）"], pit: ["只说「找达人发视频」", "不考虑接待与核销能力"], follow: ["暑期旺季接待能力不够，你怎么办？"] },
+    { id: "sf03", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "景区团购卖爆了导致接待不过来、差评暴涨，你会怎么处理？", kw: ["熔断", "限量", "分时段", "预约", "客服", "口碑", "复盘"], points: ["先止损：限量/分时段/暂缓投流，保护到店体验", "再疏导：预约分流、加开时段、告知与补偿方案", "事后：建立熔断机制（库存/接待量与投放联动）"], pit: ["继续放量冲 GMV", "只道歉不解决接待"], follow: ["熔断机制你会用什么指标触发？"] },
+    { id: "sf04", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "你手上有多家品牌客户同时要节假日流量资源，怎么分配？", kw: ["目标", "贡献", "潜力", "资源", "规则", "沟通", "复盘"], points: ["先定分配规则（历史贡献、增长潜力、战略价值、资源稀缺度）", "提前沟通预期，给替代方案（内容/达人/活动）", "事后复盘资源产出，形成下次分配依据"], pit: ["谁嗓门大给谁", "平均分配不区分价值"], follow: ["如果两个客户体量相当但一个要好资源，你怎么定？"] },
+    { id: "sf05", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "客户门店很多但各店核销差异很大，你怎么诊断并给出提升方案？", kw: ["分层", "标杆", "动线", "员工培训", "内容", "库存", "复盘"], points: ["先做门店分层（高/中/低核销）找差异因子", "对标标杆店：商品、内容、员工引导、核销动线", "复制打法 + 门店侧培训与激励"], pit: ["直接说「多投流」", "不区分门店差异"], follow: ["低效门店如果改不动，你会放弃吗？"] },
+    { id: "sf06", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "巨量本地推和巨量广告有什么区别？游玩类客户你会怎么选？", kw: ["本地推", "周边定向", "三大目标", "到店", "成本", "组合"], points: ["本地推面向生活服务：周边定向、短视频推门店/推商品/直播推商品，目标是从内容到店核销", "巨量广告偏品牌与效果投放（更宽的流量池与人群资产运营）", "组合打法：本地推做同城到店，品牌广告做声量与人群蓄水"], pit: ["两个混着说", "只谈价格不谈目标差异"], follow: ["预算只有 5 万，你投什么？"] },
+    { id: "sf07", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "怎么给游玩客户做一次产品培训或经营咨询（KA 要交付的服务）？", kw: ["诊断", "培训", "数据", "案例", "SOP", "复盘"], points: ["先诊断客户经营数据（核销率、内容供给、投流效率）", "培训内容按角色分：决策层看生意、执行层看操作（来客/本地推）", "输出可复用 SOP 与案例，约定复盘节奏"], pit: ["念产品说明书", "不做客户数据分析"], follow: ["客户执行层不配合培训怎么办？"] },
+    { id: "sf08", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "你怎么给景区客户设计一个暑期整合营销方案（目标、预算、排期、指标）？", kw: ["目标", "人群", "达人矩阵", "直播", "本地推", "大促", "核销", "复盘"], points: ["目标分层：GMV/核销率/新客占比/声量", "组合：达人矩阵（头腰尾）+ 商家直播 + 本地推 + 大促资源位 + 线下联动", "给排期、预算分配与复盘口径"], pit: ["只给创意不给预算与指标", "不考虑接待与核销承接"], follow: ["如果竞品同期也在做，你的差异化在哪？"] },
+    { id: "sf09", src: "面经", co: "字节", types: ["行为面"], dirs: ["综合/管培"], q: "你说的这些你自己信吗？（压力面常见质疑）", kw: ["稳住", "事实", "数据", "依据", "复盘"], points: ["先接住情绪，别对抗", "用事实与数据承接，说明判断依据", "给可验证的下一步（试点/复盘口径）"], pit: ["情绪化回击", "慌乱改口或推翻自己"], follow: ["那你现在能给我一个数据支撑吗？"] },
+    { id: "sf10", src: "面经", co: "字节", types: ["专业面"], dirs: ["销售/商务"], q: "客户说「我不知道怎么在抖音做生意」，你会从哪几件事开始帮他？", kw: ["诊断", "POI", "商品", "内容", "投流", "核销", "节奏"], points: ["先看基础盘：POI 是否完善、商品是否有吸引力、内容供给是否够", "再定一段时间的动作与目标（先跑通核销，再放量）", "给客户看得懂的数据看板与复盘节奏"], pit: ["一上来就谈预算", "不讲执行顺序"], follow: ["如果客户只有 1 个店员能执行，怎么排优先级？"] }
+  ];
+  for (var iSF = 0; iSF < MJ_SF.length; iSF++) MJ_BANK.push(MJ_SF[iSF]);
+
+
+  // ============ 面经导入：粘贴面经文本 → 本地抽题 → 加入练习 ============
+  var IMPORT_KEY = "qiuzhao_ai_import_v1";
+  var MJ_USE_KEY = "qiuzhao_ai_use_mj_v1";
+
+  function extractQuestionsFromText(text) {
+    var t = (text || "").replace(/\r/g, "");
+    var segs = [];
+    t.split(/\n/).forEach(function (line) {
+      line = line.trim();
+      if (!line) return;
+      line.split(/(?<=[。！？?!；;])/).forEach(function (s) { if (s && s.trim()) segs.push(s.trim()); });
+    });
+    var out = [], seen = {};
+    segs.forEach(function (s) {
+      var ok = /[?？]$/.test(s)
+        || /^(Q|q|问题|问)[：:0-9]/.test(s)
+        || (/(面试官|hr|HR|一面|二面|三面|终面|群面)/.test(s) && /(问|说|让|聊|介绍|谈|举例|说说)/.test(s) && /(你|您|自己|经历|项目|岗位|公司)/.test(s));
+      if (!ok) return;
+      var q = s.replace(/^[#\-\*•·\d\s.、)）(（]+/, "")
+        .replace(/^(面试官|HR|hr|面试老师|老师|一面|二面|三面|终面|群面)[：:\s]*/, "")
+        .replace(/^(问题|问)[：:\s]*/, "")
+        .replace(/[#＃].*$/, "").trim();
+      if (q.length < 5 || q.length > 95) return;
+      if (seen[q]) return;
+      seen[q] = 1;
+      out.push(q);
+    });
+    return out.slice(0, 60);
+  }
+
+  function importedQuestions() {
+    var arr = load(IMPORT_KEY, []);
+    return (arr || []).map(function (q, i) {
+      return {
+        id: "imp" + i, src: "导入", types: ["专业面", "行为面"], dirs: ["综合/管培", dirPick],
+        q: q, kw: [], points: [], pit: [], follow: []
+      };
+    });
+  }
+  function mjEnabled() {
+    var cb = $("aiUseMj");
+    return cb ? !!cb.checked : false;
+  }
+  function renderImportState() {
+    var box = $("aiImportState");
+    if (!box) return;
+    var mine = load(IMPORT_KEY, []);
+    var builtin = (typeof MJ_BANK !== "undefined") ? MJ_BANK.length : 0;
+    var parts = [];
+    if (mjEnabled()) parts.push("内置面经题集已启用（" + builtin + " 题：字节 KA / 商业化 / 游戏）");
+    else parts.push("内置面经题集未启用");
+    parts.push(mine.length ? "你导入的题目 " + mine.length + " 道" : "还没有导入自己的题目");
+    box.textContent = parts.join(" · ");
+  }
+  function doImport() {
+    var txt = $("aiImportText") ? $("aiImportText").value : "";
+    var qs = extractQuestionsFromText(txt);
+    if (!qs.length) { alert("没识别出问题：把面经原文整段粘进来（含「面试官问……」或带问号的句子）再试一次。"); return; }
+    var old = load(IMPORT_KEY, []);
+    var merged = old.slice();
+    qs.forEach(function (q) { if (merged.indexOf(q) < 0) merged.push(q); });
+    store(IMPORT_KEY, merged);
+    var cb = $("aiUseMj");
+    if (cb) cb.checked = true;
+    renderImportState();
+    alert("已导入 " + (merged.length - old.length) + " 道题（累计 " + merged.length + " 道），会在接下来的练习里出现。");
+  }
+  function toggleBuiltinMj() {
+    var cb = $("aiUseMj");
+    store(MJ_USE_KEY, cb ? !!cb.checked : false);
+    renderImportState();
+  }
+
+
+  // ============ 简历上传与解析（本地处理，不上传）============
+  function resumeHint(text) {
+    var h = $("aiResumeHint");
+    if (h) h.innerHTML = text;
+  }
+  // docx = zip：用浏览器自带 DecompressionStream 解出 word/document.xml
+  async function unzipEntry(buf, wanted) {
+    var dv = new DataView(buf), eocd = -1;
+    for (var i = buf.byteLength - 22; i >= 0 && i > buf.byteLength - 70000; i--) {
+      if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error("不是有效的 docx 文件");
+    var count = dv.getUint16(eocd + 10, true), p = dv.getUint32(eocd + 16, true);
+    for (var n = 0; n < count; n++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) break;
+      var method = dv.getUint16(p + 10, true);
+      var compSize = dv.getUint32(p + 20, true);
+      var nameLen = dv.getUint16(p + 28, true);
+      var extraLen = dv.getUint16(p + 30, true);
+      var commentLen = dv.getUint16(p + 32, true);
+      var localOff = dv.getUint32(p + 42, true);
+      var name = new TextDecoder().decode(new Uint8Array(buf, p + 46, nameLen));
+      if (name === wanted) {
+        var lnameLen = dv.getUint16(localOff + 26, true);
+        var lextraLen = dv.getUint16(localOff + 28, true);
+        var start = localOff + 30 + lnameLen + lextraLen;
+        var data = new Uint8Array(buf, start, compSize);
+        if (method === 0) return new TextDecoder().decode(data);
+        if (method === 8 && typeof DecompressionStream === "function") {
+          var stream = new Blob([data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+          return await new Response(stream).text();
+        }
+        throw new Error("不支持的压缩格式");
+      }
+      p += 46 + nameLen + extraLen + commentLen;
+    }
+    throw new Error("docx 中没有找到正文");
+  }
+  function stripXml(xml) {
+    return xml
+      .replace(/<w:p[ >][^>]*>/g, "\n")
+      .replace(/<\/w:p>/g, "\n")
+      .replace(/<w:tab[^>]*\/>/g, "\t")
+      .replace(/<w:br[^>]*\/>/g, "\n")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"')
+      .replace(/\n{3,}/g, "\n\n");
+  }
+  // pdf：尽力提取文本（未压缩或 FlateDecode 的 Tj/TJ 操作符）
+  async function pdfText(buf) {
+    var raw = new TextDecoder("latin1").decode(new Uint8Array(buf));
+    var chunk = raw;
+    if (!/\([^)]{6,}\)\s*Tj|\[[^\]]{6,}\]\s*TJ/.test(raw) && typeof DecompressionStream === "function") {
+      try {
+        var out = [];
+        var re = /stream\r?\n?([\s\S]*?)endstream/g, m;
+        while ((m = re.exec(raw))) {
+          var bytes = new Uint8Array(m[1].length);
+          for (var i = 0; i < m[1].length; i++) bytes[i] = m[1].charCodeAt(i) & 0xff;
+          try {
+            var s = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate"));
+            out.push(await new Response(s).text());
+          } catch (e) {}
+        }
+        if (out.length) chunk = out.join("\n");
+      } catch (e) {}
+    }
+    var texts = [];
+    var re2 = /\(((?:\\.|[^\\()])*)\)\s*Tj|\[((?:[^\][]|\\.)*)\]\s*TJ/g, m2;
+    while ((m2 = re2.exec(chunk))) {
+      if (m2[1] != null) texts.push(m2[1].replace(/\\([()\\])/g, "$1"));
+      else {
+        var parts = m2[2].match(/\((?:\\.|[^\\()])*\)/g) || [];
+        texts.push(parts.map(function (s) { return s.slice(1, -1).replace(/\\([()\\])/g, "$1"); }).join(""));
+      }
+    }
+    return texts.join(" ").replace(/\s{2,}/g, " ").trim();
+  }
+  async function handleResumeFile(file) {
+    var name = file.name || "resume";
+    var ext = (name.split(".").pop() || "").toLowerCase();
+    resumeHint("正在解析 " + name + " …");
+    var text = "";
+    try {
+      if (/^(txt|md|markdown|csv|json|rtf)$/.test(ext) || (file.type || "").indexOf("text/") === 0) {
+        text = await file.text();
+      } else if (ext === "docx") {
+        text = stripXml(await unzipEntry(await file.arrayBuffer(), "word/document.xml"));
+      } else if (ext === "pdf") {
+        text = await pdfText(await file.arrayBuffer());
+      } else if (/^(jpg|jpeg|png|webp|heic|bmp)$/.test(ext)) {
+        resumeHint("图片简历没法在本地识别文字：用手机或系统自带的「提取文字」转成文本后，粘贴到下面即可。");
+        return;
+      } else {
+        text = await file.text().catch(function () { return ""; });
+      }
+    } catch (e) {
+      resumeHint("解析失败（" + (e.message || e) + "）：可以直接把简历文字粘贴到下面的输入框。");
+      return;
+    }
+    text = (text || "").replace(/\u0000/g, "").replace(/[ \t]+\n/g, "\n").trim();
+    if (text.length < 40) {
+      resumeHint("这个文件没解析出文字（可能是扫描版 PDF 或图片型简历）：请把简历文字粘贴到下面，一样能用。");
+      return;
+    }
+    var box = $("aiResume");
+    box.value = text.slice(0, 12000);
+    var mode = $("aiResumeMode");
+    if (mode) mode.checked = true;
+    store(RESUME_KEY, box.value);
+    resumeHint("已载入 <b>" + escAII(name) + "</b>（解析出 " + text.length + " 字），已自动开启简历深挖模式。");
+    try { renderResumeReport(); } catch (e) {}
+  }
+  function bindResumeUpload() {
+    var dz = $("aiResumeDrop"), fi = $("aiResumeFile");
+    if (!dz || !fi) return;
+    dz.onclick = function () { fi.click(); };
+    fi.onchange = function () { if (fi.files && fi.files[0]) handleResumeFile(fi.files[0]); };
+    ["dragenter", "dragover"].forEach(function (ev) {
+      dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("over"); });
+    });
+    ["dragleave", "drop"].forEach(function (ev) {
+      dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("over"); });
+    });
+    dz.addEventListener("drop", function (e) {
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) handleResumeFile(f);
+    });
+  }
+
   // ============ 面试指导（教练内容）============
   var GUIDE = [
     { t: "① 结构化表达：先给结论，再给三段证据", b:
@@ -11786,6 +12123,10 @@ render();
     var gback = $("aiGuideBack"); if (gback) gback.onclick = function () { show("Setup"); };
     var ar = $("aiAnalyzeResume"); if (ar) ar.onclick = renderResumeReport;
     var jp = $("aiJdPlanBtn"); if (jp) jp.onclick = renderJdResumePlan;
+    bindResumeUpload();
+    var ib = $("aiImportBtn"); if (ib) ib.onclick = doImport;
+    var um = $("aiUseMj"); if (um) { um.checked = load(MJ_USE_KEY, false); um.onchange = toggleBuiltinMj; }
+    renderImportState();
     var hback = $("aiHistoryBack"); if (hback) hback.onclick = function () { show("Setup"); };
     var sb = $("aiSubmit"); if (sb) sb.onclick = submit;
     var sk = $("aiSkip"); if (sk) sk.onclick = function () { next(); };
@@ -11862,6 +12203,8 @@ render();
     analyze: analyze, bank: BANK, dirs: DIRS,
     open: openPanel, start: start, submit: submit, report: buildReport,
     dirsAll: dirsAll, frameStats: frameStats, avatar: AV, cam: CAM,
+    handleResumeFile: handleResumeFile, extractQuestionsFromText: extractQuestionsFromText,
+    importNow: doImport, kbJob: (typeof KB_JOB !== "undefined" ? KB_JOB : []), mjBank: (typeof MJ_BANK !== "undefined" ? MJ_BANK : []),
     _state: function () { return S; }
   };
 })();
