@@ -2523,6 +2523,9 @@
           <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:600;color:var(--navy)">
             <input type="checkbox" id="aiAutoRead" checked> 每题自动朗读题目（浏览器自带语音，不联网）
           </label>
+          <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:600;color:var(--navy)">
+            <input type="checkbox" id="aiAutoMic" checked> 开始面试自动连接麦克风，并自动开始转写
+          </label>
           <label style="display:flex;align-items:flex-start;gap:6px;margin-top:8px;font-size:12px;font-weight:600;color:var(--navy)">
             <input type="checkbox" id="aiRandom" checked style="margin-top:2px">
             <span>🎲 接近真实面试：随机插入意外题、混搭方向、打乱顺序、连续追问<br>
@@ -10102,39 +10105,58 @@ render();
   }
 
   // 生成针对"这一条回答"的追问，而不是题库里的固定追问
-  function dynamicFollowUps(text, q, r) {
+  // 追问角度（真实面试官的追问顺序）
+  function followCandidates(text) {
     var sp = extractSpans(text);
+    var has = function (re) { return re.test(text); };
     var out = [];
-    // 1) 数据口径（面试官最爱追）
-    if (sp.nums.length && !/(口径|来源|统计|后台|报表|怎么算|怎么统计)/.test(text)) {
-      out.push("你提到「" + sp.nums[0] + "」——这个数原来是多少、现在是多少？又是在哪儿看到 / 怎么算出来的？");
-    } else if (!sp.nums.length && text.length > 60) {
-      out.push("这段经历最后有没有一个具体数字？比如原来多少、后来变成多少，哪怕是大概区间也行。");
+    // ① 数据：基线 + 口径
+    if (sp.nums.length) {
+      if (!/(原来|之前|基线|从 ?\d)/.test(text)) out.push({ k: "数据基线", t: "你提到「" + sp.nums[0] + "」——这个数原来是多少、现在是多少？改进幅度有多大？" });
+      if (!/(口径|来源|统计|后台|报表|怎么算|怎么统计|看板)/.test(text)) out.push({ k: "数据口径", t: "「" + sp.nums[0] + "」这个数字是怎么统计出来的？统计范围（分母是谁、哪个时间段）是什么？" });
+    } else if (text.length > 50) {
+      out.push({ k: "量化", t: "这段经历最后有具体结果吗？比如原来多少、后来变成多少，哪怕是大概区间也行。" });
     }
-    // 2) 方法细节（提到动作就追怎么做）
-    if (sp.acts.length) {
-      out.push("你说「" + sp.acts[0] + "」——具体是怎么做的？分哪几步？");
-    } else if (sp.tools.length) {
-      out.push("你用了「" + sp.tools[0] + "」，当时为什么选它？还有别的做法吗？");
-    }
-    // 3) 协作/个人贡献（出现团队就分清贡献）
+    // ② 方法：具体怎么做
+    if (sp.acts.length) out.push({ k: "方法细节", t: "你说「" + sp.acts[0] + "」——具体分哪几步做的？中间最关键的一步是什么？" });
+    else if (sp.tools.length) out.push({ k: "工具选择", t: "你用了「" + sp.tools[0] + "」，当时为什么选它？还有别的做法吗？" });
+    // ③ 个人贡献
     if (sp.collabs.length || /(我们|团队|小组)/.test(text)) {
       var who = sp.collabs.length ? sp.collabs[0] : "团队";
-      out.push("你提到和「" + who + "」配合——这件事里哪些是你独立完成的？他们负责什么？");
+      out.push({ k: "个人贡献", t: "你提到和「" + who + "」配合——这件事里哪些是你独立完成的？如果把你的部分拿掉，结果会怎样？" });
     }
-    // 4) 决策取舍（有动作但没讲原因）
-    if (!/(因为|原因是|考虑到|对比|取舍|评估后|所以选)/.test(text) && text.length > 80) {
-      out.push("当时为什么这么做，而不是另一种做法？你权衡了哪些因素？");
+    // ④ 决策取舍
+    if (!/(因为|原因是|考虑到|对比|取舍|评估后|所以选|算了成本)/.test(text)) {
+      out.push({ k: "决策取舍", t: "当时为什么用这个做法，而不是另一种？你比较过哪些方案、权衡了什么？" });
     }
-    // 5) 复盘迁移
-    if (!/(复盘|反思|总结|学到|下次|如果重来)/.test(text) && sp.times.length) {
-      out.push("这件事之后你复盘出什么？后来在别的场景复用了吗？");
+    // ⑤ 复盘迁移
+    if (!/(复盘|反思|总结|学到|下次|如果重来)/.test(text)) {
+      out.push({ k: "复盘", t: "这件事之后你复盘出什么？后来在别的场景复用了吗？" });
     }
-    // 6) 数据有、方法有、原因也有 → 追问更深一层（压力/边界）
-    if (out.length < 2 && sp.nums.length && sp.acts.length) {
-      out.push("如果同样的目标给你一半的资源/时间，你会砍掉哪一部分？");
+    // ⑥ 边界/压力（回答比较完整时往下压一层）
+    if (sp.nums.length && sp.acts.length) {
+      out.push({ k: "边界压力", t: "如果同样的目标只给你一半时间或一半预算，你会砍掉哪一部分？为什么是它？" });
+      out.push({ k: "反事实", t: "如果当时那个关键前提不成立（比如数据口径变了/供应商不同意），你的备选方案是什么？" });
     }
-    return out.slice(0, 3);
+    return out;
+  }
+
+  // 取"下一层"追问：跳过已经问过的角度
+  function nextFollowUp(text, asked) {
+    asked = asked || [];
+    var cands = followCandidates(text);
+    for (var i = 0; i < cands.length; i++) {
+      if (asked.indexOf(cands[i].k) < 0) return cands[i];
+    }
+    return null;
+  }
+
+  // 追问层数：回答越薄追得越多（薄→3 层，压力面→3 层，其他→2 层）
+  function followDepthLimit(it, r) {
+    if (S && S.type === "压力面") return 3;
+    if (!r) return 2;
+    if (r.len < 120 || r.starCount <= 1 || (r.vague && r.vague.length)) return 3;
+    return 2;
   }
 
   function analyze(text, q, ctx) {
@@ -10264,7 +10286,7 @@ render();
 
     var follow = [];
     // 现场追问：优先根据"你刚说出口的内容"生成，而不是题库里的固定追问（这是和模板产品最大的区别）
-    follow = dynamicFollowUps(text, q).slice(0, 2);
+    follow = [];
     // 空话优先：真实面试官听到「沟通能力强」会立刻追问具体事
     if (vagueHits.length && !QUANT_RE.test(text)) {
       follow = ["你刚才说「" + vagueHits[0] + "」——具体是什么事情？你做了什么？结果是多少？"].concat(follow).slice(0, 2);
@@ -10326,7 +10348,7 @@ render();
     show("Setup");
   }
   function closePanel() {
-    stopTimer(); stopRec();
+    stopTimer(); stopRec(); micRelease();
     stopSpeak();
     camStop(); avatarStop();
     $("aiMask").classList.remove("open"); $("aiPanel").classList.remove("open");
@@ -10480,6 +10502,7 @@ render();
     };
     store(CUR_KEY, S);
     show("Interview");
+    if (micAutoOn()) { micConnect(); }
     renderQ();
   }
 
@@ -10551,7 +10574,6 @@ render();
     S.items.slice(0, S.idx + 1).forEach(function (x, i) {
       var isCur = x === cur;
       if (isCur && !x.answer) {
-        // 当前题：打字机式提问（不给任何答题提示），然后等待作答
         chatPush(bubble("ai", '<div class="ai-q-text"></div>'));
         var els = document.querySelectorAll("#aiChat .ai-q-text");
         typeInto(els[els.length - 1], x.q.q);
@@ -10563,26 +10585,34 @@ render();
         }, Math.min(1600, x.q.q.length * 24 + 200));
         return;
       }
+      // 主问题 + 我的回答
       chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.q.q) + "</div>"));
       if (x.answer) chatPush(bubble("me", escAII(x.answer)));
-      if (x.follow) chatPush(bubble("me", '<span class="ai-note">补充回答：</span>' + escAII(x.follow)));
-      // 面试官追问：只提问，不给分数
-      if (x.pendingFollow) chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(x.pendingFollow) + "</div>"));
-      // 控制条（无任何评分信息）
+      // 追问链
+      (x.turns || []).forEach(function (t) {
+        chatPush(bubble("ai", '<div class="ai-q-text">' + escAII(t.q) + '</div><div class="ai-note" style="margin-top:4px">追问 · ' + escAII(t.tag || "") + "</div>"));
+        if (t.a && t.a !== "（答不上来）") chatPush(bubble("me", escAII(t.a)));
+        else if (t.a) chatPush(bubble("me", '<span class="ai-note">（我答不上来）</span>'));
+      });
+      // 控制条
       if (x.answer) {
+        var pending = x.pendingIndex >= 0 && x.turns && x.turns[x.pendingIndex] && !x.turns[x.pendingIndex].a;
         var ctl = '<div class="ai-actions">';
-        if (x.pendingFollow) ctl += '<button class="btn" type="button" data-focus="1">回答这个追问</button>';
-        ctl += '<button class="btn primary" type="button" data-next="1">'
-          + (S.idx + 1 >= S.items.length ? "结束并生成报告" : "下一题") + "</button></div>";
+        if (pending) {
+          ctl += '<button class="btn" type="button" data-focus="1">回答这个追问</button>'
+            + '<button class="btn" type="button" data-skipfollow="1">我答不上来</button>';
+        } else {
+          ctl += '<button class="btn primary" type="button" data-next="1">'
+            + (S.idx + 1 >= S.items.length ? "结束并生成报告" : "下一题") + "</button>";
+        }
+        ctl += "</div>";
         chatPush(bubble("ai", ctl));
       }
     });
     document.querySelectorAll("#aiChat [data-next]").forEach(function (b) { b.onclick = next; });
+    document.querySelectorAll("#aiChat [data-skipfollow]").forEach(function (b) { b.onclick = skipFollow; });
     document.querySelectorAll("#aiChat [data-focus]").forEach(function (b) {
-      b.onclick = function () {
-        var box = $("aiAnswer");
-        if (box) { box.focus(); box.placeholder = "回答面试官的追问（也可以直接点下一题）…"; }
-      };
+      b.onclick = function () { var box = $("aiAnswer"); if (box) box.focus(); };
     });
     var c = $("aiChat"); if (c) c.scrollTop = c.scrollHeight;
   }
@@ -10605,7 +10635,13 @@ render();
     camReset();
     renderChat();
     var autoRead = $("aiAutoRead");
-    if (autoRead && autoRead.checked) setTimeout(function () { if (S && S.items[S.idx] === it) readCurrent(); }, 350);
+    if (autoRead && autoRead.checked) {
+      setTimeout(function () { if (S && S.items[S.idx] === it) readCurrent(); }, 350);
+    } else if (micAutoOn()) {
+      setTimeout(function () {
+        if (S && S.items[S.idx] === it && !it.answer) micConnect().then(function (ok) { if (ok) startListen(); });
+      }, 1200);
+    }
   }
 
   function startTimer() {
@@ -10642,50 +10678,105 @@ render();
     var txt = ($("aiAnswer").value || "").trim();
     var sec = elapsed();
     if (!txt) {
-      chatPush(bubble("ai", '<div class="ai-note">还没有听到你的回答——可以说 30 秒思路，或点「跳跃本题」。</div>'));
+      chatPush(bubble("ai", '<div class="ai-note">还没有听到你的回答——先说 30 秒思路也行，或者点右边的「跳过本题」。</div>'));
       return;
     }
-    if (it.pendingFollow) {
-      // 这是对追问的补充回答
-      it.follow = (it.follow ? it.follow + " " : "") + txt;
-      it.pendingFollow = null;
-      it.score = analyze(it.answer + " " + it.follow, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
+    it.turns = it.turns || [];
+
+    // ① 正在回答某层追问
+    if (it.pendingIndex >= 0 && it.turns[it.pendingIndex]) {
+      it.turns[it.pendingIndex].a = txt;
+      it.pendingIndex = -1;
+      rescore(it);
+      askNextFollow(it);          // 答完一层，基于新内容决定要不要继续追
       $("aiAnswer").value = "";
       store(CUR_KEY, S);
       renderChat();
+      speakFollow(it);
       return;
     }
+
+    // ② 首次回答本题
     it.answer = txt;
     it.seconds = Math.max(it.seconds, sec);
     it.cam = camSummary(CAM.metrics);
     camReset();
     stopTimer();
-    // 静默评分：结果只在最后的总报告里出现
-    var r = analyze(txt, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
-    it.score = r;
-    it.pendingFollow = (r.follow && r.follow.length) ? r.follow[0] : null;   // 追问一层，答不答都行
+    rescore(it);
+    it.turns = [];
+    it.asked = [];
+    askNextFollow(it);            // 真实面试官：答完一定追问
     $("aiAnswer").value = "";
-    var box = $("aiAnswer");
-    if (box) box.placeholder = it.pendingFollow ? "可以补充回答上面的追问，也可以直接点「下一题」…" : "在这里回答，可直接打字或点麦克风说（Enter 发送）";
     store(CUR_KEY, S);
     renderChat();
-    if (it.pendingFollow) {
+    speakFollow(it);
+  }
+
+  // 重新评分（把追问的补充回答一起算进去）
+  function rescore(it) {
+    var merged = (it.answer || "") + " " + (it.turns || []).map(function (t) { return t.a || ""; }).join(" ");
+    it.score = analyze(merged, it.q, { dir: S.dir, company: S.company, seconds: it.seconds, jdKw: S.jdKw || [] });
+    it.score.follow = [];
+    // 追问答得越完整，深度分越高（最多 +8）
+    var answered = (it.turns || []).filter(function (t) { return (t.a || "").trim().length > 10; }).length;
+    it.score.depth = Math.min(100, it.score.depth + answered * 4);
+    if (it.skippedFollow) it.score.advice.unshift("有追问没有回答完：面试里被追问「答不上来」比答错更减分，准备时把每条经历的数字、口径、取舍都提前写下来。");
+  }
+
+  // 依据当前已答内容，决定是否追问下一层
+  function askNextFollow(it) {
+    var merged = (it.answer || "") + " " + (it.turns || []).map(function (t) { return t.a || ""; }).join(" ");
+    var limit = followDepthLimit(it, it.score);
+    var answered = (it.turns || []).map(function (t) { return t.a || ""; }).filter(function (a) { return a.trim().length > 10; }).length;
+    if (answered >= limit) { it.pendingIndex = -1; return; }
+    var nf = nextFollowUp(merged, it.asked || []);
+    if (!nf) { it.pendingIndex = -1; return; }
+    it.asked = (it.asked || []).concat([nf.k]);
+    it.turns.push({ q: nf.t, a: "", tag: nf.k });
+    it.pendingIndex = it.turns.length - 1;
+  }
+
+  function speakFollow(it) {
+    if (it.pendingIndex >= 0 && it.turns[it.pendingIndex]) {
       avatarState("AI 面试官 · 追问中", "speaking");
-      avatarSay(it.pendingFollow, "追问");
+      avatarSay(it.turns[it.pendingIndex].q, "追问");
+      var box = $("aiAnswer");
+      if (box) { box.placeholder = "回答面试官的追问（必须回答，或点「我答不上来」）…"; box.focus(); }
     } else {
       avatarState("AI 面试官 · 聆听完毕", "listening");
+      var box2 = $("aiAnswer");
+      if (box2) box2.placeholder = "在这里回答，可直接打字或点麦克风说（Enter 发送）";
     }
+  }
+
+  // 明确表示答不上来（真实面试里也会发生，会计入报告）
+  function skipFollow() {
+    var it = S.items[S.idx];
+    if (!it || it.pendingIndex < 0) return;
+    var t = it.turns[it.pendingIndex];
+    t.a = "（答不上来）";
+    it.skippedFollow = true;
+    it.pendingIndex = -1;
+    rescore(it);
+    askNextFollow(it);
+    store(CUR_KEY, S);
+    renderChat();
+    speakFollow(it);
   }
 
   function next() {
     if (!S) return;
     stopSpeak();
     var it = S.items[S.idx];
-    if (it) it.pendingFollow = null;
+    if (it && it.pendingIndex >= 0) {
+      chatPush(bubble("ai", '<div class="ai-note">面试官还在等你回答这个追问：先答一句，或点「我答不上来」再进入下一题。</div>'));
+      var box = $("aiAnswer"); if (box) box.focus();
+      return;
+    }
     if (S.idx + 1 >= S.items.length) { finish(); return; }
     S.idx++; store(CUR_KEY, S);
-    var box = $("aiAnswer");
-    if (box) box.placeholder = "在这里回答，可直接打字或点麦克风说（Enter 发送）";
+    var b2 = $("aiAnswer");
+    if (b2) b2.placeholder = "在这里回答，可直接打字或点麦克风说（Enter 发送）";
     renderQ();
   }
 
@@ -10743,6 +10834,9 @@ render();
       h += '<div class="ai-answer"><div class="ai-meta"><span class="ai-pill">第 ' + (i + 1) + " 题</span>" + (it.score ? "得分 " + it.score.total + "（" + it.score.grade + "） ｜ 用时 " + it.seconds + "s" : "未作答") + "</div>"
         + "<pre>" + escAII(it.q) + "</pre>"
         + (it.answer ? '<pre style="color:var(--muted)">' + escAII(it.answer.slice(0, 600)) + (it.answer.length > 600 ? "…" : "") + "</pre>" : "")
+        + (it.turns && it.turns.length ? '<div class="ai-note" style="margin:6px 0 2px"><b>追问链</b></div>'
+            + it.turns.map(function (t) { return '<pre style="color:var(--navy);margin:2px 0">↳ 追问：' + escAII(t.q) + "</pre>"
+              + '<pre style="color:var(--muted);margin:0 0 4px">你的回答：' + escAII((t.a || "（未回答）").slice(0, 300)) + "</pre>"; }).join("") : "")
         + (it.score ? '<ul class="ai-list">' + it.score.advice.map(function (a) { return "<li>" + escAII(a) + "</li>"; }).join("") + "</ul>" : "")
         + (it.follow ? '<div class="ai-note">补充回答：' + escAII(it.follow.slice(0, 200)) + "</div>" : "")
         + "</div>";
@@ -10873,6 +10967,9 @@ render();
       u.onend = function () {
         var b = $("aiRead"); if (b) b.textContent = "🔊 朗读题目";
         avatarState("AI 面试官 · 聆听中", "listening");
+        if (micAutoOn() && S && S.items[S.idx] && !S.items[S.idx].answer) {
+          micConnect().then(function (ok) { if (ok) startListen(); });
+        }
       };
       window.speechSynthesis.speak(u);
       var b2 = $("aiRead"); if (b2) b2.textContent = "⏹ 停止朗读";
@@ -10892,23 +10989,60 @@ render();
     if (!speak(it.q.q)) { var h = $("aiVoiceHint"); if (h) h.textContent = "当前浏览器不支持语音朗读，可直接看题作答。"; }
   }
 
-  function stopRec() {
-    waveStop();
-    if (recognition && recActive) { try { recognition.stop(); } catch (e) {} }
-    recActive = false;
-    if (mediaRec) { try { mediaRec.stop(); } catch (e) {} mediaRec = null; }
-    var d = $("aiRecDot"); if (d) d.classList.remove("live");
-    var st = $("aiRecState"); if (st && st.textContent === "正在录音…") st.textContent = "已停止";
+  function stopRec() { stopListen(); }
+
+  // ============ 麦克风：自动连接 + 自动开始转写 ============
+  var MIC = { stream: null, on: false, denied: false, attempts: 0 };
+
+  function micHint(text) {
+    var h = $("aiVoiceHint"); if (h) h.textContent = text || "";
+    var st = $("aiRecState"); if (st && text) st.textContent = text;
   }
-  function toggleVoice() {
+  function micAutoOn() {
+    var cb = $("aiAutoMic");
+    return cb ? !!cb.checked : true;
+  }
+  async function micConnect() {
+    if (MIC.on && MIC.stream) return true;
+    MIC.attempts++;
+    try { window.__aiMicAttempts = MIC.attempts; } catch (e) {}
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      MIC.denied = true;
+      micHint("当前浏览器不支持麦克风，直接用文字作答即可");
+      return false;
+    }
+   try {
+      micHint("正在连接麦克风…（浏览器会弹权限提示，请点「允许」）");
+      var pReq = navigator.mediaDevices.getUserMedia({ audio: true });
+      var pTimeout = new Promise(function (_, rej) {
+        setTimeout(function () { rej(new Error("timeout")); }, 12000);
+      });
+      MIC.stream = await Promise.race([pReq, pTimeout]);
+      MIC.on = true;
+      micHint("麦克风已连接");
+      return true;
+    } catch (e) {
+      MIC.denied = true;
+      var why = e && e.message === "timeout" ? "未检测到麦克风设备或权限弹窗未响应" : (e && e.name) || "blocked";
+      micHint("麦克风未连接（" + why + "）：点 🎙 可重试，也可以直接用文字作答");
+      return false;
+    }
+  }
+  function micRelease() {
+    stopListen();
+    if (MIC.stream) { try { MIC.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} MIC.stream = null; }
+    MIC.on = false;
+  }
+
+  function startListen() {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { $("aiVoiceHint").textContent = "当前浏览器不支持语音识别，请用文字作答（Chrome/Edge 支持）。"; return; }
-    if (recActive) { stopRec(); $("aiVoice").textContent = "🎙 语音作答"; return; }
+    if (recActive) return;
+    if (!SR) { micHint("当前浏览器不支持语音转写，用文字作答即可"); return; }
     recognition = new SR();
     recognition.lang = "zh-CN";
     recognition.continuous = true;
     recognition.interimResults = true;
-    var base = $("aiAnswer").value;
+    var base = $("aiAnswer").value || "";
     var interim = "";
     recognition.onresult = function (e) {
       var fin = "";
@@ -10916,23 +11050,31 @@ render();
         var t = e.results[i][0].transcript;
         if (e.results[i].isFinal) fin += t; else interim = t;
       }
-      if (fin) { base += fin; $("aiAnswer").value = base + interim; }
-      else { $("aiAnswer").value = base + interim; }
-      $("aiAnswer").scrollTop = $("aiAnswer").scrollHeight;
+      var box = $("aiAnswer");
+      if (fin) { base += fin; box.value = base + interim; }
+      else { box.value = base + interim; }
+      box.scrollTop = box.scrollHeight;
     };
-    recognition.onerror = function (ev) { $("aiVoiceHint").textContent = "语音识别出错：" + (ev.error || "") + "（可改用文字作答）"; };
-    recognition.onend = function () { recActive = false; $("aiVoice").textContent = "🎙 语音作答"; $("aiRecDot").classList.remove("live"); $("aiRecState").textContent = "已停止"; };
-    try { recognition.start(); } catch (e) { $("aiVoiceHint").textContent = "无法启动语音识别：" + e.message; return; }
+    recognition.onerror = function (ev) {
+      if (ev.error !== "no-speech" && ev.error !== "aborted") micHint("语音识别出错：" + ev.error + "（可改用文字）");
+    };
+    recognition.onend = function () {
+      recActive = false;
+      var b = $("aiVoice"); if (b) b.textContent = "🎙";
+      var d = $("aiRecDot"); if (d) d.classList.remove("live");
+      if (MIC.on) micHint("麦克风已连接");
+    };
+    try { recognition.start(); } catch (e) { micHint("无法启动语音识别：" + e.message); return; }
     recActive = true;
-    $("aiVoice").textContent = "⏹ 停止录音";
-    $("aiRecDot").classList.add("live");
-    $("aiRecState").textContent = "正在录音…";
-    $("aiVoiceHint").textContent = "实时转写中，说完点停止；内容可在左边直接修改。";
-    // 同时保留录音，便于回放（仅本地）
+    var vb = $("aiVoice"); if (vb) vb.textContent = "⏹";
+    var dot = $("aiRecDot"); if (dot) dot.classList.add("live");
+    micHint("正在听你说…");
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-          recChunks = []; recSec = 0;
+        var pStream = (MIC.on && MIC.stream) ? Promise.resolve(MIC.stream) : navigator.mediaDevices.getUserMedia({ audio: true });
+        pStream.then(function (stream) {
+          MIC.stream = MIC.stream || stream; MIC.on = true;
+          recChunks = [];
           try { mediaRec = new MediaRecorder(stream); } catch (e) { return; }
           mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) recChunks.push(e.data); };
           mediaRec.onstop = function () {
@@ -10943,7 +11085,6 @@ render();
               var pb = $("aiPlayback");
               pb.hidden = false;
               pb.onclick = function () { new Audio(recUrl).play(); };
-              stream.getTracks().forEach(function (t) { t.stop(); });
             } catch (e) {}
           };
           mediaRec.start();
@@ -10951,6 +11092,20 @@ render();
         }).catch(function () {});
       }
     } catch (e) {}
+  }
+  function stopListen() {
+    if (recognition && recActive) { try { recognition.stop(); } catch (e) {} }
+    recActive = false;
+    if (mediaRec) { try { mediaRec.stop(); } catch (e) {} mediaRec = null; }
+    var d = $("aiRecDot"); if (d) d.classList.remove("live");
+    var b = $("aiVoice"); if (b) b.textContent = "🎙";
+    waveStop();
+    if (MIC.on) micHint("麦克风已连接");
+  }
+  async function toggleVoice() {
+    if (recActive) { stopListen(); return; }
+    if (!MIC.on) { var ok = await micConnect(); if (!ok) return; }
+    startListen();
   }
 
   // ============ 麦克风波形（录音时的动态音量条）============
