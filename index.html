@@ -1759,8 +1759,9 @@
   .ai-typing i:nth-child(2) { animation-delay: .15s; } .ai-typing i:nth-child(3) { animation-delay: .3s; }
   @keyframes ai-bounce { 0%,60%,100% { transform: translateY(0); opacity: .35; } 30% { transform: translateY(-4px); opacity: 1; } }
   .ai-compose { flex: none; border-top: 1px solid var(--line); background: #fff; padding: 10px 12px 12px; }
-  .ai-compose textarea { width: 100%; min-height: 62px; max-height: 160px; border: 1px solid var(--line);
+  .ai-compose textarea { width: 100%; min-height: 108px; max-height: 46vh; border: 1px solid var(--line);
     border-radius: 12px; padding: 9px 11px; font-size: 13.5px; font-family: inherit; line-height: 1.7; resize: vertical; }
+  .ai-compose.expanded textarea { min-height: 52vh; max-height: 60vh; }
   .ai-compose textarea:focus { outline: 2px solid #bfdbfe; border-color: var(--navy-2); }
   .ai-compose-bar { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
   .ai-send { width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer; color: #fff;
@@ -2643,6 +2644,7 @@
             <div class="ai-compose-bar">
               <button class="ai-icon-btn" id="aiVoice" type="button" title="语音作答">🎙</button>
               <button class="ai-icon-btn" id="aiRead" type="button" title="朗读题目">🔊</button>
+              <button class="ai-icon-btn" id="aiExpand" type="button" title="放大编辑（写长回答）">⤢</button>
               <span class="ai-dot" id="aiRecDot"></span>
               <span class="ai-note" id="aiRecState">未开始</span>
               <button class="btn" id="aiPlayback" type="button" hidden>▶ 回放</button>
@@ -10908,7 +10910,9 @@ render();
       h += '<div class="ai-answer"><div class="ai-meta"><span class="ai-pill">第 ' + (i + 1) + " 题</span>" + (it.score ? "得分 " + it.score.total + "（" + it.score.grade + "） ｜ 用时 " + it.seconds + "s" : "未作答") + "</div>"
         + "<pre>" + escAII(it.q) + "</pre>"
         + (it.intent ? '<div class="ai-note" style="margin:2px 0 6px">这题在问：' + escAII(it.intent) + "</div>" : "")
-        + (it.answer ? '<pre style="color:var(--muted)">' + escAII(it.answer.slice(0, 600)) + (it.answer.length > 600 ? "…" : "") + "</pre>" : "")
+        + (it.answer ? (it.answer.length > 600
+            ? '<details><summary style="cursor:pointer;color:var(--muted);font-size:12.5px">我的回答（' + it.answer.length + ' 字，点开看全文）</summary><pre style="color:var(--muted);white-space:pre-wrap">' + escAII(it.answer) + "</pre></details>"
+            : '<pre style="color:var(--muted);white-space:pre-wrap">' + escAII(it.answer) + "</pre>") : "")
         + (it.turns && it.turns.length ? '<div class="ai-note" style="margin:6px 0 2px"><b>追问链</b></div>'
             + it.turns.map(function (t) { return '<pre style="color:var(--navy);margin:2px 0">↳ 追问：' + escAII(t.q) + "</pre>"
               + '<pre style="color:var(--muted);margin:0 0 4px">你的回答：' + escAII((t.a || "（未回答）").slice(0, 300)) + "</pre>"; }).join("") : "")
@@ -12508,6 +12512,26 @@ render();
       store(CFG_KEY, { key: $("aiKey").value.trim(), base: $("aiBase").value.trim(), model: $("aiModel").value.trim() });
       alert("已保存到本机浏览器（不会上传）");
       $("aiSettings").hidden = true;
+    };
+    // 作答框：随输入自动增高，可一键放大（写长答案不憋屈）
+    var taGrow = $("aiAnswer");
+    if (taGrow) {
+      var autoGrow = function () {
+        var cap = Math.round(window.innerHeight * 0.46);
+        taGrow.style.height = "auto";
+        taGrow.style.height = Math.min(cap, Math.max(96, taGrow.scrollHeight)) + "px";
+      };
+      taGrow.addEventListener("input", autoGrow);
+      setTimeout(autoGrow, 300);
+    }
+    var ex = $("aiExpand");
+    if (ex) ex.onclick = function () {
+      var wrap = taGrow && taGrow.closest(".ai-compose");
+      if (!wrap) return;
+      wrap.classList.toggle("expanded");
+      ex.textContent = wrap.classList.contains("expanded") ? "⤡" : "⤢";
+      ex.title = wrap.classList.contains("expanded") ? "收起" : "放大编辑（写长回答）";
+      if (taGrow) { taGrow.focus(); taGrow.style.height = "auto"; }
     };
     var ta = $("aiAnswer");
     if (ta) ta.addEventListener("keydown", function (e) {
