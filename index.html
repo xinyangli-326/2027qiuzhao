@@ -10551,13 +10551,15 @@ render();
     return picked;
   }
 
-  function start() {
+  async function start() {
     var company = ($("aiCompany").value || "").trim();
     var type = $("aiType").value;
     var count = Number($("aiCount").value) || 8;
     var limit = 0;   // 不做限时：只记录用时，不催、不打断
     var rnd = $("aiRandom") ? !!$("aiRandom").checked : true;
     var qs = pickQuestions(type, count, company, rnd);
+    var llmMode = llmReady();   // 有大模型就由模型主导出题与追问
+
     // 简历深挖：把用户简历拆成条目后生成追问链，混进本次面试
     var resumeText = $("aiResume") ? ($("aiResume").value || "").trim() : "";
     var resumeOn = (($("aiResumeMode") && $("aiResumeMode").checked) || !!resumeText);   // 有简历就一定问简历
@@ -10577,9 +10579,14 @@ render();
       var jq = makeJDQuestions(jdKw, company, rnd ? 3 : 2);
       qs = shuffle(trimKeep(qs, Math.max(2, qs.length - jq.length)).concat(jq));
     }
+    if (llmMode) {
+      // 大模型模式：先只放第一道题，后面每题现场生成（这样才可能顺着简历问）
+      var first = await makeNextMainQuestion(qs);
+      qs = first ? [first] : qs.slice(0, 1);
+    }
     qs = qs.concat([makeFanwenQuestion()]);   // 真实面试最后一定有反问环节
     S = {
-      id: "s" + Date.now(), created: new Date().toISOString(), company: company, dir: dirPick, type: type,
+      id: "s" + Date.now(), llmMode: llmMode, askedTexts: [], history: [], mainDone: 0, mainCount: count, created: new Date().toISOString(), company: company, dir: dirPick, type: type,
       limit: limit, random: rnd, idx: 0, jdKw: jdKw,
       items: qs.map(function (q) { return { q: q, answer: "", seconds: 0, follow: "", followIdx: 0, score: null }; })
     };
@@ -10780,9 +10787,10 @@ render();
       rescore(it);
       if (llmReady() && it.answer) {
         try {
-          var llm2 = await llmInterviewTurn(it.q.q, it.answer + " " + it.follow, (it.asked || []));
+          var llm2 = await llmInterviewTurn(it.q.q, it.answer + " " + it.follow, (S.askedTexts || []));
           if (llm2 && llm2.followups && llm2.followups.length && (it.turns || []).length < 3) {
             it.asked = (it.asked || []).concat([llm2.followups[0]]);
+            rememberAsked(llm2.followups[0]);
             it.turns.push({ q: llm2.followups[0], a: "", tag: "追问（大模型）" });
             it.pendingIndex = it.turns.length - 1;
           } else {
@@ -10801,6 +10809,9 @@ render();
 
     // ② 首次回答本题
     it.answer = txt;
+    S.history = (S.history || []);
+    S.history.push({ role: "ai", text: it.q.q });
+    S.history.push({ role: "me", text: txt });
     it.seconds = Math.max(it.seconds, sec);
     it.cam = camSummary(CAM.metrics);
     camReset();
@@ -10813,7 +10824,7 @@ render();
       var box2 = $("aiAnswer"); if (box2) box2.placeholder = "面试官正在想下一个问题…";
       avatarState("AI 面试官 · 思考中", "speaking");
       try {
-        var llm = await llmInterviewTurn(it.q.q, it.answer, (it.asked || []));
+        var llm = await llmInterviewTurn(it.q.q, it.answer, (S.askedTexts || []));
         if (llm) {
           it.llm = llm;
           if (llm.score) {
@@ -10826,11 +10837,21 @@ render();
           if (llm.advice && llm.advice.length) it.score.advice = llm.advice.concat(it.score.advice).slice(0, 4);
           if (llm.comment) it.score.advice.unshift(llm.comment);
           if (llm.followups && llm.followups.length) {
-            it.asked = (it.asked || []).concat([llm.followups[0]]);
-            it.turns = it.turns || [];
-            it.turns.push({ q: llm.followups[0], a: "", tag: "追问（大模型）" });
-            it.pendingIndex = it.turns.length - 1;
-          } else {
+            // 大模型给的追问也要过一遍去重，重复就换下一句，实在没有就用本地规则
+            var goodFu = null;
+            for (var fi = 0; fi < llm.followups.length; fi++) {
+              if (!alreadyAsked(llm.followups[fi])) { goodFu = llm.followups[fi]; break; }
+            }
+            if (goodFu) {
+              it.asked = (it.asked || []).concat([goodFu]);
+              rememberAsked(goodFu);
+              it.turns = it.turns || [];
+              it.turns.push({ q: goodFu, a: "", tag: "追问（大模型）" });
+              it.pendingIndex = it.turns.length - 1;
+            } else {
+              askNextFollow(it);
+            }
+              } else {
             askNextFollow(it);
           }
         } else {
@@ -10867,9 +10888,18 @@ render();
     var limit = followDepthLimit(it, it.score);
     var answered = (it.turns || []).map(function (t) { return t.a || ""; }).filter(function (a) { return a.trim().length > 10; }).length;
     if (answered >= limit) { it.pendingIndex = -1; return; }
-    var nf = nextFollowUp(merged, it.asked || []);
+    // 全局去重：整场问过的（含其它题目问过的）不再重复
+    var nf = null;
+    var cands = followCandidates(merged);
+    for (var ci = 0; ci < cands.length; ci++) {
+      if ((it.asked || []).indexOf(cands[ci].k) >= 0) continue;
+      if (alreadyAsked(cands[ci].t)) continue;
+      nf = cands[ci];
+      break;
+    }
     if (!nf) { it.pendingIndex = -1; return; }
     it.asked = (it.asked || []).concat([nf.k]);
+    rememberAsked(nf.t);                 // 记入全局"问过的问题"，避免跨题重复
     it.turns.push({ q: nf.t, a: "", tag: nf.k });
     it.pendingIndex = it.turns.length - 1;
   }
@@ -10902,7 +10932,7 @@ render();
     speakFollow(it);
   }
 
-  function next() {
+  async function next() {
     if (!S) return;
     stopSpeak();
     var it = S.items[S.idx];
@@ -10911,8 +10941,26 @@ render();
       var box = $("aiAnswer"); if (box) box.focus();
       return;
     }
+    var isFanwen = it && it.q && it.q.id === "fanwen";
+    var moreMain = (S.mainCount || 0) > (S.mainDone || 0);
+    if (!isFanwen && S.llmMode && moreMain) {
+      S.mainDone = (S.mainDone || 0) + 1;
+      chatPush(bubble("ai", '<div class="ai-note">面试官正在想下一个问题…</div>'));
+      var nq = await makeNextMainQuestion(null);
+      if (nq) {
+        S.items.splice(S.items.length - 1, 0, { q: nq, answer: "", seconds: 0, turns: [], pendingIndex: -1, score: null });
+        S.idx = S.items.length - 2;
+        store(CUR_KEY, S);
+        var b0 = $("aiAnswer");
+        if (b0) b0.placeholder = "在这里回答，可直接打字或点麦克风说（Enter 发送）";
+        renderQ();
+        return;
+      }
+    }
     if (S.idx + 1 >= S.items.length) { finish(); return; }
-    S.idx++; store(CUR_KEY, S);
+    S.idx++;
+    if (!isFanwen) S.mainDone = (S.mainDone || 0) + 1;
+    store(CUR_KEY, S);
     var b2 = $("aiAnswer");
     if (b2) b2.placeholder = "在这里回答，可直接打字或点麦克风说（Enter 发送）";
     renderQ();
@@ -11942,6 +11990,100 @@ render();
     ].join("\n");
     var txt = await llmChat([{ role: "system", content: sys }, { role: "user", content: user }], { json: true, temperature: 0.3 });
     return parseJsonLoose(txt);
+  }
+
+
+  // ============ 大模型主导的面试官（题目、追问、评分都由模型根据上下文生成）============
+  function normQ(t) {
+    return (t || "").replace(/[\s，,。.、？?！!：:；;「」“”"']/g, "").slice(0, 24);
+  }
+  function alreadyAsked(t) {
+    if (!S || !S.askedTexts) return false;
+    var n = normQ(t);
+    if (!n) return true;
+    var cur = (typeof S.idx === "number") ? S.idx : 0;
+    return S.askedTexts.some(function (x) {
+      var xn = (typeof x === "string") ? x : x.n;
+      var same = xn === n || (xn.length > 8 && n.length > 8 && (xn.indexOf(n.slice(0, 8)) >= 0 || n.indexOf(xn.slice(0, 8)) >= 0));
+      if (!same) return false;
+      // 主问题：全程去重；追问：只在"当前题和上一题"里去重（避免同一套追问每题重复）
+      if (typeof x === "string" || x.q === undefined) return true;
+      return Math.abs(cur - x.qi) <= 1;
+    });
+  }
+  function rememberAsked(t) {
+    if (!S) return;
+    S.askedTexts = S.askedTexts || [];
+    var n = normQ(t);
+    if (!n) return;
+    var exists = S.askedTexts.some(function (x) { return ((typeof x === "string") ? x : x.n) === n; });
+    if (!exists) S.askedTexts.push({ n: n, qi: (typeof S.idx === "number" ? S.idx : 0), main: false });
+  }
+  // 主问题：全程不重复（记忆为 main）
+  function rememberAskedMain(t) {
+    if (!S) return;
+    S.askedTexts = S.askedTexts || [];
+    var n = normQ(t);
+    if (!n) return;
+    var exists = S.askedTexts.some(function (x) { return ((typeof x === "string") ? x : x.n) === n; });
+    if (!exists) S.askedTexts.push({ n: n, qi: -999, main: true });
+  }
+
+  // 让模型出"下一道主问题"（顺着简历/JD/已问过的问题走，不重复）
+  async function llmNextQuestion(kind) {
+    var sys = [
+      "你是大厂（字节跳动生活服务/商业化方向）的资深面试官，正在面试一位校招候选人。",
+      "你要一次只问一个问题，问题口语、简短、像真人；不要念 JD，不要说「JD 里要求」。",
+      "出题依据优先级：候选人的简历经历 > 岗位业务场景 > 通用行为面。有简历时必须先就简历里的具体条目问。",
+      "绝对不要重复已经问过的问题（包括意思相同的换皮问法）。",
+      "只输出 JSON。"
+    ].join("\n");
+    var asked = (S.askedTexts || []).slice(-24);
+    var user = [
+      llmContextText(),
+      S.resumeText ? "【候选人简历原文】\n" + S.resumeText.slice(0, 2000) : "",
+      asked.length ? "【已经问过的问题（禁止重复或换皮）】\n- " + asked.join("\n- ") : "",
+      "【已完成的对话】\n" + (S.history || []).slice(-6).map(function (h) { return (h.role === "ai" ? "面试官：" : "候选人：") + h.text.slice(0, 200); }).join("\n"),
+      "",
+      "请输出 JSON：{",
+      '  "question": "下一道问题（一句话，口语化）",',
+      '  "why": "你问这个想考察什么（给候选人看的意图说明，一句话）",',
+      '  "tag": "简历经历 / 业务场景 / 行为面 三者选一"',
+      "}"
+    ].filter(Boolean).join("\n");
+    var txt = await llmChat([{ role: "system", content: sys }, { role: "user", content: user }], { json: true, temperature: 0.7 });
+    return parseJsonLoose(txt);
+  }
+
+  // 生成一道主问题：大模型优先，重复或失败就用本地题库兜底
+  async function makeNextMainQuestion(fallbackPool) {
+    if (llmReady()) {
+      for (var attempt = 0; attempt < 2; attempt++) {
+        try {
+          var r = await llmNextQuestion(attempt);
+          var q = r && r.question ? String(r.question).trim() : "";
+          if (q && !alreadyAsked(q)) {
+            rememberAskedMain(q);
+            return {
+              id: "llmq" + Math.random().toString(36).slice(2, 7),
+              src: "大模型", types: ["面试"], dirs: [dirPick],
+              q: q, intent: r.why || "", kw: [], points: [], pit: [], follow: []
+            };
+          }
+        } catch (e) {
+          if (attempt === 1) chatPush(bubble("ai", '<div class="ai-note">出题调用失败（' + escAII((e.message || "").slice(0, 40)) + "），已用本地题库的题目继续。</div>"));
+        }
+      }
+    }
+    // 兜底：本地题库里挑一道没问过的
+    var pool = (fallbackPool || []).filter(function (q) { return !alreadyAsked(q.q); });
+    if (!pool.length && typeof BANK !== "undefined") {
+      pool = BANK.filter(function (q) { return !alreadyAsked(q.q); });
+    }
+    if (!pool.length) return null;
+    var pick = shuffle(pool.slice())[0];
+    rememberAskedMain(pick.q);
+    return pick;
   }
 
 
