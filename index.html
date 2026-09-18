@@ -1821,6 +1821,16 @@
     background: linear-gradient(180deg, #fbfdff, #f4f7fc); cursor: pointer; transition: border-color .15s, background .15s; }
   .ai-drop:hover, .ai-drop.over { border-color: var(--navy-2); background: #eef4ff; }
   .ai-drop-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  /* 面试官模式二选一 */
+  .ai-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ai-mode-btn { text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 12px;
+    padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: border-color .15s, box-shadow .15s; }
+  .ai-mode-btn b { font-size: 13.5px; color: var(--navy); }
+  .ai-mode-btn span { font-size: 12px; color: var(--muted); line-height: 1.65; }
+  .ai-mode-btn em { display: block; font-style: normal; font-weight: 700; color: var(--blue-fg); margin-top: 2px; }
+  .ai-mode-btn[aria-checked="true"] { border-color: var(--navy-2); box-shadow: 0 0 0 3px rgba(59,130,246,.12); background: #f7fbff; }
+  .ai-mode-btn:hover { border-color: var(--navy-2); }
+  @media (max-width: 720px) { .ai-mode { grid-template-columns: 1fr; } }
   .ai-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
   .ai-dot.live { background: var(--rose-fg); animation: ai-pulse 1s infinite; }
   @keyframes ai-pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
@@ -2479,6 +2489,20 @@
   <div class="ai-body">
     <!-- ============ 1. 设定 ============ -->
     <div class="ai-view on" id="aiViewSetup">
+      <div class="ai-field" style="margin-bottom:12px;border-color:#bfdbfe;background:linear-gradient(180deg,#f7fbff,#eef5ff)">
+        <label>面试官模式（二选一）</label>
+        <div class="ai-mode" id="aiModePick" role="radiogroup" aria-label="面试官模式">
+          <button type="button" class="ai-mode-btn" data-mode="llm" role="radio" aria-checked="false">
+            <b>🤖 AI 面试官（接大模型）</b>
+            <span>顺着你的简历和回答现场出题、追问、点评；需要配一个 API Key（或本地 Ollama）。<em id="aiModeLlmSub">未配置 Key</em></span>
+          </button>
+          <button type="button" class="ai-mode-btn" data-mode="bank" role="radio" aria-checked="false">
+            <b>📚 固定题库（不外接大模型）</b>
+            <span>用内置题库 + 本地规则出题与追问，全程不联网、不发送任何内容；题目固定但即时可用。<em id="aiModeBankSub">完全离线</em></span>
+          </button>
+        </div>
+        <div class="ai-note" id="aiModeHint" style="margin-top:6px"></div>
+      </div>
       <div class="ai-grid">
         <div class="ai-field">
           <label for="aiCompany">目标公司（可选，从本表 892 家里选）</label>
@@ -10733,7 +10757,8 @@ render();
     $("aiProgress").textContent = (S.idx + 1) + " / " + S.items.length;
     $("aiDirTag").textContent = "方向：" + dirPick;
     var wt = $("aiWinTitle");
-    if (wt) wt.textContent = "模拟面试" + (S.company ? " · " + S.company : "") + " · " + dirPick;
+    if (wt) wt.textContent = "模拟面试" + (S.company ? " · " + S.company : "") + " · " + dirPick
+      + (S.llmMode ? "（AI 面试官）" : "（固定题库）");
     var ta2 = $("aiAnswer");
     if (ta2) ta2.placeholder = S.type === "英文题" ? "Type your answer in English… (Enter to send)" : "在这里回答，可直接打字或点麦克风说（Enter 发送，Shift+Enter 换行）";
     $("aiAnswer").value = it.answer || "";
@@ -11888,10 +11913,9 @@ render();
     }
   }
   function llmReady() {
+    if (interviewMode() !== "llm") return false;      // 固定题库模式：一律不外接大模型
     var c = llmCfg();
-    var cb = $("aiUseLlm");
-    var on = cb ? !!cb.checked : true;
-    return !!(c.key && on);
+    return !!c.key;
   }
   function llmContextText() {
     var parts = [];
@@ -11990,6 +12014,51 @@ render();
     ].join("\n");
     var txt = await llmChat([{ role: "system", content: sys }, { role: "user", content: user }], { json: true, temperature: 0.3 });
     return parseJsonLoose(txt);
+  }
+
+
+  // ============ 面试官模式：AI（大模型） / 固定题库（不外接大模型） ============
+  var MODE_KEY = "qiuzhao_ai_interview_mode_v1";
+  function interviewMode() {
+    var m = load(MODE_KEY, null);
+    if (m === "llm" || m === "bank") return m;
+    // 没选过：配了 Key 就默认大模型，否则默认题库
+    return (llmCfg().key ? "llm" : "bank");
+  }
+  function setInterviewMode(m) {
+    store(MODE_KEY, m);
+    renderModePick();
+  }
+  function renderModePick() {
+    var m = interviewMode();
+    var c = llmCfg();
+    document.querySelectorAll("#aiModePick .ai-mode-btn").forEach(function (b) {
+      b.setAttribute("aria-checked", b.getAttribute("data-mode") === m ? "true" : "false");
+    });
+    var sub = $("aiModeLlmSub");
+    if (sub) sub.textContent = c.key ? ("当前：" + (c.model || "已配置模型")) : "未配置 Key（去高级设置填）";
+    var hint = $("aiModeHint");
+    if (hint) {
+      hint.innerHTML = m === "llm"
+        ? "现在是 <b>AI 面试官</b>：每题由大模型根据你的简历与回答现场生成，追问会引用你原话（需要 Key；调用失败会自动回退题库模式）。"
+        : "现在是 <b>固定题库模式</b>：使用内置题库 + 本地规则追问，<b>不联网、不外接大模型</b>，随时可用。";
+    }
+  }
+  function bindModePick() {
+    var box = $("aiModePick");
+    if (!box) return;
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest(".ai-mode-btn") : null;
+      if (!b) return;
+      var m = b.getAttribute("data-mode");
+      if (m === "llm" && !llmCfg().key) {
+        // 没配 Key：直接带用户去配置
+        var s = $("aiSettings");
+        if (s) s.hidden = false;
+        alert("AI 面试官需要先配一个模型：选服务商 → 填 API Key → 保存设置。也可以先用「固定题库」模式，不需要任何配置。");
+      }
+      setInterviewMode(m);
+    });
   }
 
 
@@ -12811,6 +12880,8 @@ render();
     var ar = $("aiAnalyzeResume"); if (ar) ar.onclick = renderResumeReport;
     var jp = $("aiJdPlanBtn"); if (jp) jp.onclick = renderJdResumePlan;
     bindResumeUpload();
+    bindModePick();
+    renderModePick();
     renderLlmState();
     var ib = $("aiImportBtn"); if (ib) ib.onclick = doImport;
     var um = $("aiUseMj"); if (um) { um.checked = load(MJ_USE_KEY, false); um.onchange = toggleBuiltinMj; }
@@ -12897,6 +12968,7 @@ render();
       store(CFG_KEY, { key: $("aiKey").value.trim(), base: $("aiBase").value.trim(), model: $("aiModel").value.trim() });
       $("aiSettings").hidden = true;
       renderLlmState();
+      renderModePick();
       alert(llmReady() ? "已保存：接下来面试官会用大模型生成追问与点评（调用失败会自动回退本地规则）。" : "已保存。填好 Key 并勾选「面试官用大模型生成追问与点评」后生效。");
       $("aiSettings").hidden = true;
     };
