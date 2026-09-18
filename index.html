@@ -2500,6 +2500,10 @@
             <b>📚 固定题库（不外接大模型）</b>
             <span>用内置题库 + 本地规则出题与追问，全程不联网、不发送任何内容；题目固定但即时可用。<em id="aiModeBankSub">完全离线</em></span>
           </button>
+          <button type="button" class="ai-mode-btn" data-mode="mine" role="radio" aria-checked="false">
+            <b>📥 我的题目 + 大模型追问</b>
+            <span>题目由你自己导入（一行一题，或粘贴面经自动抽题），按顺序问；追问、评分、报告交给大模型。<em id="aiModeMineSub">未导入题目</em></span>
+          </button>
         </div>
         <div class="ai-note" id="aiModeHint" style="margin-top:6px"></div>
       </div>
@@ -2568,18 +2572,24 @@
       </div>
 
       <div class="ai-field" style="margin-top:12px">
-        <label for="aiImportText">📥 面经导入（可选）：把小红书/牛客上的面经原文整段粘进来，我给你抽成练习题</label>
-        <textarea id="aiImportText" style="min-height:80px" placeholder="粘贴面经原文，例如：
-面试官问：如果客户 ROI 从 2.5 掉到 1.3，想缩减预算转投小红书，你怎么挽留？
-二面：你怎么理解货找人和人找货的区别？"></textarea>
+        <label for="aiImportText">📥 导入我的题目：可以一行一题直接写，也可以粘贴面经原文让我抽题</label>
+        <textarea id="aiImportText" style="min-height:96px" placeholder="方式一（一行一题）：
+如果客户 ROI 从 2.5 掉到 1.3，想缩减预算转投小红书，你怎么挽留？
+你怎么理解货找人和人找货的区别？
+
+方式二（粘贴整段面经，我会自动抽题）：
+一面面试官问：……　二面：……"></textarea>
         <div class="ai-actions">
-          <button class="btn" id="aiImportBtn" type="button">从这段面经里抽题</button>
-          <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--navy)">
-            <input type="checkbox" id="aiUseMj"> 启用内置面经题集（字节 KA／商业化／游戏，22 题）
-          </label>
+          <button class="btn primary" id="aiImportBtn" type="button">导入这些题目</button>
+          <button class="btn" id="aiImportFileBtn" type="button">从 txt 文件导入</button>
+          <input type="file" id="aiImportFile" accept=".txt,.md,.csv" hidden>
+          <button class="btn" id="aiClearMyQ" type="button">清空我的题目</button>
           <span class="ai-note" id="aiImportState"></span>
         </div>
-        <div class="ai-note" style="margin-top:6px">题目只在你的目标岗位/方向下出现，练的时候仍然是真实场景：答完立刻追问，整场答完再统一评分。</div>
+        <div class="ai-note" style="margin-top:6px" id="aiMyQList"></div>
+        <div class="ai-note" style="margin-top:6px">
+          选「我的题目 + 大模型追问」时：题目按你导入的顺序问，大模型负责追问、评分和报告；没配 Key 时追问会回退到本地规则（题目照旧按你的清单走）。
+        </div>
       </div>
 
       <div class="ai-field" style="margin-top:12px">
@@ -10582,7 +10592,9 @@ render();
     var limit = 0;   // 不做限时：只记录用时，不催、不打断
     var rnd = $("aiRandom") ? !!$("aiRandom").checked : true;
     var qs = pickQuestions(type, count, company, rnd);
-    var llmMode = llmReady();   // 有大模型就由模型主导出题与追问
+    var mode = interviewMode();
+    var llmMode = llmReady();        // 追问/评分用大模型
+    var llmQs = llmAskQuestions();   // 题目由大模型生成
 
     // 简历深挖：把用户简历拆成条目后生成追问链，混进本次面试
     var resumeText = $("aiResume") ? ($("aiResume").value || "").trim() : "";
@@ -10603,8 +10615,12 @@ render();
       var jq = makeJDQuestions(jdKw, company, rnd ? 3 : 2);
       qs = shuffle(trimKeep(qs, Math.max(2, qs.length - jq.length)).concat(jq));
     }
-    if (llmMode) {
-      // 大模型模式：先只放第一道题，后面每题现场生成（这样才可能顺着简历问）
+    var mineList = (mode === "mine") ? myQuestions() : [];
+    if (mode === "mine") {
+      if (!mineList.length) { alert("先导入题目：把题目一行一题粘到「导入我的题目」，或粘贴面经原文让我抽题。"); return; }
+      qs = mineList.slice(0, count).map(makeMyQuestion);
+    } else if (llmQs) {
+      // AI 面试官：先只放第一道题，后面每题现场生成（这样才可能顺着简历问）
       var first = await makeNextMainQuestion(qs);
       qs = first ? [first] : qs.slice(0, 1);
     }
@@ -10968,7 +10984,7 @@ render();
     }
     var isFanwen = it && it.q && it.q.id === "fanwen";
     var moreMain = (S.mainCount || 0) > (S.mainDone || 0);
-    if (!isFanwen && S.llmMode && moreMain) {
+    if (!isFanwen && S.llmMode && S.llmQs && moreMain) {
       S.mainDone = (S.mainDone || 0) + 1;
       chatPush(bubble("ai", '<div class="ai-note">面试官正在想下一个问题…</div>'));
       var nq = await makeNextMainQuestion(null);
@@ -11912,10 +11928,13 @@ render();
       box.textContent = "还没配 Key：现在用本地规则追问。配好 Key 后，追问与点评会由大模型根据你的实际回答生成。";
     }
   }
-  function llmReady() {
-    if (interviewMode() !== "llm") return false;      // 固定题库模式：一律不外接大模型
-    var c = llmCfg();
-    return !!c.key;
+  function llmReady() {   // 追问/评分/报告是否用大模型
+    var m = interviewMode();
+    if (m === "bank") return false;                   // 固定题库：一律不外接大模型
+    return !!llmCfg().key;                            // llm / mine：有 Key 就用
+  }
+  function llmAskQuestions() {                        // 题目是否由大模型生成
+    return interviewMode() === "llm" && !!llmCfg().key;
   }
   function llmContextText() {
     var parts = [];
@@ -12017,12 +12036,93 @@ render();
   }
 
 
+  // ============ 我的题目（自己导入）============
+  function myQuestions() {
+    var arr = load(IMPORT_KEY, []);
+    return (arr || []).filter(function (q) { return q && String(q).trim().length >= 4; });
+  }
+  function makeMyQuestion(text, i) {
+    return {
+      id: "myq" + i,
+      src: "我的题目",
+      types: ["我的题目"], dirs: [dirPick],
+      q: String(text).trim(),
+      kw: [], points: [], pit: [], follow: []
+    };
+  }
+  // 一行一题：不满足"问句特征"的行也当成题目收下（用户自己写的题就该照问）
+  function importLines(text) {
+    var lines = String(text || "").split(/\r?\n/)
+      .map(function (l) { return l.replace(/^\s*(\d+[.、)）]|[-*•·])\s*/, "").trim(); })
+      .filter(function (l) { return l.length >= 4 && !/^(方式[一二]|例如|示例)[:：]/.test(l); });
+    return lines;
+  }
+  function mergeMyQuestions(list) {
+    var old = myQuestions();
+    var merged = old.slice();
+    list.forEach(function (q) { if (merged.indexOf(q) < 0) merged.push(q); });
+    store(IMPORT_KEY, merged);
+    return merged.length - old.length;
+  }
+  function renderMyQuestions() {
+    var box = $("aiMyQList");
+    if (!box) return;
+    var list = myQuestions();
+    var sub = $("aiModeMineSub");
+    if (sub) sub.textContent = list.length ? ("已导入 " + list.length + " 题") : "未导入题目";
+    if (!list.length) { box.innerHTML = ""; return; }
+    box.innerHTML = "已导入 <b>" + list.length + " 题</b>（按顺序问）："
+      + list.slice(0, 5).map(function (q, i) { return (i + 1) + ". " + escAII(q.slice(0, 26)); }).join("　")
+      + (list.length > 5 ? " …" : "");
+  }
+  function bindMyQuestions() {
+    var ib = $("aiImportBtn");
+    if (ib) ib.onclick = function () {
+      var txt = ($("aiImportText") || {}).value || "";
+      if (!txt.trim()) { alert("先把题目或面经原文粘到上面的框里。"); return; }
+      // 先按"一行一题"收；如果看起来是整段面经，再用抽题规则补
+      var lines = importLines(txt);
+      var added = mergeMyQuestions(lines);
+      if (lines.length <= 1) {
+        var ex = extractQuestionsFromText(txt);
+        if (ex.length) added += mergeMyQuestions(ex);
+      }
+      renderMyQuestions();
+      renderModePick();
+      $("aiImportText").value = "";
+      alert("已导入 " + added + " 道新题（累计 " + myQuestions().length + " 道）。选「我的题目 + 大模型追问」即可按这份清单面试。");
+    };
+    var fb = $("aiImportFileBtn"), fi = $("aiImportFile");
+    if (fb && fi) {
+      fb.onclick = function () { fi.click(); };
+      fi.onchange = async function () {
+        var f = fi.files && fi.files[0];
+        if (!f) return;
+        var txt = await f.text();
+        var lines = importLines(txt);
+        var added = mergeMyQuestions(lines);
+        if (!lines.length) {
+          var ex = extractQuestionsFromText(txt);
+          added = mergeMyQuestions(ex);
+        }
+        renderMyQuestions(); renderModePick();
+        alert("从 " + f.name + " 导入 " + added + " 道新题（累计 " + myQuestions().length + " 道）。");
+      };
+    }
+    var cb = $("aiClearMyQ");
+    if (cb) cb.onclick = function () {
+      if (!confirm("清空已导入的题目？")) return;
+      localStorage.removeItem(IMPORT_KEY);
+      renderMyQuestions(); renderModePick();
+    };
+  }
+
+
   // ============ 面试官模式：AI（大模型） / 固定题库（不外接大模型） ============
   var MODE_KEY = "qiuzhao_ai_interview_mode_v1";
   function interviewMode() {
     var m = load(MODE_KEY, null);
-    if (m === "llm" || m === "bank") return m;
-    // 没选过：配了 Key 就默认大模型，否则默认题库
+    if (m === "llm" || m === "bank" || m === "mine") return m;
     return (llmCfg().key ? "llm" : "bank");
   }
   function setInterviewMode(m) {
@@ -12037,11 +12137,14 @@ render();
     });
     var sub = $("aiModeLlmSub");
     if (sub) sub.textContent = c.key ? ("当前：" + (c.model || "已配置模型")) : "未配置 Key（去高级设置填）";
+    renderMyQuestions();
     var hint = $("aiModeHint");
     if (hint) {
       hint.innerHTML = m === "llm"
-        ? "现在是 <b>AI 面试官</b>：每题由大模型根据你的简历与回答现场生成，追问会引用你原话（需要 Key；调用失败会自动回退题库模式）。"
-        : "现在是 <b>固定题库模式</b>：使用内置题库 + 本地规则追问，<b>不联网、不外接大模型</b>，随时可用。";
+        ? "现在是 <b>AI 面试官</b>：每题由大模型根据你的简历与回答现场生成，追问会引用你原话（需要 Key；失败自动回退）。"
+        : m === "mine"
+          ? "现在是 <b>我的题目</b>：按你导入的题目顺序问，大模型负责追问、评分与报告（没配 Key 时追问回退本地规则）。"
+          : "现在是 <b>固定题库模式</b>：内置题库 + 本地规则追问，<b>不联网、不外接大模型</b>，随时可用。";
     }
   }
   function bindModePick() {
@@ -12881,9 +12984,11 @@ render();
     var jp = $("aiJdPlanBtn"); if (jp) jp.onclick = renderJdResumePlan;
     bindResumeUpload();
     bindModePick();
+    bindMyQuestions();
     renderModePick();
+    renderMyQuestions();
     renderLlmState();
-    var ib = $("aiImportBtn"); if (ib) ib.onclick = doImport;
+    // 注意：aiImportBtn 的处理在 bindMyQuestions() 里，别在这里覆盖
     var um = $("aiUseMj"); if (um) { um.checked = load(MJ_USE_KEY, false); um.onchange = toggleBuiltinMj; }
     renderImportState();
     var hback = $("aiHistoryBack"); if (hback) hback.onclick = function () { show("Setup"); };
