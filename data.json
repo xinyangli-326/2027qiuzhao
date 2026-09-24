@@ -1,5 +1,5 @@
 {
- "rev": "20260924-d",
+ "rev": "20260924-e",
  "updated": "2026-09-24",
  "count": 946,
  "data": [
@@ -185,8 +185,8 @@
    "date": "2026-06-25",
    "roles": "软件产品、产品运营、市场",
    "note": "2027届“拓疆者”校招，6月25日开启；7月底线上答辩",
-   "portal": "https://we.dji.com/zh-CN/campus",
-   "source": "",
+   "portal": "https://careers.dji.com/zh-CN/campus/hot-jobs?source=campus_hotjobs",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -834,8 +834,8 @@
    "date": "2026-08-04",
    "roles": "产品经理（AI安全方向）、产品运营、PMO、营销类",
    "note": "研究算法、AI研发、产品、营销等多职类",
-   "portal": "https://campus.iflytek.com",
-   "source": "",
+   "portal": "https://iflytek.zhiye.com/campus",
+   "source": "官方校招系统（北森）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -2198,8 +2198,8 @@
    "date": "2026-08-17",
    "roles": "化工、电气",
    "note": "湖北绿色家园2027届秋季校园招聘，面向本科及以上学历，招聘工艺技术员、电气技术员等岗位，月薪10-14K。",
-   "portal": "http://www.greenhomechem.com/",
-   "source": "",
+   "portal": "https://lsjyzp.zhiye.com/",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -3342,8 +3342,8 @@
    "date": "2026-08-22",
    "roles": "多岗（以官网为准）",
    "note": "摩尔线程2027届秋季校园招聘，面向计算机、人工智能、软件工程等相关专业，招聘分布式训练工程师、图形渲染/3DGS算法工程师等岗位，工作地点包括北京、杭州、深圳、上海、无锡等。",
-   "portal": "https://www.mthreads.com/jobs",
-   "source": "",
+   "portal": "https://mthreads.zhiye.com/campus",
+   "source": "官方校招系统（北森）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -3364,8 +3364,8 @@
    "date": "2026-08-22",
    "roles": "产品工程师",
    "note": "易思维2027届校园招聘全面启动，面向2026年11月至2027年10月毕业的本硕博应届生，提供产品工程师、机械设计工程师、硬件测试工程师、嵌入式软件开发工程师等岗位，工作地点在杭州。",
-   "portal": "https://www.isv-tech.com/portal/list/index/id/228/jobtype/20.html",
-   "source": "",
+   "portal": "https://isv-tech.zhiye.com/",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -3595,8 +3595,8 @@
    "date": "2026-08-24",
    "roles": "研发技术、产品设计、市场营销、智能制造、供应链、财务金融、综合管理、信息技术",
    "note": "2027届全球校招8月下旬-9月初陆续启动（TCL实业8/24、TCL华星9月上旬）；面向海内外2027届本硕博（毕业时间2026.9-2027.12），流程含AI面试",
-   "portal": "https://campus.tcl.com",
-   "source": "",
+   "portal": "https://sc.hotjob.cn/wt/TCL/mobweb/v8/position/detail?&brandCode=100001&postId=",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -4244,8 +4244,8 @@
    "date": "2026-08-25",
    "roles": "技术岗、无人机、算法工程师、低空经济",
    "note": "纵横股份2027届校园招聘启动，面向2027届国内外高校毕业生，招聘感知算法、定位算法、导航算法、无人机总体、结构、动力系统、可靠性、解决方案、气动等方向人才，工作地点成都。",
-   "portal": "https://www.jouav.com/zh/career",
-   "source": "",
+   "portal": "https://jouav.zhiye.com/campus/jobs",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -5091,8 +5091,8 @@
    "date": "2026-08-28",
    "roles": "商品采购、品控、供应链、运营、市场品牌、会员、招拓、AI/产品/开发/大数据、财务、法务、人力资源",
    "note": "食品连锁/供应链企业2027届校招启动（上海/南京），覆盖运营/职能/数字化方向",
-   "portal": "http://job.vanchen.com",
-   "source": "https://mp.weixin.qq.com/s/lnnyeXD-5CrMlrKaLAaOaQ",
+   "portal": "https://vanchen1.zhiye.com/main",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -7841,8 +7841,8 @@
    "date": "2026-09-05",
    "roles": "多岗（以官网为准）",
    "note": "金杯电工已正式启动2027届校园招聘，面向2027届毕业生，但岗位详情、工作地点及招聘流程等具体信息尚未公布，请以官方后续通知为准。",
-   "portal": "http://www.gold-cup.cn/intro/11.html",
-   "source": "",
+   "portal": "https://jinbei.zhiye.com/",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -7973,8 +7973,8 @@
    "date": "2026-09-06",
    "roles": "苏州工作",
    "note": "诺德凯（苏州）智能装备有限公司2027届秋季校园招聘正式启动，面向2027届海内外优秀高校毕业生，开放项目管理、售后支持、职能储备、科技创新四大方向岗位，工作地点为江苏苏州，并提供六险一金、导师1对1带教、人才公寓支持等福利保障。",
-   "portal": "https://www.nordkete.com/jrwm/",
-   "source": "",
+   "portal": "https://hrnordkete.zhiye.com/",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
@@ -9216,8 +9216,8 @@
    "date": "2026-09-14",
    "roles": "研发、工艺、质量、生产管理（以官网为准）",
    "note": "日月股份2027届校园招聘（宁波/象山/酒泉等）。日月重工股份有限公司（股票代码 603218）2027届校园招聘正式启动。公司1984年成立，是大型高端装备制造上市企业、国家级高新技术企业、国家级制造业单项冠军、国家绿色工厂，专注厚大断面球墨铸铁重大装备基础件，风电铸件市占率全球第一。",
-   "portal": "https://www.riyuehi.com/",
-   "source": "",
+   "portal": "https://riyue.zhiye.com/",
+   "source": "官方校招系统（自动核验）",
    "ent": "民企",
    "cohort": "2027届"
   },
