@@ -1,5 +1,5 @@
 {
- "rev": "20260929-d",
+ "rev": "20260929-e",
  "updated": "2026-09-29",
  "count": 947,
  "data": [
@@ -9391,8 +9391,8 @@
    "cat": "快消",
    "date": "2026-09-15",
    "roles": "销售管培生（统一以销售岗招聘，6个月一线历练后内部竞聘至销售/中台/市场/电商等方向）；工厂端生产技术、设备操控与维护保养方向",
-   "note": "李锦记2027届校园招聘已启动（9月发布招聘简章），品牌扎根中国香港，业务覆盖全球100多个国家及地区。投递入口使用智联校园招聘专区（李锦记官方专区，手机端打开即为此页）。李锦记自有招聘系统（北森）亦可直接投递：酱料中国 lkksh.zhiye.com/campus/jobs、中国工厂 lkkplant.zhiye.com/campus/jobs。校招统一以销售岗招聘，6个月一线历练后可通过内部竞聘去销售、中台、市场、电商等多元路径；官方招聘邮箱 recruitment@lkk.com.cn。",
-   "portal": "https://m.zhaopin.com/xiaoyuan/company/detail?redirect=mxiaoyuan&comid=KA1477057694P90000001000&productId=-1&channelId=-1",
+   "note": "李锦记2027届校园招聘已启动（9月发布招聘简章），品牌扎根中国香港，业务覆盖全球100多个国家及地区。投递入口为智联校园招聘专区（李锦记官方专区，电脑端直链）。李锦记自有招聘系统（北森）亦可直接投递：酱料中国 lkksh.zhiye.com/campus/jobs、中国工厂 lkkplant.zhiye.com/campus/jobs。校招统一以销售岗招聘，6个月一线历练后可通过内部竞聘去销售、中台、市场、电商等多元路径；官方招聘邮箱 recruitment@lkk.com.cn。",
+   "portal": "https://xiaoyuan.zhaopin.com/company/KA1477057694D90000001000?refcode=4430&srccode=443001&jobSourceType=2",
    "source": "智联校园招聘专区（李锦记官方专区）",
    "ent": "民企",
    "cohort": "2027届"
