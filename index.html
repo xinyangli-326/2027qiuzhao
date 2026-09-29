@@ -1868,6 +1868,26 @@
   .pager .pg-gap { color: var(--muted); padding: 0 2px; }
   .pager .pg-jump { color: var(--muted); margin-left: 6px; }
   .pager .pg-jump input { width: 58px; height: 28px; padding: 0 6px; border: 1px solid var(--line); border-radius: 7px; }
+  /* —— 一屏放得下：整体压缩 —— */
+  .page { padding: 12px 16px 16px; }
+  header.hero h1 { font-size: 20px; margin: 0 0 2px; }
+  header.hero p { font-size: 12px; margin: 0; }
+  .stats { margin: 8px 0 2px; gap: 6px; }
+  .chip { padding: 3px 9px; font-size: 12px; }
+  #scaleChips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin; }
+  #scaleChips .chip, #dirChips .chip { flex: 0 0 auto; }
+  #dirChips { display: none !important; }
+  .dir-hint { display: none !important; }
+  .dirbox { margin: 6px 0 2px; padding: 6px 10px; gap: 8px; }
+  .dirbox input#dirQ { flex: 1 1 200px; min-width: 160px; padding: 5px 9px; }
+  .controls { margin: 8px 0 4px; padding: 6px 10px; gap: 8px; }
+  .table-wrap { margin-top: 4px; }
+  tbody td { padding: 4px 8px; }
+  thead th { padding: 6px 8px; font-size: 12px; }
+  .stage-cell select.status { height: 28px; padding: 2px 6px; font-size: 12px; }
+  .stage-cell .tl-row { font-size: 11px; gap: 3px; margin-top: 3px; }
+  .pager { padding: 6px 4px 0; }
+  footer { margin-top: 6px; font-size: 11px; gap: 6px; }
 </style>
 
 
@@ -1916,7 +1936,7 @@
 
 
 
-    <p id="heroMeta">数据截至 2026-09-09 ｜ 收录 947 家（大厂 / 行业巨头 / 中厂 / AI中厂 / 小厂 / 快消 / 化妆品 / 餐饮茶饮 / 服装服饰 / 房地产 / 金融 / 央企国企 / 汽车 / 能源 / 家电 / 医药 / 教育 / 物流 / 半导体/电子 / 智能制造/装备 / 互联网/软件 / 专业服务/咨询 / 游戏/文娱 / 传媒/广告 / 化工/材料 / 农牧/食品 / 跨境电商/外贸）｜ 持续收录中：凡已发布 2027 届秋招（含提前批）的公司都会补入，无官网入口的公司已标注公众号/邮箱/宣讲会等投递方式；选择投递状态会自动记录当天日期；进度仅保存在你自己的浏览器，不会上传</p>
+    <p id="heroMeta">数据截至 2026-09-09 ｜ 收录 947 家 ｜ 持续收录 2027 届秋招（含提前批）｜ 进度只存在本机浏览器</p>
 
 
 
@@ -3581,7 +3601,7 @@ let DATA = [
   { company: "北汽福田", date: "2026-09-15", roles: "多岗（以官网为准）", note: "北汽福田2027届校招系统（北京/潍坊等）。北汽福田2027全球校园招聘已启动，面向2027届全球应届毕业生（博士、硕士、本科），开放新能源研发、智能网联研发、智能驾驶研发、算法开发、通用研发、国内营销、海外营销、智能制造、供应链、数字化等岗位方向，工作地点覆盖北京、上海、潍坊、诸城、青岛、长沙、商丘、…", portal: "https://futurefoton.zhiye.com/campus", source: "", ent: "民企", cohort: "2027届" },
   { company: "周大福", date: "2026-09-15", roles: "多岗（以官网为准）", note: "周大福招聘官网（闪耀校招），全国300+城市。三福2027届秋季校园招聘正式启动，面向2027届全国高校毕业生（毕业时间2026年9月–2027年8月），开放商品线、运营线、职能线岗位方向，实习与全职机会同步开放，工作地点覆盖全国300+城市（具体以网申系统为准），招满即止。", portal: "https://ctf.zhiye.com/campus/jobs", source: "官方校招系统（自动核验）", ent: "民企", cohort: "2027届" },
   { company: "天虹股份", date: "2026-09-15", roles: "管培生计划、供应链", note: "天虹股份（天虹商场）2027届秋招，官网“人在天虹”。天虹数科（天虹股份，002419）2027届秋季校园招聘正式启动，面向2027届毕业生开放管培生计划（供应链岗、运营岗、营销策划岗、关键职能岗）与博士专项·战略人才计划（AI规划师、算法工程师、战略管理岗、门店助理总经理），强调商业思维与数智素养，提供双通道发…", portal: "https://www.rainbow.cn/tianhong.html", source: "", ent: "民企", cohort: "2027届" },
-  { company: "李锦记", date: "2026-09-15", roles: "销售管培生（统一以销售岗招聘，6个月一线历练后内部竞聘至销售/中台/市场/电商等方向）；工厂端生产技术、设备操控与维护保养方向", note: "李锦记2027届校园招聘已启动（9月发布招聘简章），品牌扎根中国香港、业务覆盖全球100多个国家及地区。投递入口为官方招聘系统（北森）：酱料中国 lkksh.zhiye.com/campus/jobs（销售管培及职能岗），中国工厂 lkkplant.zhiye.com/campus/jobs（生产设备操控、维护保养、生产技术方向，面向自动化/机械化/智能化类或食品类）。校招统一以销售岗招聘，6个月一线历练后可通过内部竞聘去销售、中台、市场、电商等多元路径。官方招聘邮箱 recruitment@lkk.com.cn。", portal: "https://lkksh.zhiye.com/campus/jobs", source: "李锦记官方校招系统（北森）", ent: "民企", cohort: "2027届" },
+  { company: "李锦记", date: "2026-09-15", roles: "销售管培生（统一以销售岗招聘，6个月一线历练后内部竞聘至销售/中台/市场/电商等方向）；工厂端生产技术、设备操控与维护保养方向", note: "李锦记2027届校园招聘已启动（9月发布招聘简章），品牌扎根中国香港，业务覆盖全球100多个国家及地区。投递入口使用智联校园招聘专区（李锦记官方专区，手机端打开即为此页）。李锦记自有招聘系统（北森）亦可直接投递：酱料中国 lkksh.zhiye.com/campus/jobs、中国工厂 lkkplant.zhiye.com/campus/jobs。校招统一以销售岗招聘，6个月一线历练后可通过内部竞聘去销售、中台、市场、电商等多元路径；官方招聘邮箱 recruitment@lkk.com.cn。", portal: "https://m.zhaopin.com/xiaoyuan/company/detail?redirect=mxiaoyuan&comid=KA1477057694P90000001000&productId=-1&channelId=-1", source: "智联校园招聘专区（李锦记官方专区）", ent: "民企", cohort: "2027届" },
   { company: "深规院", date: "2026-09-15", roles: "多岗（以官网为准）", note: "深圳市城市规划设计研究院招聘官网（校招/实习）。深水规院（深圳市水务规划设计研究院股份有限公司，301038.SZ）2027届校园招聘，面向2027届本科及以上学历应届毕业生（含2026届未就业毕业生），需求覆盖水利类、市政类、地质类、测绘类、计算机类、工程管理类等专业方向，岗位分布在深圳总部及揭阳、武汉、…", portal: "https://hr.upr.cn/", source: "", ent: "事业单位", cohort: "2027届" },
   { company: "源氏木语", date: "2026-09-15", roles: "公司级管培生（质量/线下业务/采购供应链/线上业务/物流）、产品设计师管培生、软包开发管培生、维修督导管培生、送装管培生、送装督导管培生、新零售管培生、运维工程师管培生、仓储保管员、2027校招校园大使", note: "2027届校园招聘已启动，招聘主体为上海万木生源家居有限公司（上海、山东双总部，约1700家线下门店）。官方投递入口为源氏木语校招系统（Moka），每位同学最多投递2个岗位，投满后HR可协助调剂；设计类岗位需上传作品集。流程：网申→按邮件时限完成测评（不完成无法推进）→1-2轮面试（部分岗位含AI面试）→offer→3日内回复、3-7天内完成三方签约。培养：【源木计划】管培生专项，约2年高频赋能+1对1导师带教，往届管培生62%在高级及储备、31%在管理层级；管培生为定岗培养，公司级管培生会轮岗。福利：入职即缴五险一金、年度体检、年度旅游补贴+带薪假、每日下午茶、家具内购价；上海总部旁有公租房（周边租房约1500-2000元/月）。进度查询：校招官网『我的-投递记录』，官方公众号『源氏木语招聘』。", portal: "https://app.mokahr.com/campus-recruitment/yeswood/142521?locale=zh-CN", source: "上海万木生源家居有限公司（源氏木语）2027届校园招聘·官方校招系统", ent: "民企", cohort: "2027届" },
   { company: "航空工业济南特种结构研究所", date: "2026-09-15", roles: "多岗（以官网为准）", note: "航空工业特种所招聘系统，2027届校招。中国航空工业集团有限公司济南特种结构研究所2027届秋季校园招聘正式启动，面向飞行器电磁功能结构研发、民用航空器结构设计、隐身与低可观测技术等方向招聘应届毕业生，工作地点济南，岗位最低学历要求为本科、硕士及以上学历优先，岗位薪资显示16-30万元/年。", portal: "https://hotjob.cn/wt/RISAC/mobweb/v8/position/list?recruitType=1", source: "", ent: "央企国企", cohort: "2027届" },
@@ -3747,7 +3767,7 @@ const STORAGE_KEY = "qiuzhao2027_progress_v2";
 
 
 
-const PAGE_REVISION = "20260929-a";
+const PAGE_REVISION = "20260929-b";
 
 
 
