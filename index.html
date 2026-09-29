@@ -1953,14 +1953,6 @@
 
 
   <div class="stats" id="stats" role="group" aria-label="投递进度统计"></div>
-
-
-
-
-
-
-
-  <div class="stats" id="scaleChips" role="group" aria-label="按公司分类筛选"></div>
 <div class="controls">
 
 
@@ -2026,13 +2018,14 @@
 
 
     <div class="sortbox">
-
-
-
-
-
-
-
+      <label for="scaleSel">行业类别</label>
+      <select id="scaleSel" aria-label="按行业类别筛选"></select>
+    </div>
+    <div class="sortbox">
+      <label for="dirSel">职业方向</label>
+      <select id="dirSel" aria-label="按职业方向筛选"></select>
+    </div>
+    <div class="sortbox">
       <label for="sort">排序</label>
 
 
@@ -3584,7 +3577,7 @@ const STORAGE_KEY = "qiuzhao2027_progress_v2";
 
 
 
-const PAGE_REVISION = "20260929-c";
+const PAGE_REVISION = "20260929-d";
 
 
 
@@ -5517,6 +5510,7 @@ function renderScaleChips() {
 
 
   const box = document.getElementById("scaleChips");
+  if (!box) return;
 
 
 
@@ -6797,6 +6791,42 @@ document.addEventListener("change", (e) => {
   state.page = v;
   render();
 });
+function renderFilterSelects() {
+  const sc = document.getElementById("scaleSel");
+  if (sc) {
+    if (!sc.dataset.built) {
+      sc.innerHTML = '<option value="all">全部行业</option>' +
+        SCALE_ORDER.map((x) => '<option value="' + escAttr(x) + '"></option>').join("");
+      sc.dataset.built = "1";
+      sc.addEventListener("change", () => {
+        state.scale = sc.value === "all" ? "全部" : sc.value;
+        render();
+      });
+    }
+    SCALE_ORDER.forEach((x, i) => {
+      const opt = sc.options[i + 1];
+      if (opt) opt.textContent = x + "（" + DATA.filter((d) => CAT[d.company] === x).length + "）";
+    });
+    sc.value = state.scale === "全部" ? "all" : state.scale;
+  }
+  const ds = document.getElementById("dirSel");
+  if (ds) {
+    if (!ds.dataset.built) {
+      ds.innerHTML = '<option value="all">全部方向</option>' +
+        DIRS.map((d, i) => '<option value="' + i + '"></option>').join("");
+      ds.dataset.built = "1";
+      ds.addEventListener("change", () => {
+        state.dirs = ds.value === "all" ? [] : [Number(ds.value)];
+        render();
+      });
+    }
+    DIRS.forEach(([label, words], i) => {
+      const opt = ds.options[i + 1];
+      if (opt) opt.textContent = label + "（" + DATA.filter((d) => matchDir(d, words)).length + "）";
+    });
+    ds.value = state.dirs.length ? String(state.dirs[0]) : "all";
+  }
+}
 function render() {
 
 
@@ -7202,6 +7232,7 @@ if (!list.length) {
 
 
   renderScaleChips();
+  renderFilterSelects();
 
 
 
