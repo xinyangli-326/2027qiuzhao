@@ -1928,15 +1928,7 @@
 
 
 
-    <h1>2027届秋招信息汇总（含国央企 · 支持自定义岗位方向）</h1>
-
-
-
-
-
-
-
-    <p id="heroMeta">数据截至 2026-09-09 ｜ 收录 947 家 ｜ 持续收录 2027 届秋招（含提前批）｜ 进度只存在本机浏览器</p>
+    <h1>2027届秋招信息汇总（含国央企）</h1>
 
 
 
@@ -1969,182 +1961,7 @@
 
 
   <div class="stats" id="scaleChips" role="group" aria-label="按公司分类筛选"></div>
-
-
-
-
-
-
-
-  <div class="stats" id="dirChips" role="group" aria-label="按职业方向筛选"></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <div class="dirbox">
-
-
-
-
-
-
-
-    <label for="dirQ">我的求职方向</label>
-
-
-
-
-
-
-
-    <input id="dirQ" list="dirSug" placeholder="例如：财务 会计｜人力 行政｜法务｜产品 运营｜营销 品牌…" aria-label="自定义岗位方向">
-
-
-
-
-
-
-
-    <datalist id="dirSug">
-
-
-
-
-
-
-
-      <option value="财务"></option><option value="会计"></option><option value="审计"></option>
-
-
-
-
-
-
-
-      <option value="人力资源"></option><option value="行政"></option><option value="法务"></option>
-
-
-
-
-
-
-
-      <option value="合规"></option><option value="党务"></option><option value="党建"></option>
-
-
-
-
-
-
-
-      <option value="战略"></option><option value="投资"></option><option value="市场营销"></option>
-
-
-
-
-
-
-
-      <option value="品牌"></option><option value="产品经理"></option><option value="产品运营"></option>
-
-
-
-
-
-
-
-      <option value="运营"></option><option value="数据分析"></option><option value="商业分析"></option>
-
-
-
-
-
-
-
-      <option value="供应链"></option><option value="采购"></option><option value="物流"></option>
-
-
-
-
-
-
-
-      <option value="客户服务"></option><option value="销售"></option><option value="商务"></option>
-
-
-
-
-
-
-
-      <option value="设计"></option><option value="技术"></option><option value="算法"></option>
-
-
-
-
-
-
-
-      <option value="管培"></option>
-
-
-
-
-
-
-
-    </datalist>
-
-
-
-
-
-
-
-    <button class="btn" id="clearDir" type="button">清除</button>
-
-
-
-
-
-
-
-    <span class="dir-hint">输入你想投的岗位 / 职能关键词即可反向筛出开放相关岗位的公司；多个词用空格或逗号分隔（需同时满足），例如“财务 人力”会筛出同时有财务和人力方向岗位的公司（如中国移动、中国太平、华润万象商业等）。</span>
-
-
-
-
-
-
-
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <div class="controls">
+<div class="controls">
 
 
 
@@ -3767,7 +3584,7 @@ const STORAGE_KEY = "qiuzhao2027_progress_v2";
 
 
 
-const PAGE_REVISION = "20260929-b";
+const PAGE_REVISION = "20260929-c";
 
 
 
@@ -5900,6 +5717,7 @@ function renderDirChips() {
 
 
   const box = document.getElementById("dirChips");
+  if (!box) return;
 
 
 
@@ -9008,86 +8826,19 @@ function parseDirTerms(raw) {
 
 
 const dirQ = document.getElementById("dirQ");
-
-
-
-
-
-
-
-dirQ.addEventListener("input", (e) => {
-
-
-
-
-
-
-
-  state.dirTerms = parseDirTerms(e.target.value);
-
-
-
-
-
-
-
-  render();
-
-
-
-
-
-
-
-});
-
-
-
-
-
-
-
-document.getElementById("clearDir").addEventListener("click", () => {
-
-
-
-
-
-
-
-  dirQ.value = "";
-
-
-
-
-
-
-
-  state.dirTerms = [];
-
-
-
-
-
-
-
-  render();
-
-
-
-
-
-
-
-  dirQ.focus();
-
-
-
-
-
-
-
-});
+if (dirQ) {
+  dirQ.addEventListener("input", (e) => {
+    state.dirTerms = parseDirTerms(e.target.value);
+    render();
+  });
+  const clearDirBtn = document.getElementById("clearDir");
+  if (clearDirBtn) clearDirBtn.addEventListener("click", () => {
+    dirQ.value = "";
+    state.dirTerms = [];
+    render();
+    dirQ.focus();
+  });
+}
 
 
 
